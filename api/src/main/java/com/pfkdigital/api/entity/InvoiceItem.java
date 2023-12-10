@@ -1,7 +1,5 @@
 package com.pfkdigital.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,10 +23,8 @@ public class InvoiceItem {
     private BigDecimal price;
     private BigDecimal total;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.REFRESH,CascadeType.DETACH})
     @JoinColumn(name = "invoice_id")
-    @JsonBackReference
-    @JsonIgnore
     private Invoice invoice;
 
     @Override

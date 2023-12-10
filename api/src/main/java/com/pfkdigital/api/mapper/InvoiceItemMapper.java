@@ -5,9 +5,8 @@ import com.pfkdigital.api.entity.InvoiceItem;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface InvoiceItemMapper {
-    InvoiceItemMapper INSTANCE = Mappers.getMapper(InvoiceItemMapper.class);
     InvoiceItemDTO invoiceItemToInvoiceItemDTO(InvoiceItem invoiceItem);
     InvoiceItem invoiceItemDTOToInvoiceItem(InvoiceItemDTO invoiceItemDTO);
 }

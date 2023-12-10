@@ -1,4 +1,4 @@
-package com.pfkdigital.api.entity;
+package com.pfkdigital.api.model;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

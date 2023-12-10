@@ -1,6 +1,6 @@
 package com.pfkdigital.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.pfkdigital.api.model.Address;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,8 +36,7 @@ public class Client {
     })
     private Address clientAddress;
 
-    @OneToMany(mappedBy = "client",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private List<Invoice> invoices;
 
     public void addInvoice(Invoice invoice){

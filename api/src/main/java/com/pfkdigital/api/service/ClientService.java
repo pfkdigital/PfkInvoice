@@ -1,12 +1,14 @@
 package com.pfkdigital.api.service;
 
 import com.pfkdigital.api.dto.ClientDTO;
-import com.pfkdigital.api.dto.InvoiceDTO;
-import com.pfkdigital.api.entity.Client;
+import com.pfkdigital.api.dto.ClientWithInvoicesDTO;
 
 import java.util.List;
 
 public interface ClientService {
+    ClientDTO createNewClient(ClientDTO clientDTO);
     List<ClientDTO> getAllClients();
-    ClientDTO getClientById(Integer id);
+    ClientWithInvoicesDTO getClientById(Integer clientId);
+    ClientDTO updateClient(ClientDTO clientDTO,Integer clientId);
+    String deleteClientById(Integer clientId);
 }

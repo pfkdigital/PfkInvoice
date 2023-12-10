@@ -1,5 +1,6 @@
 package com.pfkdigital.api.controller.advice;
 
+import com.pfkdigital.api.exception.InvoiceItemNotFoundException;
 import com.pfkdigital.api.exception.InvoiceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,5 +12,10 @@ public class InvoiceControllerAdvise {
     @ExceptionHandler(InvoiceNotFoundException.class)
     public ResponseEntity<String> handleInvoiceNotFoundException(InvoiceNotFoundException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InvoiceItemNotFoundException.class)
+    public ResponseEntity<String> handleInvoiceItemNotFoundException(InvoiceItemNotFoundException exception){
+        return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
     }
 }

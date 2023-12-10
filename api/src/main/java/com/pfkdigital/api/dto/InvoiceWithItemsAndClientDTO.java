@@ -8,12 +8,13 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class InvoiceDTO {
+public class InvoiceWithItemsAndClientDTO {
     private Integer id;
     private String invoiceReference;
     @JsonFormat(pattern = "yyyy-mm-dd")
@@ -24,5 +25,6 @@ public class InvoiceDTO {
     private Integer paymentTerms;
     private String invoiceStatus;
     private BigDecimal total;
-    private String clientName;
+    private ClientDTO client;
+    private List<InvoiceItemDTO> invoiceItems;
 }
