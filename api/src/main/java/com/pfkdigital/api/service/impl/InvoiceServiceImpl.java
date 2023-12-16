@@ -1,15 +1,11 @@
 package com.pfkdigital.api.service.impl;
 
 import com.pfkdigital.api.dto.InvoiceDTO;
-import com.pfkdigital.api.dto.InvoiceItemDTO;
 import com.pfkdigital.api.dto.InvoiceWithItemsAndClientDTO;
 import com.pfkdigital.api.entity.Invoice;
 import com.pfkdigital.api.entity.InvoiceItem;
 import com.pfkdigital.api.exception.InvoiceNotFoundException;
-import com.pfkdigital.api.mapper.InvoiceItemMapper;
 import com.pfkdigital.api.mapper.InvoiceMapper;
-import com.pfkdigital.api.repository.ClientRepository;
-import com.pfkdigital.api.repository.InvoiceItemRepository;
 import com.pfkdigital.api.repository.InvoiceRepository;
 import com.pfkdigital.api.service.InvoiceService;
 import jakarta.transaction.Transactional;
@@ -22,11 +18,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class InvoiceServiceImpl implements InvoiceService {
-  private final ClientRepository clientRepository;
   private final InvoiceRepository invoiceRepository;
-  private final InvoiceItemRepository invoiceItemRepository;
   private final InvoiceMapper invoiceMapper;
-  private final InvoiceItemMapper invoiceItemMapper;
 
   @Override
   @Transactional
@@ -36,21 +29,6 @@ public class InvoiceServiceImpl implements InvoiceService {
     Invoice savedInvoice = invoiceRepository.save(newInvoice);
 
     return invoiceMapper.invoiceToInvoiceWithItemsAndClientDTO(savedInvoice);
-  }
-
-  @Override
-  public InvoiceItemDTO createInvoiceItem(InvoiceItemDTO invoiceItemDTO, Integer invoiceId) {
-    InvoiceItem newInvoiceItem = invoiceItemMapper.invoiceItemDTOToInvoiceItem(invoiceItemDTO);
-    Invoice invoice =
-        invoiceRepository
-            .findById(invoiceId)
-            .orElseThrow(
-                () -> new InvoiceNotFoundException("Invoice of id " + invoiceId + " is not found"));
-
-    newInvoiceItem.setInvoice(invoice);
-    InvoiceItem savedInvoiceItem = invoiceItemRepository.save(newInvoiceItem);
-
-    return invoiceItemMapper.invoiceItemToInvoiceItemDTO(savedInvoiceItem);
   }
 
   @Override
@@ -73,10 +51,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 
   @Override
   @Transactional
-  public String updateInvoice(InvoiceWithItemsAndClientDTO invoiceDTO, Integer invoiceId) {
+  public InvoiceWithItemsAndClientDTO updateInvoice(
+      InvoiceWithItemsAndClientDTO invoiceDTO, Integer invoiceId) {
     Invoice selectedInvoice =
         invoiceRepository
-            .findById(invoiceId)
+            .findInvoiceWithClientAndItemsById(invoiceId)
             .orElseThrow(
                 () -> new InvoiceNotFoundException("Invoice of id " + invoiceId + " is not found"));
     Invoice updatedInvoice = invoiceMapper.invoiceWithItemsAndClientDTOToInvoice(invoiceDTO);
@@ -89,29 +68,19 @@ public class InvoiceServiceImpl implements InvoiceService {
     selectedInvoice.setInvoiceStatus(updatedInvoice.getInvoiceStatus());
     selectedInvoice.setTotal(updatedInvoice.getTotal());
     selectedInvoice.setClient(updatedInvoice.getClient());
-    updatedInvoice.getInvoiceItems().forEach(selectedInvoice::addInvoiceItem);
+    selectedInvoice.getInvoiceItems().clear();
 
+    List<InvoiceItem> updatedInvoiceItems = updatedInvoice.getInvoiceItems();
+    if (updatedInvoiceItems != null) {
+      for (InvoiceItem invoiceItem : updatedInvoiceItems) {
+        selectedInvoice.addInvoiceItem(invoiceItem);
+      }
+    }
     invoiceRepository.save(selectedInvoice);
 
-    return "Invoice of id " + invoiceId + " was updated";
-  }
+    Invoice savedUpdatedInvoice = invoiceRepository.save(selectedInvoice);
 
-  @Override
-  public String updateInvoiceItem(InvoiceItemDTO invoiceItemDTO, Integer invoiceItemId) {
-    InvoiceItem newInvoiceItem = invoiceItemMapper.invoiceItemDTOToInvoiceItem(invoiceItemDTO);
-    InvoiceItem invoiceItem =
-            invoiceItemRepository
-                    .findById(invoiceItemId)
-                    .orElseThrow(
-                            () -> new InvoiceNotFoundException("Invoice of id " + invoiceItemId + " is not found"));
-    invoiceItem.setName(newInvoiceItem.getName());
-    invoiceItem.setPrice(newInvoiceItem.getPrice());
-    invoiceItem.setQuantity(newInvoiceItem.getQuantity());
-    invoiceItem.setTotal(newInvoiceItem.getTotal());
-
-    invoiceItemRepository.save(invoiceItem);
-
-    return "Invoice item of id " + invoiceItemId + " was updated";
+    return invoiceMapper.invoiceToInvoiceWithItemsAndClientDTO(savedUpdatedInvoice);
   }
 
   @Override

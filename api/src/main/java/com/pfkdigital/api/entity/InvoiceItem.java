@@ -27,6 +27,14 @@ public class InvoiceItem {
     @JoinColumn(name = "invoice_id")
     private Invoice invoice;
 
+    @PrePersist
+    @PreUpdate
+    private void updateTotal() {
+        if (quantity != null && price != null) {
+            this.total = price.multiply(BigDecimal.valueOf(quantity));
+        }
+    }
+
     @Override
     public String toString() {
         return "InvoiceItem{" +

@@ -50,6 +50,25 @@ public class Invoice {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
     private List<InvoiceItem> invoiceItems;
 
+    @PrePersist
+    @PreUpdate
+    private void updateTotal() {
+        if (invoiceItems != null) {
+            BigDecimal total = BigDecimal.ZERO;
+            for (InvoiceItem item : invoiceItems) {
+                if (item.getTotal() != null) {
+                    total = total.add(item.getTotal());
+                }
+            }
+            this.total = total;
+        }
+    }
+
+    @PostLoad
+    private void calculateTotal() {
+        updateTotal();
+    }
+
     public void addInvoiceItem(InvoiceItem item) {
         if (invoiceItems == null) {
             invoiceItems = new ArrayList<>();
