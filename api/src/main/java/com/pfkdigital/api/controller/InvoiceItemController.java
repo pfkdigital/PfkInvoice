@@ -34,7 +34,7 @@ public class InvoiceItemController {
     }
 
     @DeleteMapping("/items/{invoiceItemId}")
-    public ResponseEntity<?> deleteAnInvoiceItemById(@PathVariable Integer invoiceItemId) {
+    public ResponseEntity<?> deleteAnInvoiceItemById(@PathVariable Integer invoiceItemId){
         return new ResponseEntity<>(invoiceItemService.deleteInvoiceItem(invoiceItemId),HttpStatus.OK);
     }
 }

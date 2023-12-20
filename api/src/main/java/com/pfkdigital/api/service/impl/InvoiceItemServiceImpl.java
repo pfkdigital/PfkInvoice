@@ -80,9 +80,15 @@ public class InvoiceItemServiceImpl implements InvoiceItemService {
   @Override
   @Transactional
   public String deleteInvoiceItem(Integer invoiceItemId) {
-    InvoiceItem item = invoiceItemRepository.findById(invoiceItemId).orElseThrow(() -> new InvoiceItemNotFoundException("Invoice Item of id " + invoiceItemId + " was not found" ));
+    InvoiceItem invoiceItem =
+        invoiceItemRepository
+            .findById(invoiceItemId)
+            .orElseThrow(
+                () ->
+                    new InvoiceItemNotFoundException(
+                        "Invoice Item of id " + invoiceItemId + " was not found"));
 
-    invoiceItemRepository.delete(item);
+    invoiceItemRepository.delete(invoiceItem);
 
     return "Invoice item of id " + invoiceItemId + " was deleted";
   }
