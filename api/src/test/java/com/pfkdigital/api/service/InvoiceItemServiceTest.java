@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,6 +51,31 @@ public class InvoiceItemServiceTest extends BaseTest {
 
         verify(invoiceRepository).findById(anyInt());
         verify(invoiceItemRepository).save(any(InvoiceItem.class));
+    }
+
+    @Test
+    public void InvoiceItemService_GetAllItems_ReturnItemList(){
+        when(invoiceItemRepository.findAll()).thenReturn(List.of(invoiceItem));
+        when(invoiceItemMapper.invoiceItemToInvoiceItemDTO(any(InvoiceItem.class))).thenReturn(invoiceItemDTO);
+
+        List<InvoiceItemDTO> testItems = invoiceItemService.getAllInvoiceItem();
+
+        assertNotNull(testItems);
+        assertEquals(1,testItems.size());
+    }
+
+    @Test
+    public void InvoiceItemService_GetInvoiceItemById_ReturnItem(){
+        int invoiceItemId = 1;
+        String invoiceItemName = "Web Development";
+
+        when(invoiceItemRepository.findById(anyInt())).thenReturn(Optional.of(invoiceItem));
+        when(invoiceItemMapper.invoiceItemToInvoiceItemDTO(any(InvoiceItem.class))).thenReturn(invoiceItemDTO);
+
+        InvoiceItemDTO testItem = invoiceItemService.getInvoiceItemById(invoiceItemId);
+
+        assertNotNull(testItem);
+        assertEquals(invoiceItemName,testItem.getName());
     }
 
     @Test
@@ -97,7 +123,7 @@ public class InvoiceItemServiceTest extends BaseTest {
     @Test
     public void InvoiceItemService_DeleteInvoice_ReturnString(){
         int invoiceItemId = 1;
-        String deletedConfirmation = "Invoice item of id " + invoiceItemId + " is not found";
+        String deletedConfirmation = "Invoice item of id " + invoiceItemId + " was deleted";
 
         when(invoiceItemRepository.findById(anyInt())).thenReturn(Optional.of(invoiceItem));
         doNothing().when(invoiceItemRepository).delete(invoiceItem);

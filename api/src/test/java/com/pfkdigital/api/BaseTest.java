@@ -56,7 +56,7 @@ public class BaseTest {
 
     invoiceItem =
         InvoiceItem.builder()
-            .id(1)
+            .id(20)
             .name("Website Development")
             .quantity(2)
             .price(BigDecimal.valueOf(750.00))
@@ -122,7 +122,7 @@ public class BaseTest {
 
     invoiceItemDTO =
         InvoiceItemDTO.builder()
-            .id(1)
+            .id(20)
             .name("Web Development")
             .quantity(3)
             .price(BigDecimal.valueOf(500.00))
