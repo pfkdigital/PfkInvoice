@@ -22,6 +22,7 @@ public class InvoiceRepositoryTest extends BaseTest {
     @Test
     public void InvoiceRepository_CreateANewInvoice_ReturnCreatedInvoice(){
         String savedInvoiceReference = "INV-001";
+
         Invoice savedInvoice = invoiceRepository.save(invoice);
 
         assertNotNull(savedInvoice);

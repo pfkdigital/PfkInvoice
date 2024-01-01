@@ -14,7 +14,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -72,9 +71,11 @@ public class InvoiceItemIntegrationTest extends BaseTest {
   @Test
   @Sql({"/schema.sql", "/data.sql"})
   public void InvoiceItemIntegration_DeleteAnInvoiceItemById_ItemDeleted() {
+    int invoiceId = 1;
     int invoiceItemId = 1;
     String allItemsUrl = "http://localhost:" + port + "/api/v1/invoices/items";
-    String deleteUrl = "http://localhost:" + port + "/api/v1/invoices/items/" + invoiceItemId;
+    String deleteUrl =
+        "http://localhost:" + port + "/api/v1/invoices/" + invoiceId + "/items/" + invoiceItemId;
 
     InvoiceItemDTO[] initialList = restTemplate.getForObject(allItemsUrl, InvoiceItemDTO[].class);
     restTemplate.delete(deleteUrl);
@@ -82,8 +83,8 @@ public class InvoiceItemIntegrationTest extends BaseTest {
 
     assertNotNull(initialList);
     assertNotNull(finalList);
-    assertEquals(15,initialList.length);
-    assertEquals(14,finalList.length);
+    assertEquals(15, initialList.length);
+    assertEquals(14, finalList.length);
   }
 
   @AfterAll

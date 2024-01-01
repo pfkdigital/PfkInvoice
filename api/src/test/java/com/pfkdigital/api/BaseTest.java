@@ -24,7 +24,7 @@ public class BaseTest {
   protected InvoiceWithItemsAndClientDTO updatedInvoiceWithClientsAndItemsDTO;
   protected InvoiceItem invoiceItem;
   protected InvoiceItemDTO invoiceItemDTO;
-  protected List<InvoiceItem> invoiceItems;
+  protected List<InvoiceItem> mockInvoiceItems;
 
   @BeforeEach
   public void setup() {
@@ -71,6 +71,10 @@ public class BaseTest {
             .price(BigDecimal.valueOf(500.00))
             .total(BigDecimal.valueOf(1500.00))
             .build();
+
+
+    mockInvoiceItems = List.of(invoiceItem, anotherMockItem);
+
     invoice =
         Invoice.builder()
             .id(1)
@@ -83,11 +87,8 @@ public class BaseTest {
             .client(client)
             .total(BigDecimal.valueOf(1500.00))
             .build();
-
+    mockInvoiceItems.forEach(item -> invoice.addInvoiceItem(item));
     client.addInvoice(invoice);
-    invoice.addInvoiceItem(invoiceItem);
-    invoice.addInvoiceItem(anotherMockItem);
-    invoiceItems = List.of(invoiceItem, anotherMockItem);
 
     updatedInvoice =
         Invoice.builder()
@@ -118,8 +119,6 @@ public class BaseTest {
             .clientAddress(addressDTO)
             .build();
 
-
-
     invoiceItemDTO =
         InvoiceItemDTO.builder()
             .id(20)
@@ -129,7 +128,7 @@ public class BaseTest {
             .total(BigDecimal.valueOf(1500.00))
             .build();
 
-    InvoiceItemDTO item2 =
+    InvoiceItemDTO invoiceItemDTO2 =
         InvoiceItemDTO.builder()
             .id(2)
             .name("Graphic Design")
@@ -138,7 +137,7 @@ public class BaseTest {
             .total(BigDecimal.valueOf(1500.00))
             .build();
 
-    List<InvoiceItemDTO> invoiceItems = Arrays.asList(invoiceItemDTO, item2);
+    List<InvoiceItemDTO> invoiceItems = Arrays.asList(invoiceItemDTO, invoiceItemDTO2);
 
     invoiceDTO =
         InvoiceDTO.builder()

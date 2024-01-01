@@ -9,5 +9,5 @@ public interface InvoiceItemService {
     List<InvoiceItemDTO> getAllInvoiceItem();
     InvoiceItemDTO getInvoiceItemById(Integer id);
     String updateInvoiceItem(InvoiceItemDTO invoiceItemDTO, Integer invoiceItemId);
-    String deleteInvoiceItem(Integer invoiceItemId);
+    String deleteInvoiceItem(Integer invoiceId,Integer invoiceItemId);
 }

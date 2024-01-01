@@ -60,7 +60,7 @@ public class InvoiceItemControllerTest extends BaseTest {
 
     ResultActions response =
         mockMvc.perform(
-            patch("/api/v1/invoices/items/" + invoiceItemId)
+            put("/api/v1/invoices/items/" + invoiceItemId)
                 .content(objectMapper.writeValueAsString(invoiceItemDTO))
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -71,14 +71,15 @@ public class InvoiceItemControllerTest extends BaseTest {
 
   @Test
   public void InvoiceItemService_DeleteInvoice_ReturnString() throws Exception {
+    int invoiceId = 1;
     int invoiceItemId = 1;
     String deletedConfirmation = "Invoice item of id " + invoiceItemId + " is not found";
 
-    when(invoiceItemService.deleteInvoiceItem(anyInt())).thenReturn(deletedConfirmation);
+    when(invoiceItemService.deleteInvoiceItem(anyInt(),anyInt())).thenReturn(deletedConfirmation);
 
     ResultActions response =
         mockMvc.perform(
-            delete("/api/v1/invoices/items/" + invoiceItemId)
+            delete("/api/v1/invoices/"+ invoiceId +"/items/" + invoiceItemId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(deletedConfirmation)));
 

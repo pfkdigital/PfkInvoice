@@ -2,6 +2,7 @@ package com.pfkdigital.api.service;
 
 import com.pfkdigital.api.BaseTest;
 import com.pfkdigital.api.dto.InvoiceItemDTO;
+import com.pfkdigital.api.entity.Invoice;
 import com.pfkdigital.api.entity.InvoiceItem;
 import com.pfkdigital.api.exception.InvoiceItemNotFoundException;
 import com.pfkdigital.api.exception.InvoiceNotFoundException;
@@ -122,16 +123,18 @@ public class InvoiceItemServiceTest extends BaseTest {
 
     @Test
     public void InvoiceItemService_DeleteInvoice_ReturnString(){
+        int invoiceId = 1;
         int invoiceItemId = 1;
         String deletedConfirmation = "Invoice item of id " + invoiceItemId + " was deleted";
-
+        when(invoiceRepository.findById(anyInt())).thenReturn(Optional.of(invoice));
         when(invoiceItemRepository.findById(anyInt())).thenReturn(Optional.of(invoiceItem));
-        doNothing().when(invoiceItemRepository).delete(invoiceItem);
+        when(invoiceRepository.save(any(Invoice.class))).thenReturn(invoice);
 
-        String confirmationMessage = invoiceItemService.deleteInvoiceItem(invoiceItemId);
+        String confirmationMessage = invoiceItemService.deleteInvoiceItem(invoiceId,invoiceItemId);
 
         assertEquals(confirmationMessage,deletedConfirmation);
         verify(invoiceItemRepository).findById(anyInt());
-        verify(invoiceItemRepository).delete(any(InvoiceItem.class));
+        verify(invoiceRepository).findById(anyInt());
+        verify(invoiceRepository).save(any(Invoice.class));
     }
 }

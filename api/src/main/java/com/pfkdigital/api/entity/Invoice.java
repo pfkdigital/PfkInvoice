@@ -1,5 +1,6 @@
 package com.pfkdigital.api.entity;
 
+import com.pfkdigital.api.event.InvoiceTotalListener;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
+@EntityListeners(InvoiceTotalListener.class)
 public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,27 +49,8 @@ public class Invoice {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice", orphanRemoval = true)
     private List<InvoiceItem> invoiceItems;
-
-    @PrePersist
-    @PreUpdate
-    private void updateTotal() {
-        if (invoiceItems != null) {
-            BigDecimal total = BigDecimal.ZERO;
-            for (InvoiceItem item : invoiceItems) {
-                if (item.getTotal() != null) {
-                    total = total.add(item.getTotal());
-                }
-            }
-            this.total = total;
-        }
-    }
-
-    @PostLoad
-    private void calculateTotal() {
-        updateTotal();
-    }
 
     public void addInvoiceItem(InvoiceItem item) {
         if (invoiceItems == null) {

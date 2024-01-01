@@ -76,7 +76,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         selectedInvoice.addInvoiceItem(invoiceItem);
       }
     }
-    invoiceRepository.save(selectedInvoice);
 
     Invoice savedUpdatedInvoice = invoiceRepository.save(selectedInvoice);
 

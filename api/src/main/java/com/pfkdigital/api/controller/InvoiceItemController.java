@@ -1,6 +1,9 @@
 package com.pfkdigital.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pfkdigital.api.dto.InvoiceItemDTO;
+import com.pfkdigital.api.repository.InvoiceItemRepository;
 import com.pfkdigital.api.service.InvoiceItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +18,7 @@ import java.util.List;
 public class InvoiceItemController {
 
     private final InvoiceItemService invoiceItemService;
+
     @GetMapping("/items")
     public ResponseEntity<List<InvoiceItemDTO>> getAllInvoiceItems(){
         return new ResponseEntity<>(invoiceItemService.getAllInvoiceItem(),HttpStatus.OK);
@@ -33,8 +37,8 @@ public class InvoiceItemController {
         return new ResponseEntity<>(invoiceItemService.updateInvoiceItem(invoiceItemDTO,invoiceItemId),HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/items/{invoiceItemId}")
-    public ResponseEntity<?> deleteAnInvoiceItemById(@PathVariable Integer invoiceItemId){
-        return new ResponseEntity<>(invoiceItemService.deleteInvoiceItem(invoiceItemId),HttpStatus.OK);
+    @DeleteMapping("/{invoiceId}/items/{invoiceItemId}")
+    public ResponseEntity<?> deleteAnInvoiceItemById(@PathVariable Integer invoiceId,@PathVariable Integer invoiceItemId) {
+        return new ResponseEntity<>(invoiceItemService.deleteInvoiceItem(invoiceId,invoiceItemId),HttpStatus.OK);
     }
 }
