@@ -94,6 +94,24 @@ public class ClientControllerTest extends BaseTest {
   }
 
   @Test
+  public void ClientController_GetClientCount_ReturnClientCount()
+          throws Exception {
+    long clientCount = 1l;
+
+    when(clientService.getClientsCount()).thenReturn(clientCount);
+
+    ResultActions response =
+            mockMvc.perform(
+                    get("/api/v1/clients/count")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(clientCount)));
+
+    response
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk());
+  }
+
+  @Test
   public void ClientController_GetClientById_ThrowClientNotFoundException() throws Exception {
     int clientId = 1;
     String message = "Client of id " + clientId + " was not found";

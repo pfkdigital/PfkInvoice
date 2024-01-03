@@ -75,6 +75,18 @@ public class ClientServiceTest extends BaseTest {
 
         verify(clientRepository).getClientById(anyInt());
     }
+
+    @Test
+    public void ClientService_GetClientCount_ReturnCount() {
+       when(clientRepository.count()).thenReturn(1l);
+
+       Long clientCount = clientService.getClientsCount();
+
+       assertNotNull(clientCount);
+       assertEquals(1l,clientCount);
+
+       verify(clientRepository).count();
+    }
     @Test
     public void ClientService_GetClientById_ThrowClientNotFoundException(){
         int clientId = 1;

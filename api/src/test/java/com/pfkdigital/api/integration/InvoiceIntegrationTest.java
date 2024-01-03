@@ -19,6 +19,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -85,6 +88,45 @@ public class InvoiceIntegrationTest extends BaseTest {
 
     assertNotNull(testInvoice);
     assertEquals(invoiceReference, testInvoice.getInvoiceReference());
+  }
+
+  @Test
+  @Sql({"/schema.sql", "/data.sql"})
+  public void InvoiceIntegration_GetInvoiceTotalSums_ReturnSum() {
+    BigDecimal expectedTotal = BigDecimal.valueOf(33500).setScale(2, RoundingMode.DOWN);
+    String baseUrl = "http://localhost:+" + port + "/api/v1/invoices/total";
+
+    BigDecimal actualTotalSum =
+            restTemplate.getForObject(baseUrl, BigDecimal.class);
+
+    assertNotNull(actualTotalSum);
+    assertEquals(expectedTotal, actualTotalSum);
+  }
+
+  @Test
+  @Sql({"/schema.sql", "/data.sql"})
+  public void InvoiceIntegration_GetUnpaidInvoiceTotalSums_ReturnSum() {
+    BigDecimal expectedTotal = BigDecimal.valueOf(14300).setScale(2, RoundingMode.DOWN);
+    String baseUrl = "http://localhost:+" + port + "/api/v1/invoices/unpaid/total";
+
+    BigDecimal actualTotalSum =
+            restTemplate.getForObject(baseUrl, BigDecimal.class);
+
+    assertNotNull(actualTotalSum);
+    assertEquals(expectedTotal, actualTotalSum);
+  }
+
+  @Test
+  @Sql({"/schema.sql", "/data.sql"})
+  public void InvoiceIntegration_GetInvoiceCount_ReturnCount()  {
+    long expectedInvoiceCount = 15;
+    String baseUrl = "http://localhost:+" + port + "/api/v1/invoices/count";
+
+    Long actualInvoiceCount =
+            restTemplate.getForObject(baseUrl, Long.class);
+
+    assertNotNull(actualInvoiceCount);
+    assertEquals(expectedInvoiceCount, actualInvoiceCount);
   }
 
   @Test

@@ -9,6 +9,7 @@ public interface ClientService {
     ClientDTO createNewClient(ClientDTO clientDTO);
     List<ClientDTO> getAllClients();
     ClientWithInvoicesDTO getClientById(Integer clientId);
+    Long getClientsCount();
     ClientDTO updateClient(ClientDTO clientDTO,Integer clientId);
     String deleteClientById(Integer clientId);
 }

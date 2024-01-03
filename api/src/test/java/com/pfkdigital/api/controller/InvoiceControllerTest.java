@@ -1,5 +1,6 @@
 package com.pfkdigital.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pfkdigital.api.BaseTest;
 import com.pfkdigital.api.dto.InvoiceWithItemsAndClientDTO;
@@ -19,8 +20,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -102,6 +106,61 @@ public class InvoiceControllerTest extends BaseTest {
     response
         .andDo(MockMvcResultHandlers.print())
         .andExpect(MockMvcResultMatchers.status().isNotFound());
+  }
+
+  @Test
+  public void InvoiceController_GetInvoiceTotalSums_ReturnSum() throws Exception {
+    BigDecimal expectedTotalSum = BigDecimal.valueOf(1500.00);
+    when(invoiceService.getAllInvoiceTotalSum()).thenReturn(expectedTotalSum);
+
+    ResultActions response =
+            mockMvc.perform(
+                    get("/api/v1/invoices/total")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(expectedTotalSum)));
+
+    response
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(
+                    MockMvcResultMatchers.content().string(expectedTotalSum.toString()));
+  }
+
+  @Test
+  public void InvoiceController_GetUnpaidInvoiceTotalSums_ReturnSum() throws Exception {
+    BigDecimal expectedTotalSum = BigDecimal.valueOf(1500.00);
+    when(invoiceService.getAllInvoiceTotalSumUnpaid()).thenReturn(expectedTotalSum);
+
+    ResultActions response =
+            mockMvc.perform(
+                    get("/api/v1/invoices/unpaid/total")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(expectedTotalSum)));
+
+    response
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(
+                    MockMvcResultMatchers.content().string(expectedTotalSum.toString()));
+  }
+
+  @Test
+  public void InvoiceController_GetInvoiceCount_ReturnCount() throws Exception {
+    long expectedInvoiceCount = 1;
+
+    when(invoiceService.getInvoicesCount()).thenReturn(expectedInvoiceCount);
+
+    ResultActions response =
+            mockMvc.perform(
+                    get("/api/v1/invoices/count")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(expectedInvoiceCount)));
+
+    response
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(
+                    MockMvcResultMatchers.content().string(String.valueOf(expectedInvoiceCount)));
   }
 
   @Test

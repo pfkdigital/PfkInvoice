@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,6 +77,45 @@ public class InvoiceServiceTest extends BaseTest {
     verify(invoiceRepository).findInvoiceWithClientAndItemsById(Mockito.anyInt());
     verify(invoiceMapper, times(1))
         .invoiceToInvoiceWithItemsAndClientDTO(Mockito.any(Invoice.class));
+  }
+
+  @Test
+  public void InvoiceService_GetInvoiceTotalSums_ReturnSum(){
+    BigDecimal expectedTotalSum = BigDecimal.valueOf(1500.00);
+    when(invoiceRepository.getSumOfAllTotalInvoices()).thenReturn(expectedTotalSum);
+
+    BigDecimal actualTotalSum = invoiceService.getAllInvoiceTotalSum();
+
+    assertNotNull(actualTotalSum);
+    assertEquals(expectedTotalSum,actualTotalSum);
+
+    verify(invoiceRepository).getSumOfAllTotalInvoices();
+  }
+
+  @Test
+  public void InvoiceService_GGetUnpaidInvoiceTotalSums_ReturnSum(){
+    BigDecimal expectedTotalSum = BigDecimal.valueOf(1500.00);
+    when(invoiceRepository.getSumOfAllTotalInvoicesUnpaid()).thenReturn(expectedTotalSum);
+
+    BigDecimal actualTotalSum = invoiceService.getAllInvoiceTotalSumUnpaid();
+
+    assertNotNull(actualTotalSum);
+    assertEquals(expectedTotalSum,actualTotalSum);
+
+    verify(invoiceRepository).getSumOfAllTotalInvoicesUnpaid();
+  }
+
+  @Test
+  public void InvoiceService_GetInvoiceCount_ReturnCount() {
+    long expectedInvoiceCount = 1;
+
+    when(invoiceRepository.count()).thenReturn(expectedInvoiceCount);
+
+    Long actualInvoiceCount = invoiceService.getInvoicesCount();
+
+    assertNotNull(actualInvoiceCount);
+    assertEquals(expectedInvoiceCount,actualInvoiceCount);
+    verify(invoiceRepository).count();
   }
 
   @Test

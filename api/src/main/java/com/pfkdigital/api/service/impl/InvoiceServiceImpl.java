@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +48,21 @@ public class InvoiceServiceImpl implements InvoiceService {
                 () -> new InvoiceNotFoundException("Invoice of id " + invoiceId + " is not found"));
 
     return invoiceMapper.invoiceToInvoiceWithItemsAndClientDTO(selectedInvoice);
+  }
+
+  @Override
+  public BigDecimal getAllInvoiceTotalSum() {
+    return invoiceRepository.getSumOfAllTotalInvoices();
+  }
+
+  @Override
+  public BigDecimal getAllInvoiceTotalSumUnpaid() {
+    return invoiceRepository.getSumOfAllTotalInvoicesUnpaid();
+  }
+
+  @Override
+  public long getInvoicesCount() {
+    return invoiceRepository.count();
   }
 
   @Override

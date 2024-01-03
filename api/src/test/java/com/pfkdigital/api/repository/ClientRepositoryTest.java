@@ -50,6 +50,16 @@ public class ClientRepositoryTest extends BaseTest {
   }
 
   @Test
+  public void ClientRepository_GetClientCount_ReturnCount() {
+    Client savedClient = clientRepository.save(mockClient);
+
+    Long clientCount = clientRepository.count();
+
+    assertNotNull(clientCount);
+    assertEquals(1l, clientCount);
+  }
+
+  @Test
   public void ClientRepository_UpdateClient_ReturnUpdatedClient() {
     String updatedClientName = "Updated Corporation";
     Client savedClient = clientRepository.save(mockClient);

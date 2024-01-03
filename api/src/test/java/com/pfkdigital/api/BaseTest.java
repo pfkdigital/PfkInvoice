@@ -83,7 +83,7 @@ public class BaseTest {
             .paymentDue(new Date())
             .description("Web Development Services")
             .paymentTerms(30)
-            .invoiceStatus("Pending")
+            .invoiceStatus("Unpaid")
             .client(client)
             .total(BigDecimal.valueOf(1500.00))
             .build();
@@ -98,7 +98,7 @@ public class BaseTest {
             .paymentDue(new Date())
             .description("Web Development Services")
             .paymentTerms(30)
-            .invoiceStatus("Pending")
+            .invoiceStatus("Unpaid")
             .client(client)
             .total(BigDecimal.valueOf(1500.00))
             .build();

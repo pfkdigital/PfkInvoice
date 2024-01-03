@@ -41,6 +41,11 @@ public class ClientServiceImpl implements ClientService {
   }
 
   @Override
+  public Long getClientsCount() {
+    return clientRepository.count();
+  }
+
+  @Override
   @Transactional
   public ClientDTO updateClient(ClientDTO clientDTO, Integer clientId) {
     Client mappedClient = clientMapper.clientDTOToClient(clientDTO);
@@ -63,5 +68,4 @@ public class ClientServiceImpl implements ClientService {
 
     return "Client of id " + clientId + " was deleted";
   }
-
 }

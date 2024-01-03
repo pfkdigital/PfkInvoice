@@ -28,6 +28,10 @@ public class ClientController {
     public ResponseEntity<?> getClientById(@PathVariable Integer clientId){
         return new ResponseEntity<>(clientService.getClientById(clientId),HttpStatus.OK);
     }
+    @GetMapping("/count")
+    public ResponseEntity<Long> getClientsCount(){
+        return new ResponseEntity<>(clientService.getClientsCount(),HttpStatus.OK);
+    }
     @PutMapping("/{clientId}")
     public ResponseEntity<?> updateClient(@RequestBody ClientDTO clientDTO, @PathVariable Integer clientId){
         return new ResponseEntity<>(clientService.updateClient(clientDTO,clientId),HttpStatus.CREATED);

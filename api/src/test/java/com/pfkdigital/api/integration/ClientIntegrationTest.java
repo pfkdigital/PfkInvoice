@@ -96,6 +96,19 @@ public class ClientIntegrationTest extends BaseTest {
 
     @Test
     @Sql({"/schema.sql", "/data.sql"})
+    public void ClientIntegration_GetClientCount_ReturnClientCount(){
+        long clientCountExpected = 10;
+
+        String baseUrl = "http://localhost:" + port + "/api/v1/clients/count";
+
+        Long clientCount = restTemplate.getForObject(baseUrl,Long.class);
+
+        assertNotNull(clientCount);
+        assertEquals(clientCountExpected,clientCount);
+    }
+
+    @Test
+    @Sql({"/schema.sql", "/data.sql"})
     public void ClientIntegration_UpdateClientById_ReturnUpdatedClientDTO(){
         int clientID = 1;
         String clientName = "Acme Corporation";
