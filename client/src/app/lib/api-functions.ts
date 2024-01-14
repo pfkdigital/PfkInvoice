@@ -1,4 +1,4 @@
-import { InvoiceType } from "@/types/invoice.types";
+import {InvoiceDetailsType, InvoiceType} from "@/types/invoice.types";
 import { ClientType } from "@/types/client.types";
 
 const invoiceUrl = "http://localhost:8080/api/v1/invoices";
@@ -44,7 +44,7 @@ export const getClientCount = async () => {
   }
 };
 
-export const getAllInvoices = async (): Promise<InvoiceType | undefined> => {
+export const getAllInvoices = async (): Promise<InvoiceType[] | undefined> => {
   try {
     const response = await fetch(`${invoiceUrl}`);
     return response.json();
@@ -53,7 +53,7 @@ export const getAllInvoices = async (): Promise<InvoiceType | undefined> => {
   }
 };
 
-export const getAllClients = async (): Promise<ClientType | undefined> => {
+export const getAllClients = async (): Promise<ClientType[] | undefined> => {
   try {
     const response = await fetch(`${clientUrl}`);
     return response.json();
@@ -61,3 +61,12 @@ export const getAllClients = async (): Promise<ClientType | undefined> => {
     console.log(e);
   }
 };
+
+export const getInvoiceById = async (invoiceId: number):Promise<InvoiceDetailsType | undefined> => {
+  try {
+    const response = await fetch(`${invoiceUrl}/${invoiceId}`);
+    return response.json()
+  } catch (e) {
+    console.log(e)
+  }
+}

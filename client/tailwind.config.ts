@@ -22,6 +22,14 @@ const config: Config = {
       midnight: "#16181F",
       eclipse: "#121318",
     },
+    extend: {
+      gridTemplateColumns: {
+        'invoice-grid': '75% 25%'
+      },
+      gridTemplateRows: {
+        "invoice-grid": "auto auto"
+      }
+    }
   },
   plugins: [],
 };

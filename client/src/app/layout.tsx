@@ -20,9 +20,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${lato.className} relative`}>
+      <body className={`${lato.className} relative overflow-x-clip`}>
         <NavBar />
-        <div className={"w-screen md:flex md:justify-start"}>
+        <div className={"w-full md:flex md:justify-start"}>
           <SideBar />
           {children}
         </div>

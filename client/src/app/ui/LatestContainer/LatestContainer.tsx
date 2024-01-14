@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { InvoiceDetailsType, InvoiceType } from "@/types/invoice.types";
 import { ClientType } from "@/types/client.types";
 import Table from "@/app/ui/Table/Table";
-import { clientHeaders, invoicesHeaders } from "@/app/ui/Table/tableHeaders";
+import { clientHeaders, invoicesHeaders } from "@/app/lib/tableHeaders";
 
 interface LatestContainerProps {
   invoices: InvoiceType[];

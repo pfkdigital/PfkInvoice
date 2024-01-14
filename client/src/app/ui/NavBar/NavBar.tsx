@@ -15,7 +15,7 @@ function NavBar() {
       }
     >
       <div className={"h-auto w-full flex justify-between"}>
-        <Button label={"PFK Invoice"} />
+        <Button>PFK Invoice</Button>
         <Image
           src={"/burger.svg"}
           alt={"burger-icon"}

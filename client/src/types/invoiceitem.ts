@@ -1,4 +1,4 @@
-export interface InvoiceItem {
+export interface InvoiceItemType {
   id: number;
   name: string;
   quantity: number;

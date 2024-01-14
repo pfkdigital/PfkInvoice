@@ -11,7 +11,7 @@ export default async function Home() {
   return (
     <main className="flex-col w-screen h-auto py-[10px] md:ml-[10px] overflow-x-clip">
       <StatusBar />
-      <LatestContainer invoices={invoices} clients={clients} />
+        {invoices && clients && <LatestContainer invoices={invoices} clients={clients} />}
     </main>
   );
 }
