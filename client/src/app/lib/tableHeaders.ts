@@ -18,9 +18,9 @@ export const invoicesHeaders: string[] = [
 ];
 
 export const invoiceItemHeaders: string[] = [
-    "id",
-    "Name",
-    "Quantity",
-    "Price",
-    "Total"
-]
+  "ID",
+  "Name",
+  "Quantity",
+  "Price",
+  "Total",
+];

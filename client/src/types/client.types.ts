@@ -1,19 +1,21 @@
 import { InvoiceType } from "@/types/invoice.types";
 
-interface ClientAddressType {
+type ClientAddressType = {
   street: string;
   city: string;
   postcode: string;
   country: string;
-}
+};
 
-export interface ClientType {
+export type ClientType = {
   id: number;
   clientName: string;
   clientEmail: string;
   clientAddress: ClientAddressType;
-}
+};
 
-interface ClientWithInvoices extends ClientType {
+export type ClientDTOType = Omit<ClientType, "id">;
+
+export interface ClientWithInvoices extends ClientType {
   invoices: InvoiceType[];
 }

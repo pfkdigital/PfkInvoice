@@ -1,12 +1,18 @@
-import React from 'react'
-import {getAllClients} from "@/app/lib/api-functions";
-import ClientTable from "@/app/ui/ClientTable/ClientTable";
-import {clientHeaders} from "@/app/lib/tableHeaders";
+import React from "react";
+import { getAllClients } from "@/app/lib/api-functions";
+import ClientTable from "@/ui/ClientTable/ClientTable";
+import { clientHeaders } from "@/app/lib/tableHeaders";
 
-const ClientsPage = async() => {
+const ClientsPage = async () => {
   const clients = await getAllClients();
 
-  return clients && <ClientTable headers={clientHeaders} clients={clients} />
-}
+  return (
+    clients && (
+      <div className={"px-2.5 w-full max-w-[1200px]"}>
+        <ClientTable headers={clientHeaders} clients={clients} showBar />
+      </div>
+    )
+  );
+};
 
-export default ClientsPage
+export default ClientsPage;

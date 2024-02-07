@@ -1,6 +1,5 @@
-import Image from "next/image";
-import StatusBar from "@/app/ui/StatusBar/StatusBar";
-import LatestContainer from "@/app/ui/LatestContainer/LatestContainer";
+import StatusBar from "@/ui/StatusBar/StatusBar";
+import LatestContainer from "@/ui/LatestContainer/LatestContainer";
 import { getAllClients, getAllInvoices } from "@/app/lib/api-functions";
 
 export default async function Home() {
@@ -9,9 +8,11 @@ export default async function Home() {
     getAllClients(),
   ]);
   return (
-    <main className="flex-col w-screen h-auto py-[10px] md:ml-[10px] overflow-x-clip">
+    <main className="flex-col w-screen h-auto py-5 px-2.5 md:ml-[10px] md:px-0 overflow-x-clip">
       <StatusBar />
-        {invoices && clients && <LatestContainer invoices={invoices} clients={clients} />}
+      {invoices && clients && (
+        <LatestContainer invoices={invoices} clients={clients} />
+      )}
     </main>
   );
 }

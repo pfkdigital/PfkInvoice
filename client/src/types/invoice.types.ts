@@ -1,4 +1,4 @@
-import { InvoiceItemType} from "@/types/invoiceitem";
+import { InvoiceItemType, NewItemType } from "@/types/invoiceitem";
 import { ClientType } from "@/types/client.types";
 
 export interface InvoiceType {
@@ -13,15 +13,11 @@ export interface InvoiceType {
   clientName: string;
 }
 
-export interface InvoiceDetailsType extends InvoiceType {
-  id: number;
-  invoiceReference: string;
-  createdAt: string;
-  paymentDue: string;
-  description: string;
-  paymentTerms: number;
-  invoiceStatus: string;
-  total: number;
+export interface InvoiceDetailsType extends Omit<InvoiceType, "clientName"> {
   client: ClientType;
   invoiceItems: InvoiceItemType[];
 }
+
+export type NewInvoiceDto = Omit<InvoiceDetailsType, "id" | "invoiceItems"> & {
+  invoiceItems: NewItemType[];
+};
