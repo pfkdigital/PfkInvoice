@@ -1,28 +1,30 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useSidebar } from "@/lib/side-bar-context-provider";
 
 function SideBar() {
-  const [isVisible, setIsVisible] = useState(true);
+  const { isSidebarOpen, toggleSidebar } = useSidebar();
   const path = usePathname();
   const isClientPage = path.includes("clients");
   const isInvoicePage = path.includes("invoices");
+
   return (
     <motion.aside
-      animate={{ width: isVisible ? 280 : 75 }}
+      animate={{ width: isSidebarOpen ? 280 : 75 }}
       className={
-        "hidden md:block sticky py-4 w-[280px] h-[784px] bg-eclipse mt-[16px] rounded-tr-[10px] rounded-br-[10px] overflow-clip"
+        "hidden relative md:block py-4 min-w-[75px] max-w-[280px] h-[784px] bg-eclipse rounded-tr-[10px] rounded-br-[10px] overflow-clip"
       }
     >
-      <Link href={"/"}>
+      <Link href={"/dashboard"}>
         <div
-          className={`flex items-center h-[50px] w-full ${
-            path === "/" ? "bg-oceanBlue" : ""
-          } pl-[30px] cursor-pointer`}
+          className={`flex items-center h-[50px] w-full cursor-pointer ${
+            path === "/dashboard" ? "bg-oceanBlue" : ""
+          } pl-[30px]`}
         >
           <Image
             src={"/home.svg"}
@@ -31,7 +33,7 @@ function SideBar() {
             height={20}
             className={"mr-[10px]"}
           />
-          {isVisible && (
+          {isSidebarOpen && (
             <p className={"text-xl text-snowWhite leading-6"}>Dashboard</p>
           )}
         </div>
@@ -49,7 +51,7 @@ function SideBar() {
             height={20}
             className={"mr-[10px]"}
           />
-          {isVisible && (
+          {isSidebarOpen && (
             <p className={"text-xl text-snowWhite leading-6"}>Invoices</p>
           )}
         </div>
@@ -67,18 +69,18 @@ function SideBar() {
             height={20}
             className={"mr-[10px]"}
           />
-          {isVisible && (
+          {isSidebarOpen && (
             <p className={"text-xl text-snowWhite leading-6"}>Clients</p>
           )}
         </div>
       </Link>
-      {isVisible ? (
+      {isSidebarOpen ? (
         <Image
           src={"/menu-open.svg"}
           alt={"close-icon"}
           height={25}
           width={25}
-          onClick={() => setIsVisible(!isVisible)}
+          onClick={toggleSidebar}
           className={"absolute bottom-5 right-5"}
         />
       ) : (
@@ -87,7 +89,7 @@ function SideBar() {
           alt={"open-icon"}
           height={25}
           width={25}
-          onClick={() => setIsVisible(!isVisible)}
+          onClick={toggleSidebar}
           className={"absolute bottom-5 right-5"}
         />
       )}

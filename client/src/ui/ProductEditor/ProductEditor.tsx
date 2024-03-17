@@ -1,63 +1,77 @@
-import React, { ChangeEvent, Dispatch, SetStateAction } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { InvoiceItemType } from "@/types/invoiceitem";
 import ProductIcon from "@/../public/bag.svg";
-import { Input } from "@/components/ui/input";
+import { LightRowInput } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import EditorTable from "@/ui/EditorTable/EditorTable";
+import {
+  UseFieldArrayAppend,
+  UseFieldArrayRemove,
+  UseFieldArrayUpdate,
+  useForm,
+} from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  InvoiceItemSchema,
+  InvoiceItemType,
+  InvoiceSchemaType,
+} from "@/lib/form-schemas";
 
 interface ProductEditorProps {
-  items: InvoiceItemType[];
-  editItem: Partial<InvoiceItemType>;
-  setEditItem: Dispatch<SetStateAction<Partial<InvoiceItemType>>>;
-  setItems: Dispatch<SetStateAction<InvoiceItemType[]>>;
-  productName: string;
-  setProductName: Dispatch<SetStateAction<string>>;
-  quantity: string;
-  setQuantity: Dispatch<SetStateAction<string>>;
-  price: string;
-  setPrice: Dispatch<SetStateAction<string>>;
-  handleCancel: () => void;
-  handleEdit: (id: number, editedItems: InvoiceItemType) => void;
-  handleProductNameChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  handleQuantityChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  handlePriceChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  addItems: () => void;
-  deleteItem: (id: number) => void;
+  fields: Array<InvoiceItemType>;
+  append: UseFieldArrayAppend<InvoiceSchemaType>;
+  update: UseFieldArrayUpdate<InvoiceSchemaType>;
+  remove: UseFieldArrayRemove;
+  isEditMode: boolean;
 }
 
 const ProductEditor = ({
-  deleteItem,
-  editItem,
-  items,
-  productName,
-  quantity,
-  price,
-  handleCancel,
-  handleEdit,
-  handleProductNameChange,
-  handleQuantityChange,
-  handlePriceChange,
-  addItems,
-  setEditItem,
+  append,
+  remove,
+  update,
+  fields,
 }: ProductEditorProps) => {
-  const isEditMode = editItem.id !== undefined;
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
+  const { register, handleSubmit, watch, reset, getValues, setValue } =
+    useForm<InvoiceItemType>({
+      resolver: zodResolver(InvoiceItemSchema),
+    });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (isEditMode) {
-      console.log("hello");
-    } else {
-      addItems();
-    }
+  const quantity = watch("quantity", 0);
+  const price = watch("price", 0);
+
+  useEffect(() => {
+    const total = quantity * price;
+    setValue("total", total);
+  }, [quantity, price]);
+
+  const submit = handleSubmit((data) => {
+    append(data);
+    reset();
+  });
+
+  const handleEditCancel = () => {
+    setIsEditing(false);
+    reset();
+  };
+
+  const handleEdit = () => {
+    const currentItem = getValues();
+    update(selectedIndex, currentItem);
+    setIsEditing(false);
+    reset();
   };
 
   return (
     <form
-      onSubmit={(event) => handleSubmit(event)}
       className={
         "flex-col justify-between bg-midnight py-2.5 mt-2.5 md:bg-eclipse md:pb-0"
       }
+      onSubmit={submit}
+      id={"invoice-item-form"}
     >
       <div className={"flex w-full ml-2.5"}>
         <Image
@@ -76,81 +90,89 @@ const ProductEditor = ({
       >
         <div className={"flex justify-between"}>
           <p className={"text-base text-cloudGray"}>
-            {editItem.id ? `Edit item : ${editItem.id}` : "New Item"}
+            {isEditing ? `Edit item` : "New Item"}
           </p>
           <div className={"flex"}>
-            {isEditMode ? (
+            {isEditing ? (
               <>
-                <Button variant={"default"} size={"sm"} className={"mr-2.5"}>
+                <Button
+                  variant={"default"}
+                  size={"sm"}
+                  className={"mr-2.5"}
+                  onClick={handleEdit}
+                >
                   Edit
                 </Button>
                 <Button
                   variant={"default"}
                   size={"sm"}
                   type={"button"}
-                  onClick={handleCancel}
+                  onClick={handleEditCancel}
                 >
                   Cancel
                 </Button>
               </>
             ) : (
-              <Button variant={"default"} size={"sm"} type={"submit"}>
-                Save
-              </Button>
+              <>
+                <Button
+                  variant={"default"}
+                  size={"sm"}
+                  type={"submit"}
+                  className={"mr-2.5"}
+                >
+                  Save
+                </Button>
+                {isEditing && (
+                  <Button
+                    variant={"default"}
+                    size={"sm"}
+                    type={"button"}
+                    onClick={handleEditCancel}
+                  >
+                    Cancel
+                  </Button>
+                )}
+              </>
             )}
           </div>
         </div>
         <div>
-          <div className={"mt-2.5 mb-1.5 w-full flex"}>
-            <Input
+          <div className={"mt-3 mb-1.5 w-full flex"}>
+            <LightRowInput
               type="text"
-              className={
-                "w-full rounded-[10px] border-0 h-[30px] pl-4 bg-midnight text-snowWhite text-xs placeholder:text-snowWhite md:bg-eclipse md:h-10"
-              }
-              placeholder={editItem.name ? editItem.name : "Product Name"}
-              value={productName}
-              defaultValue={editItem.name}
-              onChange={handleProductNameChange}
-              required
+              placeholder={"Product Name"}
+              {...register("name", {
+                required: true,
+              })}
             />
           </div>
           <div className={"grid grid-cols-2 gap-x-2.5"}>
-            <Input
-              type="text"
-              className={
-                "w-full rounded-[10px] border-0 h-[30px] pl-4 bg-midnight text-snowWhite text-xs placeholder:text-snowWhite md:bg-eclipse md:h-10"
-              }
-              placeholder={
-                editItem.quantity ? `${editItem.quantity}` : "Quantity"
-              }
-              defaultValue={editItem.quantity}
-              value={quantity}
-              onChange={handleQuantityChange}
-              required
+            <LightRowInput
+              type="number"
+              placeholder={"Quantity"}
+              {...register("quantity", {
+                required: true,
+                valueAsNumber: true,
+              })}
             />
-            <Input
-              type="text"
-              className={
-                "w-full rounded-[10px] border-0 h-[30px] pl-4 bg-midnight text-snowWhite text-xs placeholder:text-snowWhite md:bg-eclipse md:h-10"
-              }
-              placeholder={editItem.price ? `${editItem.price}` : "Price"}
-              value={price}
-              defaultValue={editItem.price}
-              onChange={handlePriceChange}
-              required
+            <LightRowInput
+              type="number"
+              placeholder={"Price"}
+              {...register("price", { required: true, valueAsNumber: true })}
             />
           </div>
         </div>
       </div>
-      {items && (
-        <EditorTable
-          items={items}
-          setEditItem={setEditItem}
-          editItem={editItem}
-          isEditMode={isEditMode}
-          deleteItem={deleteItem}
-        />
-      )}
+      <EditorTable
+        items={fields}
+        remove={remove}
+        update={update}
+        setValue={setValue}
+        isEditing={isEditing}
+        setEditing={setIsEditing}
+        selectedIndex={selectedIndex}
+        setSelectedIndex={setSelectedIndex}
+      />
     </form>
   );
 };

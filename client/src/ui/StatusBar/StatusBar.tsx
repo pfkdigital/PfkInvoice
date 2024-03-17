@@ -4,7 +4,7 @@ import {
   getInvoiceCount,
   getInvoiceRevenue,
   getUnpaidRevenue,
-} from "@/app/lib/api-functions";
+} from "@/lib/api-functions";
 import StatusCard from "@/ui/StatusBar/StatusCard";
 
 const StatusBar = async () => {
@@ -24,27 +24,27 @@ const StatusBar = async () => {
     >
       <div className={"flex md:grid md:grid-cols-4"}>
         <StatusCard
-          label={"Invoices"}
-          status={invoiceCount}
+          label={invoiceCount.label}
+          status={invoiceCount.status}
           currency={false}
           iconUrl={"/invoice.svg"}
         />
         <StatusCard
-          label={"Revenue"}
-          status={`$ ${invoiceRevenue}`}
-          currency={false}
+          label={invoiceRevenue.label}
+          status={invoiceRevenue.status}
+          currency={true}
           iconUrl={"/revenue.svg"}
         />
         <StatusCard
-          label={"Clients"}
-          status={clientCount}
+          label={clientCount.label}
+          status={clientCount.status}
           currency={false}
           iconUrl={"/client.svg"}
         />
         <StatusCard
-          label={"Pending"}
-          status={`$ ${unpaidRevenue}`}
-          currency={false}
+          label={unpaidRevenue.label}
+          status={unpaidRevenue.status}
+          currency={true}
           iconUrl={"/clock.svg"}
         />
       </div>

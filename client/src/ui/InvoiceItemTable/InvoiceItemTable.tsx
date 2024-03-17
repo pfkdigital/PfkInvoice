@@ -1,7 +1,15 @@
 import React from "react";
 import { InvoiceItemType } from "@/types/invoiceitem";
 import Image from "next/image";
-import BagIcon from "../../../../public/bag.svg";
+import BagIcon from "@/../public/bag.svg";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface InvoiceItemTableProps {
   headers: string[];
@@ -11,59 +19,53 @@ interface InvoiceItemTableProps {
 const InvoiceItemTable = ({ headers, items }: InvoiceItemTableProps) => {
   const renderHeaders = () => {
     return headers.map((header, index) => (
-      <th
-        className="w-full flex justify-start item-table-heading last:justify-end text-sm font-normal leading-4 text-snowWhite"
+      <TableHead
+        className="text-sm font-normal leading-4 text-snowWhite"
         key={index}
       >
         {header}
-      </th>
+      </TableHead>
     ));
   };
 
   const renderItems = (data: InvoiceItemType[]) => {
     return data.map((item, index) => (
-      <tr
-        className={
-          "w-full grid grid-cols-5 grid-rows-1 h-auto bg-midnight rounded-[7px] p-[10px] mb-[10px] md:p-0 md:grid-cols-5 md:bg-midnight  md:px-2.5 md:py-2.5 last:mb-0"
-        }
+      <TableRow
+        className={"w-full h-auto bg-midnight md:bg-midnight md:mt-2.5"}
         key={index}
       >
-        <td
+        <TableCell
           className={
             "text-smokeGray text-[12px] leading-[14.4px] text-left overflow-hidden whitespace-nowrap text-ellipsis"
           }
         >
           {item.id}
-        </td>
-        <td
+        </TableCell>
+        <TableCell
           className={
             "text-smokeGray text-[12px] leading-[14.4px] text-left overflow-hidden whitespace-nowrap text-ellipsis"
           }
         >
           {item.name}
-        </td>
-        <td
+        </TableCell>
+        <TableCell
           className={
-            "text-smokeGray text-[12px] leading-[14.4px] text-center whitespace-nowrap text-ellipsis md:text-center"
+            "text-smokeGray text-[12px] leading-[14.4px] whitespace-nowrap text-ellipsis"
           }
         >
           {item.quantity}
-        </td>
-        <td
+        </TableCell>
+        <TableCell
           className={
-            "w-full text-smokeGray text-[12px] leading-[14.4px] text-center overflow-hidden whitespace-nowrap text-ellipsis md:block"
+            "text-smokeGray text-[12px] leading-[14.4px] overflow-hidden whitespace-nowrap text-ellipsis"
           }
         >
           ${item.price}
-        </td>
-        <td
-          className={
-            "w-full text-smokeGray text-[12px] leading-[14.4px] text-right md:flex justify-end"
-          }
-        >
+        </TableCell>
+        <TableCell className={"text-smokeGray text-[12px] leading-[14.4px]"}>
           ${item.total}
-        </td>
-      </tr>
+        </TableCell>
+      </TableRow>
     ));
   };
 
@@ -83,14 +85,16 @@ const InvoiceItemTable = ({ headers, items }: InvoiceItemTableProps) => {
           </p>
         </div>
       </div>
-      <table className="w-full max-w-[1388px] h-auto">
-        <thead className="hidden mb-[10px] md:flex md:mb-0">
-          <tr className="w-full py-[10px] border-t-[1px] border-b-[1px] border-t-midnight border-b-midnight px-[16px] md:grid md:grid-cols-5 md:border-b-0 md:px-2.5">
-            {headers && renderHeaders()}
-          </tr>
-        </thead>
-        <tbody>{items && renderItems(items)}</tbody>
-      </table>
+      <Table
+        className={"gap-y-2.5 border-separate gap-x-2.5 border-spacing-y-2"}
+      >
+        <TableHeader>
+          <TableRow>{headers && renderHeaders()}</TableRow>
+        </TableHeader>
+        <TableBody className={"border-spacing-2.5"}>
+          {items && renderItems(items)}
+        </TableBody>
+      </Table>
     </div>
   );
 };

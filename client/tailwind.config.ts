@@ -31,6 +31,7 @@ const config = {
       // Dark shades
       midnight: "#16181F",
       eclipse: "#121318",
+      overlay: "rgba(0,0,0,0.8)",
 
       red: "#C10000",
     },
@@ -54,8 +55,8 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       gridTemplateColumns: {
-        "latest-container-column": "60% 40%",
-        "invoice-grid": "75% 25%",
+        "latest-container-column": "70% 30%",
+        "invoice-grid": "1fr auto",
         "invoice-form": "2fr 1fr",
       },
       gridTemplateRows: {

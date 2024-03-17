@@ -18,6 +18,14 @@ export interface InvoiceDetailsType extends Omit<InvoiceType, "clientName"> {
   invoiceItems: InvoiceItemType[];
 }
 
-export type NewInvoiceDto = Omit<InvoiceDetailsType, "id" | "invoiceItems"> & {
+export type NewInvoiceType = {
+  invoiceReference: string;
+  createdAt: string;
+  paymentDue?: string;
+  description?: string;
+  paymentTerms: number;
+  invoiceStatus?: string;
+  total: number;
+  client?: ClientType;
   invoiceItems: NewItemType[];
 };

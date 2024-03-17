@@ -15,28 +15,21 @@
     .no-border-on-last-child:last-child {
         border-right: none;
     }
-
-    .table-heading-cols:nth-child(5) {
-        justify-content: center;
-    }
-
-    .table-heading-cols:nth-child(6) {
-        justify-content: center;
-    }
-
-    .table-heading-cols:nth-child(7) {
-        justify-content: center;
-    }
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    color-scheme: dark;
 }
 
 body {
     background-color: #16181F;
     height: auto;
     min-height: 100vh;
+}
+
+.cl-internal-b3fm6y {
+    display: none;
 }

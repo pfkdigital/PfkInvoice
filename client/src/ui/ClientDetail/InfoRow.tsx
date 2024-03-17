@@ -8,10 +8,10 @@ type InfoRowProps = {
 const InfoRow = ({ label, value }: InfoRowProps) => {
   return (
     <div>
-      <p className={"text-3 text-oceanBlue font-bold md:text-snowWhite"}>
+      <p className={"text-2 text-oceanBlue font-bold md:text-snowWhite"}>
         {label}
       </p>
-      <p className={"text-3 text-smokeGray font-normal"}>{value}</p>
+      <p className={"text-2 text-smokeGray font-normal"}>{value}</p>
     </div>
   );
 };

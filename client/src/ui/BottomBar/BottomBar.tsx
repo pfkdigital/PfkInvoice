@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const BottomBar = () => {
   const icons = [
-    { src: "/home.svg", alt: "Home Icon", href: "/" },
+    { src: "/home.svg", alt: "Home Icon", href: "/dashboard" },
     { src: "/invoice.svg", alt: "Invoice Icon", href: "/invoices" },
     {
       src: "/plus.svg",
@@ -18,7 +18,7 @@ const BottomBar = () => {
 
   return (
     <div className="fixed bottom-0 left-0 w-screen h-20 bg-eclipse flex items-center md:hidden">
-      <div className="w-screen h-auto flex justify-between items-center px-11">
+      <div className="w-full max-w-[500px] h-auto flex justify-between items-center mx-auto px-11">
         {icons.map(({ src, alt, isCenter, href }) => (
           <div
             key={alt}

@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronDown as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -11,52 +11,40 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useEffect } from "react";
 import { format } from "date-fns";
 
 type DatePickerProps = {
   label: string;
-  selectedDate: string | undefined;
-  setSelectedDate: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setValue: any;
   isEditMode: boolean;
 };
 
-export function DatePicker({
-  isEditMode,
-  label,
-  selectedDate,
-  setSelectedDate,
-}: DatePickerProps) {
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
-
-  useEffect(() => {
-    if (isEditMode && selectedDate) {
-      setDate(new Date(selectedDate));
-    }
-  }, []);
+export function DatePicker({ label, setValue }: DatePickerProps) {
+  const [date, setDate] = useState<Date | undefined>(new Date());
 
   useEffect(() => {
     if (date) {
-      const formattedDate = format(date, "yyyy-mm-dd");
-      setSelectedDate(formattedDate);
+      const formattedDate = format(date, "yyyy-MM-dd");
+      setValue("paymentDue", formattedDate);
     }
-  }, [date, setSelectedDate]);
-
+  }, [date]);
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
           className={cn(
-            "w-full rounded-[10px] h-[30px] flex-row-reverse justify-between text-left font-normal bg-eclipse border-0 md:bg-midnight md:h-10 md:w-[130px]",
+            "w-full h-[30px] flex-row-reverse justify-between text-left font-normal bg-eclipse border-0 md:bg-midnight md:h-10 md:w-[130px]",
             !date && "text-cloudGray",
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4 stroke-cloudGray" />
+          <CalendarIcon className="mr-1 h-4 w-4 stroke-snowWhite" />
           {date ? (
-            <span className={"text-cloudGray"}>{selectedDate}</span>
+            <span className={"text-cloudGray text-xs"}>
+              {format(date, "yyyy-MM-dd")}
+            </span>
           ) : (
-            <span>{label}</span>
+            <span className={"text-xs"}>{label}</span>
           )}
         </Button>
       </PopoverTrigger>
@@ -66,7 +54,7 @@ export function DatePicker({
           selected={date}
           onSelect={setDate}
           initialFocus
-          className={"text-snowWhite rounded-[10px]"}
+          className={"text-snowWhite"}
         />
       </PopoverContent>
     </Popover>
