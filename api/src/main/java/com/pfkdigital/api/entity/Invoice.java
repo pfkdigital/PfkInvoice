@@ -20,57 +20,68 @@ import java.util.List;
 @Builder
 @EntityListeners(InvoiceTotalListener.class)
 public class Invoice {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @Column(name = "invoice_reference")
-    private String invoiceReference;
+  @Column(name = "invoice_reference")
+  private String invoiceReference;
 
-    @Column(name = "created_at")
-    private Date createdAt;
+  @Column(name = "created_at")
+  private Date createdAt;
 
-    @Column(name = "payment_due")
-    private Date paymentDue;
+  @Column(name = "payment_due")
+  private Date paymentDue;
 
-    @Column(name = "description")
-    private String description;
+  @Column(name = "description")
+  private String description;
 
-    @Column(name = "payment_terms")
-    private Integer paymentTerms;
+  @Column(name = "payment_terms")
+  private Integer paymentTerms;
 
-    @Column(name = "invoice_status")
-    private String invoiceStatus;
+  @Column(name = "invoice_status")
+  private String invoiceStatus;
 
-    @Column(name = "total")
-    private BigDecimal total;
+  @Column(name = "total")
+  private BigDecimal total;
 
-    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.REFRESH,CascadeType.DETACH})
-    @JoinColumn(name = "client_id")
-    private Client client;
+  @ManyToOne
+  @JoinColumn(name = "client_id")
+  private Client client;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice", orphanRemoval = true)
-    private List<InvoiceItem> invoiceItems;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice", orphanRemoval = true)
+  private List<InvoiceItem> invoiceItems;
 
-    public void addInvoiceItem(InvoiceItem item) {
-        if (invoiceItems == null) {
-            invoiceItems = new ArrayList<>();
-        }
-        item.setInvoice(this);
-        invoiceItems.add(item);
+  public void addInvoiceItem(InvoiceItem item) {
+    if (invoiceItems == null) {
+      invoiceItems = new ArrayList<>();
     }
+    item.setInvoice(this);
+    invoiceItems.add(item);
+  }
 
-    @Override
-    public String toString() {
-        return "Invoice{" +
-                "id=" + id +
-                ", invoiceReference='" + invoiceReference + '\'' +
-                ", createdAt=" + createdAt +
-                ", paymentDue=" + paymentDue +
-                ", description='" + description + '\'' +
-                ", paymentTerms=" + paymentTerms +
-                ", invoiceStatus='" + invoiceStatus + '\'' +
-                ", total=" + total +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "Invoice{"
+        + "id="
+        + id
+        + ", invoiceReference='"
+        + invoiceReference
+        + '\''
+        + ", createdAt="
+        + createdAt
+        + ", paymentDue="
+        + paymentDue
+        + ", description='"
+        + description
+        + '\''
+        + ", paymentTerms="
+        + paymentTerms
+        + ", invoiceStatus='"
+        + invoiceStatus
+        + '\''
+        + ", total="
+        + total
+        + '}';
+  }
 }

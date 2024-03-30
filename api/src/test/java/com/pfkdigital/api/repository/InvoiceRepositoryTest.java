@@ -45,6 +45,7 @@ public class InvoiceRepositoryTest extends BaseTest {
   public void InvoiceRepository_GetInvoiceWithClientAndItemsById_ReturnInvoice() {
     String savedInvoiceReference = "INV-001";
     String clientName = "Acme Corporation";
+    int invoiceItemCount = 2;
 
     Invoice savedInvoice = invoiceRepository.save(invoice);
     Optional<Invoice> selectedInvoice =
@@ -53,14 +54,14 @@ public class InvoiceRepositoryTest extends BaseTest {
     assertTrue(selectedInvoice.isPresent());
     assertEquals(savedInvoiceReference, selectedInvoice.get().getInvoiceReference());
     assertEquals(clientName, selectedInvoice.get().getClient().getClientName());
-    assertEquals(2, selectedInvoice.get().getInvoiceItems().size());
+    assertEquals(invoiceItemCount, selectedInvoice.get().getInvoiceItems().size());
   }
 
   @Test
   public void InvoiceRepository_GetInvoiceTotalSums_ReturnSum() {
     BigDecimal expectedTotal = BigDecimal.valueOf(1500).setScale(2, RoundingMode.DOWN);
 
-    Invoice savedInvoice = invoiceRepository.save(invoice);
+    invoiceRepository.save(invoice);
 
     BigDecimal actualTotal = invoiceRepository.getSumOfAllTotalInvoices();
 
@@ -71,10 +72,10 @@ public class InvoiceRepositoryTest extends BaseTest {
   @Test
   public void InvoiceRepository_GetUnpaidInvoiceTotalSums_ReturnSum() {
     BigDecimal expectedTotal = BigDecimal.valueOf(1500).setScale(2, RoundingMode.DOWN);
-    Invoice savedInvoice2 =
+    Invoice invoice2 =
         Invoice.builder().invoiceStatus("Paid").total(BigDecimal.valueOf(500.00)).build();
 
-    invoiceRepository.saveAll(List.of(invoice,savedInvoice2));
+    invoiceRepository.saveAll(List.of(invoice,invoice2));
 
     BigDecimal actualTotal = invoiceRepository.getSumOfAllTotalInvoicesUnpaid();
 
@@ -89,7 +90,7 @@ public class InvoiceRepositoryTest extends BaseTest {
     Long invoiceCount = invoiceRepository.count();
 
     assertNotNull(invoiceCount);
-    assertEquals(1l, invoiceCount);
+    assertEquals(1L, invoiceCount);
   }
 
   @Test

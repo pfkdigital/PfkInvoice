@@ -28,7 +28,7 @@ public class ClientRepositoryTest extends BaseTest {
   @Test
   public void ClientRepository_GetAllClients_ReturnAListOfClients() {
     String clientName = "Acme Corporation";
-    Client savedClient = clientRepository.save(mockClient);
+    clientRepository.save(mockClient);
 
     List<Client> clients = clientRepository.findAll();
 
@@ -51,7 +51,7 @@ public class ClientRepositoryTest extends BaseTest {
 
   @Test
   public void ClientRepository_GetClientCount_ReturnCount() {
-    Client savedClient = clientRepository.save(mockClient);
+    clientRepository.save(mockClient);
 
     Long clientCount = clientRepository.count();
 
@@ -75,7 +75,6 @@ public class ClientRepositoryTest extends BaseTest {
   @Test
   public void ClientRepository_DeleteClientById_ClientDeleted() {
     Client savedClient = clientRepository.save(mockClient);
-
     clientRepository.delete(savedClient);
 
     Optional<Client> deletedClient = clientRepository.getClientById(savedClient.getId());

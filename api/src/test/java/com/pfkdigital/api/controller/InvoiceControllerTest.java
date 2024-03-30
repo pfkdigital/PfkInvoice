@@ -1,8 +1,9 @@
 package com.pfkdigital.api.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pfkdigital.api.BaseTest;
+import com.pfkdigital.api.dto.CountDTO;
+import com.pfkdigital.api.dto.CurrencyDTO;
 import com.pfkdigital.api.dto.InvoiceWithItemsAndClientDTO;
 import com.pfkdigital.api.exception.InvoiceNotFoundException;
 import com.pfkdigital.api.service.InvoiceService;
@@ -20,11 +21,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -110,57 +108,59 @@ public class InvoiceControllerTest extends BaseTest {
 
   @Test
   public void InvoiceController_GetInvoiceTotalSums_ReturnSum() throws Exception {
-    BigDecimal expectedTotalSum = BigDecimal.valueOf(1500.00);
-    when(invoiceService.getAllInvoiceTotalSum()).thenReturn(expectedTotalSum);
+    String expectedResult = "15K";
+    CurrencyDTO currencyDTO = CurrencyDTO.builder().label("Revenue").status(expectedResult).build();
+
+    when(invoiceService.getAllInvoiceTotalSum()).thenReturn(currencyDTO);
 
     ResultActions response =
             mockMvc.perform(
                     get("/api/v1/invoices/total")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(expectedTotalSum)));
+                            .content(objectMapper.writeValueAsString(currencyDTO)));
 
     response
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(
-                    MockMvcResultMatchers.content().string(expectedTotalSum.toString()));
+            .andExpect(MockMvcResultMatchers.jsonPath(("$.status"), CoreMatchers.is(currencyDTO.getStatus())));
   }
 
   @Test
   public void InvoiceController_GetUnpaidInvoiceTotalSums_ReturnSum() throws Exception {
-    BigDecimal expectedTotalSum = BigDecimal.valueOf(1500.00);
-    when(invoiceService.getAllInvoiceTotalSumUnpaid()).thenReturn(expectedTotalSum);
+    String expectedResult = "15K";
+    CurrencyDTO currencyDTO = CurrencyDTO.builder().label("Revenue").status(expectedResult).build();
+
+    when(invoiceService.getAllInvoiceTotalSumUnpaid()).thenReturn(currencyDTO);
 
     ResultActions response =
             mockMvc.perform(
                     get("/api/v1/invoices/unpaid/total")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(expectedTotalSum)));
+                            .content(objectMapper.writeValueAsString(currencyDTO)));
 
     response
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(
-                    MockMvcResultMatchers.content().string(expectedTotalSum.toString()));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status", CoreMatchers.is(currencyDTO.getStatus())));
   }
 
   @Test
   public void InvoiceController_GetInvoiceCount_ReturnCount() throws Exception {
-    long expectedInvoiceCount = 1;
+    long expectedInvoiceCount = 1L;
+    CountDTO countDTO = CountDTO.builder().label("Invoice").status(expectedInvoiceCount).build();
 
-    when(invoiceService.getInvoicesCount()).thenReturn(expectedInvoiceCount);
+    when(invoiceService.getInvoicesCount()).thenReturn(countDTO);
 
     ResultActions response =
             mockMvc.perform(
                     get("/api/v1/invoices/count")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(expectedInvoiceCount)));
+                            .content(objectMapper.writeValueAsString(countDTO)));
 
     response
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(
-                    MockMvcResultMatchers.content().string(String.valueOf(expectedInvoiceCount)));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status", CoreMatchers.is(Long.valueOf(countDTO.getStatus()).intValue())));
   }
 
   @Test

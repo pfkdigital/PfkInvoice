@@ -1,5 +1,7 @@
 package com.pfkdigital.api.service;
 
+import com.pfkdigital.api.dto.CountDTO;
+import com.pfkdigital.api.dto.CurrencyDTO;
 import com.pfkdigital.api.dto.InvoiceDTO;
 import com.pfkdigital.api.dto.InvoiceWithItemsAndClientDTO;
 
@@ -13,11 +15,11 @@ public interface InvoiceService {
 
   InvoiceWithItemsAndClientDTO getAnInvoiceById(Integer invoiceId);
 
-  BigDecimal getAllInvoiceTotalSum();
+  CurrencyDTO getAllInvoiceTotalSum();
 
-  BigDecimal getAllInvoiceTotalSumUnpaid();
+  CurrencyDTO getAllInvoiceTotalSumUnpaid();
 
-  long getInvoicesCount();
+  CountDTO getInvoicesCount();
 
   InvoiceWithItemsAndClientDTO updateInvoice(
       InvoiceWithItemsAndClientDTO invoiceDTO, Integer invoiceId);

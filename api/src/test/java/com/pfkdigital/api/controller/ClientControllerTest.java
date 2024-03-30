@@ -3,6 +3,7 @@ package com.pfkdigital.api.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pfkdigital.api.BaseTest;
 import com.pfkdigital.api.dto.ClientDTO;
+import com.pfkdigital.api.dto.CountDTO;
 import com.pfkdigital.api.exception.ClientNotFoundException;
 import com.pfkdigital.api.service.ClientService;
 import org.hamcrest.CoreMatchers;
@@ -97,8 +98,8 @@ public class ClientControllerTest extends BaseTest {
   public void ClientController_GetClientCount_ReturnClientCount()
           throws Exception {
     long clientCount = 1l;
-
-    when(clientService.getClientsCount()).thenReturn(clientCount);
+    CountDTO countDTO = CountDTO.builder().label("Count").status(1l).build();
+    when(clientService.getClientsCount()).thenReturn(countDTO);
 
     ResultActions response =
             mockMvc.perform(

@@ -2,6 +2,8 @@ package com.pfkdigital.api.integration;
 
 import com.pfkdigital.api.BaseTest;
 import com.pfkdigital.api.dto.ClientDTO;
+import com.pfkdigital.api.dto.CountDTO;
+import com.pfkdigital.api.model.ApiError;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -87,11 +91,11 @@ public class ClientIntegrationTest extends BaseTest {
         String baseUrl = "http://localhost:" + port + "/api/v1/clients/" + clientID;
         HttpEntity<String> entity = new HttpEntity<>(null);
 
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl, HttpMethod.GET,entity,String.class);
+        ResponseEntity<ApiError> response = restTemplate.exchange(baseUrl, HttpMethod.GET,entity,ApiError.class);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(
-                notFoundMessage, response.getBody());
+                notFoundMessage, Objects.requireNonNull(response.getBody()).getMessage());
     }
 
     @Test
@@ -101,10 +105,10 @@ public class ClientIntegrationTest extends BaseTest {
 
         String baseUrl = "http://localhost:" + port + "/api/v1/clients/count";
 
-        Long clientCount = restTemplate.getForObject(baseUrl,Long.class);
+        CountDTO clientCount = restTemplate.getForObject(baseUrl,CountDTO.class);
 
         assertNotNull(clientCount);
-        assertEquals(clientCountExpected,clientCount);
+        assertEquals(clientCountExpected,clientCount.getStatus());
     }
 
     @Test

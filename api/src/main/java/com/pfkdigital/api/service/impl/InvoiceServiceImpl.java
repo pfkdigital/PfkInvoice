@@ -1,5 +1,7 @@
 package com.pfkdigital.api.service.impl;
 
+import com.pfkdigital.api.dto.CountDTO;
+import com.pfkdigital.api.dto.CurrencyDTO;
 import com.pfkdigital.api.dto.InvoiceDTO;
 import com.pfkdigital.api.dto.InvoiceWithItemsAndClientDTO;
 import com.pfkdigital.api.entity.Invoice;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +37,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
   @Override
   public List<InvoiceDTO> getAllInvoices() {
-    List<Invoice> invoices = invoiceRepository.findAll();
+    List<Invoice> invoices = invoiceRepository.findAllByOrderByIdAsc();
 
     return invoices.stream().map(invoiceMapper::invoiceToInvoiceDTO).collect(Collectors.toList());
   }
@@ -51,18 +54,26 @@ public class InvoiceServiceImpl implements InvoiceService {
   }
 
   @Override
-  public BigDecimal getAllInvoiceTotalSum() {
-    return invoiceRepository.getSumOfAllTotalInvoices();
+  public CurrencyDTO getAllInvoiceTotalSum() {
+    BigDecimal total = invoiceRepository.getSumOfAllTotalInvoices();
+    String formattedTotal = formatBigDecimal(total);
+
+    return CurrencyDTO.builder().label("Revenue").status(formattedTotal).build();
   }
 
   @Override
-  public BigDecimal getAllInvoiceTotalSumUnpaid() {
-    return invoiceRepository.getSumOfAllTotalInvoicesUnpaid();
+  public CurrencyDTO getAllInvoiceTotalSumUnpaid() {
+    BigDecimal total = invoiceRepository.getSumOfAllTotalInvoicesUnpaid();
+    String formattedTotal = formatBigDecimal(total);
+
+    return CurrencyDTO.builder().label("Revenue").status(formattedTotal).build();
   }
 
   @Override
-  public long getInvoicesCount() {
-    return invoiceRepository.count();
+  public CountDTO getInvoicesCount() {
+    long invoiceCount = invoiceRepository.count();
+
+    return CountDTO.builder().label("Invoice").status(invoiceCount).build();
   }
 
   @Override
@@ -110,5 +121,17 @@ public class InvoiceServiceImpl implements InvoiceService {
     invoiceRepository.delete(selectedInvoice);
 
     return "Invoice of id " + invoiceId + " was deleted";
+  }
+
+  public String formatBigDecimal(BigDecimal value) {
+    String[] suffixes = new String[] {"", "K", "M", "B", "T"};
+    int index = 0;
+    while (value.compareTo(new BigDecimal("1000")) >= 0 && index < suffixes.length - 1) {
+      value = value.divide(new BigDecimal("1000"));
+      index++;
+    }
+
+    DecimalFormat df = new DecimalFormat("#,##0.##");
+    return df.format(value) + suffixes[index];
   }
 }

@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClientDTO {
-    private Integer id;
-    private String clientName;
-    private String clientEmail;
-    private AddressDTO clientAddress;
+  private Integer id;
+  private String clientName;
+  private String clientEmail;
+  private AddressDTO clientAddress;
 }

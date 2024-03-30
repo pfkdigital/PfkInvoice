@@ -15,16 +15,19 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InvoiceWithItemsAndClientDTO {
-    private Integer id;
-    private String invoiceReference;
-    @JsonFormat(pattern = "yyyy-mm-dd")
-    private Date createdAt;
-    @JsonFormat(pattern = "yyyy-mm-dd")
-    private Date paymentDue;
-    private String description;
-    private Integer paymentTerms;
-    private String invoiceStatus;
-    private BigDecimal total;
-    private ClientDTO client;
-    private List<InvoiceItemDTO> invoiceItems;
+  private Integer id;
+  private String invoiceReference;
+
+  @JsonFormat(pattern = "yyyy-mm-dd")
+  private Date createdAt;
+
+  @JsonFormat(pattern = "yyyy-mm-dd")
+  private Date paymentDue;
+
+  private String description;
+  private Integer paymentTerms;
+  private String invoiceStatus;
+  private BigDecimal total;
+  private ClientDTO client;
+  private List<InvoiceItemDTO> invoiceItems;
 }

@@ -12,9 +12,9 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InvoiceItemDTO {
-    private Integer id;
-    private String name;
-    private Integer quantity;
-    private BigDecimal price;
-    private BigDecimal total;
+  private Integer id;
+  private String name;
+  private Integer quantity;
+  private BigDecimal price;
+  private BigDecimal total;
 }

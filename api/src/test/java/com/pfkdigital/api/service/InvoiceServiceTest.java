@@ -1,6 +1,8 @@
 package com.pfkdigital.api.service;
 
 import com.pfkdigital.api.BaseTest;
+import com.pfkdigital.api.dto.CountDTO;
+import com.pfkdigital.api.dto.CurrencyDTO;
 import com.pfkdigital.api.dto.InvoiceDTO;
 import com.pfkdigital.api.dto.InvoiceWithItemsAndClientDTO;
 import com.pfkdigital.api.entity.Invoice;
@@ -48,16 +50,18 @@ public class InvoiceServiceTest extends BaseTest {
 
   @Test
   public void InvoiceService_GetAllInvoices_ReturnInvoiceDTOList() {
-    String savedInvoiceReference = "INV-001";
-    when(invoiceRepository.findAll()).thenReturn(List.of(invoice));
-    when(invoiceMapper.invoiceToInvoiceDTO(Mockito.any(Invoice.class))).thenReturn(invoiceDTO);
+    String invoiceReference = "INV-001";
+    when(invoiceRepository.findAllByOrderByIdAsc()).thenReturn(List.of(invoice));
+    when(invoiceMapper.invoiceToInvoiceDTO(Mockito.any(Invoice.class)))
+        .thenReturn(invoiceDTO);
 
-    List<InvoiceDTO> invoiceDTOS = invoiceService.getAllInvoices();
+    List<InvoiceDTO> invoiceDTOList = invoiceService.getAllInvoices();
 
-    assertNotNull(invoiceDTOS);
-    assertEquals(savedInvoiceReference, invoiceDTOS.get(0).getInvoiceReference());
+    assertNotNull(invoiceDTOList);
+    assertEquals(invoiceReference, invoiceDTOList.get(0).getInvoiceReference());
+    assertEquals(1, invoiceDTOList.size());
 
-    verify(invoiceRepository).findAll();
+    verify(invoiceRepository).findAllByOrderByIdAsc();
     verify(invoiceMapper, times(1)).invoiceToInvoiceDTO(Mockito.any(Invoice.class));
   }
 
@@ -81,40 +85,45 @@ public class InvoiceServiceTest extends BaseTest {
 
   @Test
   public void InvoiceService_GetInvoiceTotalSums_ReturnSum(){
-    BigDecimal expectedTotalSum = BigDecimal.valueOf(1500.00);
+    BigDecimal expectedTotalSum = BigDecimal.valueOf(15000.00);
+    String expectedResult = "15K";
+
     when(invoiceRepository.getSumOfAllTotalInvoices()).thenReturn(expectedTotalSum);
 
-    BigDecimal actualTotalSum = invoiceService.getAllInvoiceTotalSum();
+    CurrencyDTO actualTotalSum = invoiceService.getAllInvoiceTotalSum();
 
     assertNotNull(actualTotalSum);
-    assertEquals(expectedTotalSum,actualTotalSum);
+    assertEquals(expectedResult,actualTotalSum.getStatus());
 
     verify(invoiceRepository).getSumOfAllTotalInvoices();
   }
 
   @Test
-  public void InvoiceService_GGetUnpaidInvoiceTotalSums_ReturnSum(){
-    BigDecimal expectedTotalSum = BigDecimal.valueOf(1500.00);
+  public void InvoiceService_GetUnpaidInvoiceTotalSums_ReturnSum(){
+    BigDecimal expectedTotalSum = BigDecimal.valueOf(15000.00);
+    String expectedResult = "15K";
+
     when(invoiceRepository.getSumOfAllTotalInvoicesUnpaid()).thenReturn(expectedTotalSum);
 
-    BigDecimal actualTotalSum = invoiceService.getAllInvoiceTotalSumUnpaid();
+    CurrencyDTO actualTotalSum = invoiceService.getAllInvoiceTotalSumUnpaid();
 
     assertNotNull(actualTotalSum);
-    assertEquals(expectedTotalSum,actualTotalSum);
+    assertEquals(expectedResult,actualTotalSum.getStatus());
 
     verify(invoiceRepository).getSumOfAllTotalInvoicesUnpaid();
   }
 
   @Test
-  public void InvoiceService_GetInvoiceCount_ReturnCount() {
+  public void InvoiceService_GetInvoiceCount_ReturnCountDTO() {
     long expectedInvoiceCount = 1;
+    CountDTO countDTO = CountDTO.builder().label("Invoice").status(1l).build();
 
     when(invoiceRepository.count()).thenReturn(expectedInvoiceCount);
 
-    Long actualInvoiceCount = invoiceService.getInvoicesCount();
+    CountDTO actualInvoiceCount = invoiceService.getInvoicesCount();
 
     assertNotNull(actualInvoiceCount);
-    assertEquals(expectedInvoiceCount,actualInvoiceCount);
+    assertEquals(expectedInvoiceCount,actualInvoiceCount.getStatus());
     verify(invoiceRepository).count();
   }
 

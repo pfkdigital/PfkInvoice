@@ -10,6 +10,8 @@ import org.mapstruct.Mapper;
     uses = {InvoiceMapper.class})
 public interface ClientMapper {
   ClientDTO clientToClientDTO(Client client);
+
   Client clientDTOToClient(ClientDTO clientDTO);
+
   ClientWithInvoicesDTO clientToClientWithInvoicesDTO(Client client);
 }

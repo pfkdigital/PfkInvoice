@@ -1,5 +1,7 @@
 package com.pfkdigital.api.controller;
 
+import com.pfkdigital.api.dto.CountDTO;
+import com.pfkdigital.api.dto.CurrencyDTO;
 import com.pfkdigital.api.dto.InvoiceDTO;
 import com.pfkdigital.api.dto.InvoiceWithItemsAndClientDTO;
 import com.pfkdigital.api.service.InvoiceService;
@@ -8,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -34,17 +35,17 @@ public class InvoiceController {
   }
 
   @GetMapping("/total")
-  public ResponseEntity<BigDecimal> getAllInvoiceTotalSum() {
+  public ResponseEntity<CurrencyDTO> getAllInvoiceTotalSum() {
     return new ResponseEntity<>(invoiceService.getAllInvoiceTotalSum(), HttpStatus.OK);
   }
 
   @GetMapping("/unpaid/total")
-  public ResponseEntity<BigDecimal> getAllInvoiceTotalSumUnpaid() {
+  public ResponseEntity<CurrencyDTO> getAllInvoiceTotalSumUnpaid() {
     return new ResponseEntity<>(invoiceService.getAllInvoiceTotalSumUnpaid(), HttpStatus.OK);
   }
 
   @GetMapping("/count")
-  public ResponseEntity<Long> getInvoiceCount() {
+  public ResponseEntity<CountDTO> getInvoiceCount() {
     return new ResponseEntity<>(invoiceService.getInvoicesCount(), HttpStatus.OK);
   }
 

@@ -8,6 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class CurrencyDTO {
-    private String label;
-    private String status;
+  private String label;
+  private String status;
 }

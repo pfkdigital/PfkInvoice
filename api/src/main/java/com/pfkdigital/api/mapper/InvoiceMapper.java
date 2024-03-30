@@ -11,8 +11,8 @@ public interface InvoiceMapper {
 
   @Mapping(source = "client.clientName", target = "clientName")
   InvoiceDTO invoiceToInvoiceDTO(Invoice invoice);
-  Invoice invoiceDTOToInvoice(InvoiceDTO invoiceDTO);
-  InvoiceWithItemsAndClientDTO invoiceToInvoiceWithItemsAndClientDTO(Invoice invoice);
-  Invoice invoiceWithItemsAndClientDTOToInvoice(InvoiceWithItemsAndClientDTO invoiceDto);
 
+  InvoiceWithItemsAndClientDTO invoiceToInvoiceWithItemsAndClientDTO(Invoice invoice);
+
+  Invoice invoiceWithItemsAndClientDTOToInvoice(InvoiceWithItemsAndClientDTO invoiceDto);
 }

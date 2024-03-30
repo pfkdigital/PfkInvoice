@@ -2,6 +2,7 @@ package com.pfkdigital.api.service.impl;
 
 import com.pfkdigital.api.dto.ClientDTO;
 import com.pfkdigital.api.dto.ClientWithInvoicesDTO;
+import com.pfkdigital.api.dto.CountDTO;
 import com.pfkdigital.api.entity.Client;
 import com.pfkdigital.api.exception.ClientNotFoundException;
 import com.pfkdigital.api.mapper.ClientMapper;
@@ -30,26 +31,36 @@ public class ClientServiceImpl implements ClientService {
 
   @Override
   public List<ClientDTO> getAllClients() {
-    List<Client> clients = clientRepository.findAll();
+    List<Client> clients = clientRepository.findAllByOrderByIdAsc();
     return clients.stream().map(clientMapper::clientToClientDTO).toList();
   }
 
   @Override
   public ClientWithInvoicesDTO getClientById(Integer clientId) {
-    Client selectedClient = clientRepository.getClientById(clientId).orElseThrow(() -> new ClientNotFoundException("Client of id " + clientId + " was not found"));
+    Client selectedClient =
+        clientRepository
+            .getClientById(clientId)
+            .orElseThrow(
+                () -> new ClientNotFoundException("Client of id " + clientId + " was not found"));
     return clientMapper.clientToClientWithInvoicesDTO(selectedClient);
   }
 
   @Override
-  public Long getClientsCount() {
-    return clientRepository.count();
+  public CountDTO getClientsCount() {
+    long total = clientRepository.count();
+
+    return CountDTO.builder().label("Client").status(total).build();
   }
 
   @Override
   @Transactional
   public ClientDTO updateClient(ClientDTO clientDTO, Integer clientId) {
     Client mappedClient = clientMapper.clientDTOToClient(clientDTO);
-    Client selectedClient = clientRepository.getClientById(clientId).orElseThrow(() -> new ClientNotFoundException("Client of id " + clientId + " was not found"));
+    Client selectedClient =
+        clientRepository
+            .getClientById(clientId)
+            .orElseThrow(
+                () -> new ClientNotFoundException("Client of id " + clientId + " was not found"));
 
     selectedClient.setClientName(mappedClient.getClientName());
     selectedClient.setClientEmail(mappedClient.getClientEmail());
@@ -63,7 +74,11 @@ public class ClientServiceImpl implements ClientService {
   @Override
   @Transactional
   public String deleteClientById(Integer clientId) {
-    Client selectedClient = clientRepository.getClientById(clientId).orElseThrow(() -> new ClientNotFoundException("Client of id " + clientId + " was not found"));
+    Client selectedClient =
+        clientRepository
+            .getClientById(clientId)
+            .orElseThrow(
+                () -> new ClientNotFoundException("Client of id " + clientId + " was not found"));
     clientRepository.delete(selectedClient);
 
     return "Client of id " + clientId + " was deleted";

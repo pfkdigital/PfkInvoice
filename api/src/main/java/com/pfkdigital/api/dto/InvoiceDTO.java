@@ -14,15 +14,19 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InvoiceDTO {
-    private Integer id;
-    private String invoiceReference;
-    @JsonFormat(pattern = "yyyy-mm-dd")
-    private Date createdAt;
-    @JsonFormat(pattern = "yyyy-mm-dd")
-    private Date paymentDue;
-    private String description;
-    private Integer paymentTerms;
-    private String invoiceStatus;
-    private BigDecimal total;
-    private String clientName;
+  private Integer id;
+  private String invoiceReference;
+
+  @JsonFormat(pattern = "yyyy-mm-dd")
+  private Date createdAt;
+
+  private String clientName;
+  private String description;
+  private Integer paymentTerms;
+
+  @JsonFormat(pattern = "yyyy-mm-dd")
+  private Date paymentDue;
+
+  private BigDecimal total;
+  private String invoiceStatus;
 }

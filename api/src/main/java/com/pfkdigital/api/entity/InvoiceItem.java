@@ -15,26 +15,40 @@ import java.math.BigDecimal;
 @Data
 @Builder
 public class InvoiceItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private String name;
-    private Integer quantity;
-    private BigDecimal price;
-    private BigDecimal total;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.REFRESH,CascadeType.DETACH})
-    @JoinColumn(name = "invoice_id")
-    private Invoice invoice;
+  @Column(name = "name")
+  private String name;
 
-    @Override
-    public String toString() {
-        return "InvoiceItem{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                ", total=" + total +
-                '}';
-    }
+  @Column(name = "quantity")
+  private Integer quantity;
+
+  @Column(name = "price")
+  private BigDecimal price;
+
+  @Column(name = "total")
+  private BigDecimal total;
+
+  @ManyToOne
+  @JoinColumn(name = "invoice_id")
+  private Invoice invoice;
+
+  @Override
+  public String toString() {
+    return "InvoiceItem{"
+        + "id="
+        + id
+        + ", name='"
+        + name
+        + '\''
+        + ", quantity="
+        + quantity
+        + ", price="
+        + price
+        + ", total="
+        + total
+        + '}';
+  }
 }

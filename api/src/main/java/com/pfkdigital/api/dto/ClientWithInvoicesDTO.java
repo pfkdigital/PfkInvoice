@@ -12,9 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClientWithInvoicesDTO {
-    private Integer id;
-    private String clientName;
-    private String clientEmail;
-    private AddressDTO clientAddress;
-    private List<InvoiceDTO> invoices;
+  private Integer id;
+  private String clientName;
+  private String clientEmail;
+  private AddressDTO clientAddress;
+  private List<InvoiceDTO> invoices;
 }

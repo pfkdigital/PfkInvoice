@@ -1,8 +1,11 @@
 package com.pfkdigital.api.integration;
 
 import com.pfkdigital.api.BaseTest;
+import com.pfkdigital.api.dto.CountDTO;
+import com.pfkdigital.api.dto.CurrencyDTO;
 import com.pfkdigital.api.dto.InvoiceDTO;
 import com.pfkdigital.api.dto.InvoiceWithItemsAndClientDTO;
+import com.pfkdigital.api.model.ApiError;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -21,6 +24,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -93,27 +97,27 @@ public class InvoiceIntegrationTest extends BaseTest {
   @Test
   @Sql({"/schema.sql", "/data.sql"})
   public void InvoiceIntegration_GetInvoiceTotalSums_ReturnSum() {
-    BigDecimal expectedTotal = BigDecimal.valueOf(33500).setScale(2, RoundingMode.DOWN);
+    String expectedTotal = "33.5K";
     String baseUrl = "http://localhost:+" + port + "/api/v1/invoices/total";
 
-    BigDecimal actualTotalSum =
-            restTemplate.getForObject(baseUrl, BigDecimal.class);
+    CurrencyDTO actualTotalSum =
+            restTemplate.getForObject(baseUrl, CurrencyDTO.class);
 
     assertNotNull(actualTotalSum);
-    assertEquals(expectedTotal, actualTotalSum);
+    assertEquals(expectedTotal, actualTotalSum.getStatus());
   }
 
   @Test
   @Sql({"/schema.sql", "/data.sql"})
   public void InvoiceIntegration_GetUnpaidInvoiceTotalSums_ReturnSum() {
-    BigDecimal expectedTotal = BigDecimal.valueOf(14300).setScale(2, RoundingMode.DOWN);
+    String expectedTotal = "14.3K";
     String baseUrl = "http://localhost:+" + port + "/api/v1/invoices/unpaid/total";
 
-    BigDecimal actualTotalSum =
-            restTemplate.getForObject(baseUrl, BigDecimal.class);
+    CurrencyDTO actualTotalSum =
+            restTemplate.getForObject(baseUrl, CurrencyDTO.class);
 
     assertNotNull(actualTotalSum);
-    assertEquals(expectedTotal, actualTotalSum);
+    assertEquals(expectedTotal, actualTotalSum.getStatus());
   }
 
   @Test
@@ -122,11 +126,11 @@ public class InvoiceIntegrationTest extends BaseTest {
     long expectedInvoiceCount = 15;
     String baseUrl = "http://localhost:+" + port + "/api/v1/invoices/count";
 
-    Long actualInvoiceCount =
-            restTemplate.getForObject(baseUrl, Long.class);
+    CountDTO actualInvoiceCount =
+            restTemplate.getForObject(baseUrl, CountDTO.class);
 
     assertNotNull(actualInvoiceCount);
-    assertEquals(expectedInvoiceCount, actualInvoiceCount);
+    assertEquals(expectedInvoiceCount, actualInvoiceCount.getStatus());
   }
 
   @Test
@@ -135,11 +139,11 @@ public class InvoiceIntegrationTest extends BaseTest {
     String baseUrl = "http://localhost:" + port + "/api/v1/invoices/" + invoiceId;
     HttpEntity<String> entity = new HttpEntity<>(null);
 
-    ResponseEntity<String> response = restTemplate.exchange(baseUrl, HttpMethod.GET,entity,String.class);
-
+    ResponseEntity<ApiError> response = restTemplate.exchange(baseUrl, HttpMethod.GET,entity,ApiError.class);
+    System.out.println(response);
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     assertEquals(
-        "Invoice of id 100 is not found", response.getBody());
+        "Invoice of id 100 is not found", Objects.requireNonNull(response.getBody()).getMessage());
   }
 
   @Test

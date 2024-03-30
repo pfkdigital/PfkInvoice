@@ -3,6 +3,7 @@ package com.pfkdigital.api.service;
 import com.pfkdigital.api.BaseTest;
 import com.pfkdigital.api.dto.ClientDTO;
 import com.pfkdigital.api.dto.ClientWithInvoicesDTO;
+import com.pfkdigital.api.dto.CountDTO;
 import com.pfkdigital.api.entity.Client;
 import com.pfkdigital.api.exception.ClientNotFoundException;
 import com.pfkdigital.api.mapper.ClientMapper;
@@ -48,9 +49,8 @@ public class ClientServiceTest extends BaseTest {
     }
     @Test
     public void ClientService_GetClientList_ReturnClientList(){
-        String clientName = "Acme Corporation";
 
-        when(clientRepository.findAll()).thenReturn(List.of(client));
+        when(clientRepository.findAllByOrderByIdAsc()).thenReturn(List.of(client));
         when(clientMapper.clientToClientDTO(any(Client.class))).thenReturn(clientDTO);
 
         List<ClientDTO> clientDTOList = clientService.getAllClients();
@@ -58,7 +58,7 @@ public class ClientServiceTest extends BaseTest {
         assertNotNull(clientDTOList);
         assertEquals(1,clientDTOList.size());
 
-        verify(clientRepository).findAll();
+        verify(clientRepository).findAllByOrderByIdAsc();
     }
     @Test
     public void ClientService_GetClientById_ReturnClient(){
@@ -78,12 +78,12 @@ public class ClientServiceTest extends BaseTest {
 
     @Test
     public void ClientService_GetClientCount_ReturnCount() {
-       when(clientRepository.count()).thenReturn(1l);
+       when(clientRepository.count()).thenReturn(1L);
 
-       Long clientCount = clientService.getClientsCount();
+       CountDTO clientCount = clientService.getClientsCount();
 
        assertNotNull(clientCount);
-       assertEquals(1l,clientCount);
+       assertEquals(1l,clientCount.getStatus());
 
        verify(clientRepository).count();
     }
