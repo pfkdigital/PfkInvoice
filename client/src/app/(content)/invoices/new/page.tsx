@@ -3,6 +3,8 @@ import InvoiceForm from "@/ui/InvoiceForm/InvoiceForm";
 import { getAllClients } from "@/lib/api-functions";
 import InvoiceTitleBar from "@/ui/InvoiceTitleBar/InvoiceTitleBar";
 
+export const revalidate = 0;
+
 const Page = async () => {
   const clients = await getAllClients();
   return (

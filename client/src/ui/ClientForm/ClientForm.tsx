@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { ClientWithInvoices } from "@/types/client.types";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/input";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

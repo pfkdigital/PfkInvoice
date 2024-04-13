@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ProductIcon from "@/../public/bag.svg";
-import { LightRowInput } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { LightRowInput } from "@/components/input";
+import { Button } from "@/components/button";
 import EditorTable from "@/ui/EditorTable/EditorTable";
 import {
   UseFieldArrayAppend,
@@ -24,7 +24,7 @@ interface ProductEditorProps {
   append: UseFieldArrayAppend<InvoiceSchemaType>;
   update: UseFieldArrayUpdate<InvoiceSchemaType>;
   remove: UseFieldArrayRemove;
-  isEditMode: boolean;
+  invoiceItems: InvoiceItemType[];
 }
 
 const ProductEditor = ({
@@ -32,6 +32,7 @@ const ProductEditor = ({
   remove,
   update,
   fields,
+  invoiceItems,
 }: ProductEditorProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
@@ -60,9 +61,11 @@ const ProductEditor = ({
 
   const handleEdit = () => {
     const currentItem = getValues();
-    update(selectedIndex, currentItem);
+    const itemId = invoiceItems[selectedIndex].id;
+    update(selectedIndex, { ...currentItem, id: itemId });
     setIsEditing(false);
     reset();
+    return;
   };
 
   return (
@@ -99,9 +102,10 @@ const ProductEditor = ({
                   variant={"default"}
                   size={"sm"}
                   className={"mr-2.5"}
+                  type={"button"}
                   onClick={handleEdit}
                 >
-                  Edit
+                  Save Changes
                 </Button>
                 <Button
                   variant={"default"}
@@ -137,7 +141,7 @@ const ProductEditor = ({
           </div>
         </div>
         <div>
-          <div className={"mt-3 mb-1.5 w-full flex"}>
+          <div className={"w-full flex mt-3 mb-1.5"}>
             <LightRowInput
               type="text"
               placeholder={"Product Name"}
@@ -166,6 +170,7 @@ const ProductEditor = ({
       <EditorTable
         items={fields}
         remove={remove}
+        reset={reset}
         update={update}
         setValue={setValue}
         isEditing={isEditing}

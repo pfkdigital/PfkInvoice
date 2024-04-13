@@ -9,7 +9,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/table";
 
 interface InvoiceItemTableProps {
   headers: string[];
@@ -36,33 +36,35 @@ const InvoiceItemTable = ({ headers, items }: InvoiceItemTableProps) => {
       >
         <TableCell
           className={
-            "text-smokeGray text-[12px] leading-[14.4px] text-left overflow-hidden whitespace-nowrap text-ellipsis"
+            "text-smokeGray text-[12px] leading-[14.4px] text-left overflow-hidden whitespace-nowrap text-ellipsis p-3"
           }
         >
           {item.id}
         </TableCell>
         <TableCell
           className={
-            "text-smokeGray text-[12px] leading-[14.4px] text-left overflow-hidden whitespace-nowrap text-ellipsis"
+            "text-smokeGray text-[12px] leading-[14.4px] text-left overflow-hidden whitespace-nowrap text-ellipsis p-3"
           }
         >
           {item.name}
         </TableCell>
         <TableCell
           className={
-            "text-smokeGray text-[12px] leading-[14.4px] whitespace-nowrap text-ellipsis"
+            "text-smokeGray text-[12px] leading-[14.4px] whitespace-nowrap text-ellipsis p-3"
           }
         >
           {item.quantity}
         </TableCell>
         <TableCell
           className={
-            "text-smokeGray text-[12px] leading-[14.4px] overflow-hidden whitespace-nowrap text-ellipsis"
+            "text-smokeGray text-[12px] leading-[14.4px] overflow-hidden whitespace-nowrap text-ellipsis p-3"
           }
         >
           ${item.price}
         </TableCell>
-        <TableCell className={"text-smokeGray text-[12px] leading-[14.4px]"}>
+        <TableCell
+          className={"text-smokeGray text-[12px] leading-[14.4px] p-3"}
+        >
           ${item.total}
         </TableCell>
       </TableRow>

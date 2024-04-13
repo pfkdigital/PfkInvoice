@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { Inter } from "next/font/google";
-import { getInvoiceRevenue } from "@/lib/api-functions";
 
 type StatusCardProps = {
   label: string;
@@ -15,52 +14,41 @@ type StatusCardProps = {
 const inter = Inter({ subsets: ["latin"] });
 
 const StatusCard = ({ label, status, currency, iconUrl }: StatusCardProps) => {
-  const [isLastItem, setIsLastItem] = useState(false);
-
-  useEffect(() => {
-    if (label === "Pending") {
-      setIsLastItem(true);
-      return;
-    }
-    setIsLastItem(false);
-  }, []);
   return (
     <div
       className={
-        "min-w-[145px] h-[88px] rounded-[10px] bg-eclipse px-[19px] py-[15px] mr-[5px] last:mr-0 md:rounded-none md:first:rounded-l-[10px] md:last:rounded-r-[10px] md:h-[130px] md:w-full md:mr-0"
+        "min-w-[200px] w-1/4 min-h-[88px] rounded-[10px] bg-eclipse px-[19px] py-[15px] mr-[5px] last:mr-0  md:h-[130px] md:w-full md:mr-0"
       }
     >
       <div
-        className={`h-full flex-col justify-center md:border-r-midnight md:pr-2.5 ${
-          !isLastItem ? "md:border-r-[1px]" : null
-        }`}
+        className={`h-full flex-col justify-center md:border-r-midnight md:pr-2.5`}
       >
         <div
           className={
             "flex justify-between items-center w-full md:h-1/2 md:flex-row-reverse md:justify-between"
           }
         >
-          <div className={"hidden relative md:flex w-5 h-5 md:mr-[5px]"}>
-            <Image src={iconUrl} alt={`${label}-icon`} fill />
-          </div>
-          <p
+          <div
             className={
-              "text-xs leading-[19.2px] text-snowWhite md:text-xl lg:text-2xl"
+              "hidden relative md:flex min-w-5 min-h-5 md:mr-[5px] p-2 bg-oceanBlue rounded-[10px]"
             }
           >
+            <Image src={iconUrl} alt={`${label}-icon`} height={20} width={20} />
+          </div>
+          <p className={"text-xs leading-[19.2px] text-snowWhite md:text-xl"}>
             {label}
           </p>
           <div
             className={
-              "px-[7px] py-px flex items-center justify-center rounded-full border-2 border-oceanBlue md:hidden"
+              "p-2 flex items-center justify-center rounded-[10px] border-2 border-oceanBlue md:hidden"
             }
           >
-            <span className={"text-xs text-oceanBlue"}>+100</span>
+            <Image src={iconUrl} alt={`${label}-icon`} height={15} width={15} />
           </div>
         </div>
         <div
           className={
-            "w-full h-full flex justify-center mt-4 md:justify-center md:mt-0 md:h-1/2 md:items-end "
+            "w-full h-full flex justify-center mt-4 md:justify-center md:mt-0 md:h-1/2 md:items-end"
           }
         >
           <p

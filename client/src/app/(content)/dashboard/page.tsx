@@ -1,11 +1,13 @@
 import StatusBar from "@/ui/StatusBar/StatusBar";
 import LatestContainer from "@/ui/LatestContainer/LatestContainer";
-import { getAllClients, getAllInvoices } from "@/lib/api-functions";
+import { getLatestClients, getLatestInvoices } from "@/lib/api-functions";
+import { unstable_noStore as noStore } from "next/cache";
 
 export default async function Dashboard() {
+  noStore();
   const [invoices, clients] = await Promise.all([
-    getAllInvoices(),
-    getAllClients(),
+    getLatestInvoices(),
+    getLatestClients(),
   ]);
   return (
     <main className="flex-col w-full h-auto overflow-x-clip">

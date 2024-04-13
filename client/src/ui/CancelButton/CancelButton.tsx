@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import CloseIcon from "../../../public/close.svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/button";
 import { useRouter } from "next/navigation";
 
 const CancelButton = () => {

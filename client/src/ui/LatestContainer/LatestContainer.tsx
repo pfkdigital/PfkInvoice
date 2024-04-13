@@ -21,7 +21,11 @@ const LatestContainer = ({ invoices, clients }: LatestContainerProps) => {
         "w-full h-auto bg-midnight rounded-[10px] mt-2.5 max-w-[1400px]"
       }
     >
-      <div className={"flex justify-between mb-[10px] md:hidden"}>
+      <div
+        className={
+          "max-w-[500px] flex justify-between mb-[10px] px-2.5 mx-auto md:hidden"
+        }
+      >
         <div
           className={`w-1/2 h-10 flex justify-center items-center rounded-[10px] mr-[5px] cursor-pointer ${
             showInvoices ? "bg-oceanBlue" : "bg-eclipse"
@@ -59,7 +63,7 @@ const LatestContainer = ({ invoices, clients }: LatestContainerProps) => {
         <div className={"bg-eclipse rounded-[10px] px-5 py-5"}>
           <div className={"w-full flex justify-between text-snowWhite "}>
             <p className={"font-bold"}>Latest Invoices</p>
-            <Link href={"/invoices"} className={"font-bold"}>
+            <Link className="italic" href={"/invoices"}>
               View All
             </Link>
           </div>
@@ -73,11 +77,11 @@ const LatestContainer = ({ invoices, clients }: LatestContainerProps) => {
         <div className={"bg-eclipse h-fit rounded-[10px] ml-2.5 px-5 py-5"}>
           <div className={"w-full flex justify-between text-snowWhite"}>
             <p className={"font-bold"}>Latest Clients</p>
-            <Link href={"/clients"} className={"font-bold"}>
+            <Link className="italic" href={"/clients"}>
               View All
             </Link>
           </div>
-          <div className={"overflow-x-scroll"}>
+          <div className={"overflow-x-scroll no-scrollbar"}>
             <ClientTable
               headers={clientHeaders}
               clients={clients}

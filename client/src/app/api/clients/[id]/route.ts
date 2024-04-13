@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { deleteClientById, updateClientById } from "@/lib/api-functions";
-import { revalidatePath } from "next/cache";
 import { ClientDTOType } from "@/types/client.types";
 
 // Update Client By ID
@@ -12,8 +11,7 @@ export async function PUT(
   try {
     const clientId = +params.id;
     await updateClientById(clientId, payload as unknown as ClientDTOType);
-    revalidatePath("/clients");
-    revalidatePath(`/clients/${clientId}`);
+
     return NextResponse.json("Client was successfully updated", {
       status: 200,
     });
@@ -30,8 +28,7 @@ export async function DELETE(
   try {
     const clientId = +params.id;
     await deleteClientById(clientId);
-    revalidatePath("/clients");
-    revalidatePath("/invoices");
+
     return NextResponse.json(
       { message: "Client was successfully deleted" },
       { status: 200 },

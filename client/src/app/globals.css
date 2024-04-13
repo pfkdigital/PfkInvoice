@@ -15,6 +15,10 @@
     .no-border-on-last-child:last-child {
         border-right: none;
     }
+
+    .rounded-row {
+        border-radius: 10px !important;
+    }
 }
 
 * {

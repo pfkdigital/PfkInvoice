@@ -5,9 +5,12 @@ import ArrowLeft from "@/../public/arrow-left.svg";
 import Link from "next/link";
 import InvoiceDetail from "@/ui/InvoiceDetail/InvoiceDetail";
 import EditIcon from "@/../public/edit.svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/button";
+import { unstable_noStore as noStore } from "next/cache";
 
 const Page = async ({ params }: { params: { id: number } }) => {
+  noStore();
+
   const invoiceId = params.id;
   const invoice = await getInvoiceById(invoiceId);
 

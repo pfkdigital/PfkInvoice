@@ -29,12 +29,12 @@ export const InvoiceSchema = z.object({
   description: z.coerce.string(),
   paymentDue: z.coerce.string(),
   paymentTerms: z.coerce.number(),
-  client: ClientSchema,
+  clientId: z.coerce.number().optional(),
+  client: ClientSchema.optional(),
   invoiceItems: InvoiceItemSchema.array(),
   total: z.number().optional(),
 });
 
-export type ClientAddressType = z.infer<typeof ClientAddressSchema>;
-export type ClientType = z.infer<typeof ClientSchema>;
+export type ClientSchemaType = z.infer<typeof ClientSchema>;
 export type InvoiceItemType = z.infer<typeof InvoiceItemSchema>;
 export type InvoiceSchemaType = z.infer<typeof InvoiceSchema>;

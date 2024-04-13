@@ -9,13 +9,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/table";
 import Link from "next/link";
 import Image from "next/image";
 import PlusIcon from "../../../public/plus.svg";
 import FilterBox from "@/ui/FilterBox/FilterBox";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/button";
 
 interface TableProps {
   headers: string[];
@@ -87,62 +87,74 @@ const InvoiceTable = ({
           />
         </div>
       )}
-      <Table
+      <div
         className={
-          "text-snowWhite gap-y-2.5 border-separate gap-x-2.5 border-spacing-y-2"
+          "w-full overflow-x-scroll no-scrollbar no-scrollbar::-webkit-scrollbar"
         }
       >
-        <TableHeader
-          className={"hidden border-y-2 border-y-eclipse md:table-header-group"}
+        <Table
+          className={
+            "w-full text-snowWhite gap-y-2.5 border-separate gap-x-2.5 border-spacing-y-2"
+          }
         >
-          <TableRow className={"h-auto bg-midnight mb-2.5 md:bg-eclipse"}>
-            {headers.map((item, index) => (
-              <TableHead
-                className={"overflow-hidden whitespace-nowrap text-ellipsis"}
-                key={index}
-              >
-                {item}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {dataToDisplay.map((item) => (
-            <TableRow
-              className={tableRowStyle}
-              key={item.id}
-              onClick={() => handleClick(item.id)}
-            >
-              <TableCell className={`${tableCellStyle} `}>
-                {item.invoiceReference}
-              </TableCell>
-              <TableCell className={tableCellStyle}>{item.createdAt}</TableCell>
-              <TableCell className={tableCellStyle}>
-                {item.clientName}
-              </TableCell>
-              <TableCell className={tableCellStyle}>
-                {item.description}
-              </TableCell>
-              <TableCell className={tableCellStyle}>
-                {item.paymentTerms}
-              </TableCell>
-              <TableCell className={tableCellStyle}>
-                {item.paymentDue}
-              </TableCell>
-              <TableCell className={tableCellStyle}>£ {item.total}</TableCell>
-              <TableCell
-                className={
-                  item.invoiceStatus === "Paid"
-                    ? `text-oceanBlue`
-                    : `text-smokeGray`
-                }
-              >
-                {item.invoiceStatus}
-              </TableCell>
+          <TableHeader
+            className={
+              "hidden border-y-2 border-y-eclipse md:table-header-group"
+            }
+          >
+            <TableRow className={"h-auto bg-midnight mb-2.5 md:bg-eclipse"}>
+              {headers.map((item, index) => (
+                <TableHead
+                  className={"overflow-hidden whitespace-nowrap text-ellipsis"}
+                  key={index}
+                >
+                  {item}
+                </TableHead>
+              ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {dataToDisplay.map((item) => (
+              <TableRow
+                className={tableRowStyle}
+                key={item.id}
+                onClick={() => handleClick(item.id)}
+              >
+                <TableCell
+                  className={`${tableCellStyle} round-tl-[10px] round-tr-[10px]`}
+                >
+                  {item.invoiceReference}
+                </TableCell>
+                <TableCell className={tableCellStyle}>
+                  {item.createdAt}
+                </TableCell>
+                <TableCell className={tableCellStyle}>
+                  {item.clientName}
+                </TableCell>
+                <TableCell className={tableCellStyle}>
+                  {item.description}
+                </TableCell>
+                <TableCell className={tableCellStyle}>
+                  {item.paymentTerms}
+                </TableCell>
+                <TableCell className={tableCellStyle}>
+                  {item.paymentDue}
+                </TableCell>
+                <TableCell className={tableCellStyle}>£ {item.total}</TableCell>
+                <TableCell
+                  className={
+                    item.invoiceStatus === "Paid"
+                      ? `text-oceanBlue`
+                      : `text-smokeGray`
+                  }
+                >
+                  {item.invoiceStatus}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </>
   );
 };

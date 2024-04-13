@@ -5,7 +5,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { SidebarProvider } from "@/lib/side-bar-context-provider";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/sonner";
 
 const lato = Lato({ weight: "400", subsets: ["latin"] });
 
@@ -14,11 +14,7 @@ export const metadata: Metadata = {
   description: "Displays invoices and clients",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <ClerkProvider
       appearance={{
@@ -27,7 +23,7 @@ export default function RootLayout({
     >
       <SidebarProvider>
         <html lang="en">
-          <body className={`${lato.className} relative overflow-x-clip`}>
+          <body className={`${lato.className} overflow-x-clip`}>
             {children}
             <Toaster />
           </body>
@@ -35,4 +31,6 @@ export default function RootLayout({
       </SidebarProvider>
     </ClerkProvider>
   );
-}
+};
+
+export default RootLayout;

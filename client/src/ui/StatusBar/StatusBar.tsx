@@ -22,7 +22,7 @@ const StatusBar = async () => {
         "w-full h-auto overflow-x-scroll overflow-y-clip no-scrollbar max-w-[1400px] md:overflow-x-clip"
       }
     >
-      <div className={"flex md:grid md:grid-cols-4"}>
+      <div className={"flex md:grid md:grid-cols-4 gap-x-2.5"}>
         <StatusCard
           label={invoiceCount.label}
           status={invoiceCount.status}

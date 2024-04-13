@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { deleteInvoiceById, editInvoiceById } from "@/lib/api-functions";
 import { InvoiceDetailsType } from "@/types/invoice.types";
-import { revalidatePath } from "next/cache";
 
 export const PUT = async (
   req: NextRequest,
@@ -10,8 +9,6 @@ export const PUT = async (
   const payload = (await req.json()) as InvoiceDetailsType;
   try {
     await editInvoiceById(payload, +params.id);
-    revalidatePath("/invoices");
-    revalidatePath("/clients");
 
     return NextResponse.json("Invoice was successfully updated", {
       status: 201,
@@ -27,7 +24,7 @@ export const DELETE = async (
 ) => {
   try {
     await deleteInvoiceById(+params.id);
-    revalidatePath("/invoices");
+
     return NextResponse.json("Invoice was successfully deleted", {
       status: 200,
     });

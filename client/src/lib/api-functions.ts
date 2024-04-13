@@ -3,70 +3,69 @@ import {
   ClientType,
   ClientWithInvoices,
 } from "@/types/client.types";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import {
   InvoiceDetailsType,
   InvoiceType,
   NewInvoiceType,
 } from "@/types/invoice.types";
-import { NewItemType } from "@/types/invoiceitem";
 
 const invoiceUrl = "http://localhost:8080/api/v1/invoices";
 const clientUrl = "http://localhost:8080/api/v1/clients";
 
 export const getInvoiceCount = async () => {
   try {
-    const response = await fetch(`${invoiceUrl}/count`, {
-      cache: "no-cache",
-    });
+    const response = await fetch(`${invoiceUrl}/count`);
     return await response.json();
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
 export const getInvoiceRevenue = async () => {
   try {
-    const response = await fetch(`${invoiceUrl}/total`, {
-      cache: "no-cache",
-    });
-
+    const response = await fetch(`${invoiceUrl}/total`);
     return await response.json();
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
 export const getUnpaidRevenue = async () => {
   try {
-    const response = await fetch(`${invoiceUrl}/unpaid/total`, {
-      cache: "no-cache",
-    });
-
+    const response = await fetch(`${invoiceUrl}/unpaid/total`);
     return await response.json();
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
 export const getClientCount = async () => {
   try {
-    const response = await fetch(`${clientUrl}/count`, {
-      cache: "no-cache",
-    });
+    const response = await fetch(`${clientUrl}/count`);
     return await response.json();
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
 export const getAllInvoices = async (): Promise<InvoiceType[] | undefined> => {
   try {
-    const response = await fetch(`${invoiceUrl}`, { cache: "no-cache" });
+    const response = await fetch(`${invoiceUrl}`);
     return await response.json();
   } catch (e) {
-    console.log(e);
+    console.error(e);
+  }
+};
+
+export const getLatestInvoices = async (): Promise<
+  InvoiceType[] | undefined
+> => {
+  try {
+    const response = await fetch(`${invoiceUrl}/latest`);
+    const invoices = await response.json();
+    return invoices;
+  } catch (e) {
+    console.error(e);
   }
 };
 
@@ -74,21 +73,29 @@ export const getInvoiceById = async (
   invoiceId: number,
 ): Promise<InvoiceDetailsType | undefined> => {
   try {
-    const response = await fetch(`${invoiceUrl}/${invoiceId}`, {
-      cache: "no-cache",
-    });
+    const response = await fetch(`${invoiceUrl}/${invoiceId}`);
     return await response.json();
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
 export const getAllClients = async (): Promise<ClientType[] | undefined> => {
   try {
-    const response = await fetch(`${clientUrl}`, { cache: "no-cache" });
+    const response = await fetch(`${clientUrl}`);
     return await response.json();
   } catch (e) {
-    console.log(e);
+    console.error(e);
+  }
+};
+
+export const getLatestClients = async (): Promise<ClientType[] | undefined> => {
+  try {
+    const response = await fetch(`${clientUrl}/latest`);
+    const clients = await response.json();
+    return clients;
+  } catch (e) {
+    console.error(e);
   }
 };
 
@@ -99,7 +106,7 @@ export const getClientById = async (
     const response = await fetch(`${clientUrl}/${clientId}`);
     return await response.json();
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -116,7 +123,7 @@ export const updateClientById = async (
 
     return await response.json();
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -130,7 +137,7 @@ export const createClient = async (data: ClientDTOType) => {
 
     return await response.json();
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -155,7 +162,7 @@ export const createInvoice = async (data: NewInvoiceType) => {
 
     return await response.json();
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -174,7 +181,7 @@ export const editInvoiceById = async (
 
     return await response.json();
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -186,59 +193,6 @@ export const deleteInvoiceById = async (invoiceId: number) => {
 
     return response.text();
   } catch (e) {
-    console.log(e);
-  }
-};
-
-export const createInvoiceItem = async (
-  invoiceId: number,
-  data: NewItemType,
-) => {
-  try {
-    const response = await fetch(`${invoiceUrl}/${invoiceId}/items`, {
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-      method: "POST",
-      cache: "no-cache",
-    });
-    return await response.json();
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-export const editInvoiceItemById = async (
-  data: NewItemType,
-  invoiceItemId: number,
-) => {
-  try {
-    const response = await fetch(`${invoiceUrl}/items/${invoiceItemId}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-      method: "PUT",
-      cache: "no-cache",
-    });
-    return await response.json();
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-export const deleteInvoiceItemById = async (
-  invoiceId: number,
-  invoiceItemId: number,
-) => {
-  try {
-    const response = await fetch(
-      `${invoiceUrl}/${invoiceId}/items/${invoiceItemId}`,
-      {
-        method: "DELETE",
-      },
-    );
-    return response.json();
-  } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };

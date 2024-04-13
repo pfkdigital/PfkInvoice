@@ -4,7 +4,7 @@ const config = {
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
+    "./components/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
   ],
@@ -37,8 +37,8 @@ const config = {
     },
     extend: {
       screens: {
-        md: "1200px",
-        lg: "1400px",
+        md: "1000px",
+        lg: "1200px",
       },
       keyframes: {
         "accordion-down": {
@@ -55,8 +55,8 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       gridTemplateColumns: {
-        "latest-container-column": "70% 30%",
-        "invoice-grid": "1fr auto",
+        "latest-container-column": "60% 40%",
+        "invoice-grid": "1fr minmax(300px, 0.1fr)",
         "invoice-form": "2fr 1fr",
       },
       gridTemplateRows: {

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,8 +7,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from "@/components/alert-dialog";
+import { Button } from "@/components/button";
 import Image from "next/image";
 import { SignOutButton, useClerk } from "@clerk/nextjs";
 

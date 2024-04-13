@@ -17,17 +17,7 @@ const ClientFormContainer = ({
   type,
 }: ClientFormContainerProps) => {
   const [deleted, setDeleted] = useState(false);
-  return (
-    <>
-      <ClientTitleBar
-        clientId={clientId}
-        deleted={deleted}
-        setDeleted={setDeleted}
-        type={type}
-      />
-      <ClientForm client={client} deleted={deleted} id={clientId} type={type} />
-    </>
-  );
+  return <></>;
 };
 
 export default ClientFormContainer;

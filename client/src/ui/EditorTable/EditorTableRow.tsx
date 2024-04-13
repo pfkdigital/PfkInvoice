@@ -1,12 +1,11 @@
-"use client";
-
 import React from "react";
-import { ItemTableCell, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+import { ItemTableCell, TableRow } from "@/components/table";
+import { Button } from "@/components/button";
 import Image from "next/image";
 import BinIcon from "../../../public/bin.svg";
 import EditIcon from "../../../public/edit.svg";
-import { UseFieldArrayRemove } from "react-hook-form";
+import { UseFieldArrayRemove, UseFormReset } from "react-hook-form";
+import { InvoiceItemType } from "@/lib/form-schemas";
 
 interface EditorTableRowProps {
   id: any;
@@ -20,6 +19,7 @@ interface EditorTableRowProps {
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   selectedIndex: number;
   setSelectedIndex: React.Dispatch<React.SetStateAction<number>>;
+  reset: UseFormReset<InvoiceItemType>;
 }
 
 const EditorTableRow = ({
@@ -29,6 +29,7 @@ const EditorTableRow = ({
   price,
   total,
   remove,
+  reset,
   setValue,
   isEditing,
   setEditing,
@@ -41,6 +42,12 @@ const EditorTableRow = ({
     setValue("quantity", quantity);
     setValue("price", price);
     setSelectedIndex(id);
+  };
+
+  const handleItemDelete = (id: number) => {
+    remove(id);
+    reset();
+    setEditing(false);
   };
 
   return (
@@ -90,7 +97,7 @@ const EditorTableRow = ({
               width={12}
               height={12}
               className={"cursor-pointer"}
-              onClick={() => remove(id)}
+              onClick={() => handleItemDelete(id)}
             />
           </Button>
         ) : (

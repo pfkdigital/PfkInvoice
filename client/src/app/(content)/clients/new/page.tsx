@@ -1,6 +1,4 @@
 import React from "react";
-import ClientForm from "@/ui/ClientForm/ClientForm";
-import ClientTitleBar from "@/ui/ClientTitleBar/ClientTitleBar";
 import ClientFormContainer from "@/ui/ClientFormContainer/ClientFormContainer";
 
 const Page = () => {

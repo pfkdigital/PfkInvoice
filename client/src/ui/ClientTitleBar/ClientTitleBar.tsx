@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/button";
 import { toast } from "sonner";
 import GoBackIcon from "@/ui/GoBackIcon/GoBackIcon";
 import CancelButton from "@/ui/CancelButton/CancelButton";
@@ -13,12 +13,10 @@ import { useRouter } from "next/navigation";
 type ClientTitleBarProps = {
   type: "create" | "edit" | "view";
   clientId?: number;
-  deleted?: boolean;
   setDeleted?: (deleted: boolean) => void;
 };
 
 const ClientTitleBar = ({
-  deleted,
   setDeleted,
   type,
   clientId,
@@ -27,21 +25,17 @@ const ClientTitleBar = ({
   const router = useRouter();
   const isViewMode = type === "view";
   const isEditMode = type === "edit";
-  const goBackLinkHref = `/clients${
-    isViewMode || deleted ? "" : `/${clientId}`
-  }`;
+  const goBackLinkHref = `/clients`;
 
   useEffect(() => {
-    let titlePrefix = "Create Client";
+    let titlePrefix = "";
     if (isViewMode) {
       titlePrefix = `Client ${clientId}`;
-    } else if (deleted) {
-      titlePrefix = `Client ${clientId} Deleted`;
     } else if (isEditMode) {
-      titlePrefix = `Edit Client: ${clientId}`;
+      titlePrefix = `Edit Client`;
     }
     setTitle(titlePrefix);
-  }, [type, clientId, deleted]);
+  }, [type, clientId]);
 
   const handleClientDelete = async () => {
     try {
@@ -60,39 +54,32 @@ const ClientTitleBar = ({
   };
 
   return (
-    <div className="py-4 flex justify-start items-center">
+    <div className="p-4 flex justify-start items-center">
       <GoBackIcon href={goBackLinkHref} />
       <p className="text-cloudGray text-s text-lg md:hidden">
-        {type} / {clientId} / {type === "edit" ? "Edit" : "Create"}
+        {type === "view" ? undefined : type === "create" ? "Create " : ""}
       </p>
       <p className="text-cloudGray text-s text-lg w-auto">{title}</p>
       <div className="ml-auto flex items-center md:flex md:justify-end">
         {type !== "view" && (
-          <Button
-            className="mr-2.5"
-            type="submit"
-            size="sm"
-            form="client-form"
-            disabled={deleted}
-          >
+          <Button type="submit" size="sm" form="client-form">
             Save
           </Button>
         )}
         {isEditMode && (
           <Button
+            className={"ml-2.5"}
             variant="destructive"
             size="sm"
             onClick={handleClientDelete}
-            disabled={deleted}
           >
             <span className="text-snowWhite">Delete</span>
           </Button>
         )}
-        {!isEditMode && !isViewMode && <CancelButton />}
         {isViewMode && (
           <Link
             href={`/clients/edit/${clientId}`}
-            className={"ml-auto hidden md:w-[91px] md:flex md:justify-center"}
+            className={"ml-auto md:w-[91px] md:flex md:justify-center"}
           >
             <Button>
               <Image

@@ -6,9 +6,13 @@ import { DatePicker } from "@/ui/DatePicker/DatePicker";
 import { paymentTermsData } from "@/lib/payment-terms";
 import ProductEditor from "@/ui/ProductEditor/ProductEditor";
 import { InvoiceDetailsType } from "@/types/invoice.types";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { InvoiceSchemaType, InvoiceSchema } from "@/lib/form-schemas";
+import {
+  InvoiceSchemaType,
+  InvoiceSchema,
+  ClientSchemaType,
+} from "@/lib/form-schemas";
 import generateInvoiceReference from "@/lib/generate-invoice-reference";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -23,6 +27,9 @@ type InvoiceFormProps = {
 const InvoiceForm = ({ clients, invoiceToEdit, type }: InvoiceFormProps) => {
   const [total, setTotal] = useState<number>(0);
   const [selectedDate, setSelectedDate] = useState<string>();
+  const [selectedClient, setSelectedClient] = useState<ClientSchemaType>(
+    invoiceToEdit?.client || ({} as ClientSchemaType),
+  );
   const isEditMode = type === "edit";
   const {
     control,
@@ -31,6 +38,7 @@ const InvoiceForm = ({ clients, invoiceToEdit, type }: InvoiceFormProps) => {
     formState: { errors },
     getValues,
     setValue,
+    watch,
   } = useForm<InvoiceSchemaType>({
     resolver: zodResolver(InvoiceSchema),
   });
@@ -38,21 +46,22 @@ const InvoiceForm = ({ clients, invoiceToEdit, type }: InvoiceFormProps) => {
     control,
     name: "invoiceItems",
   });
-
+  const selectedClientId = watch("clientId");
   const router = useRouter();
 
   useEffect(() => {
     if (isEditMode && invoiceToEdit) {
       setValue("description", invoiceToEdit.description);
       setValue("invoiceReference", invoiceToEdit.invoiceReference);
-      setValue("invoiceItems", invoiceToEdit.invoiceItems);
       setValue("paymentTerms", invoiceToEdit.paymentTerms);
       setValue("paymentDue", invoiceToEdit.paymentDue);
       setValue("invoiceStatus", invoiceToEdit.invoiceStatus);
       setValue("total", invoiceToEdit.total);
       setValue("createdAt", invoiceToEdit.createdAt);
+      setValue("clientId", invoiceToEdit.client.id);
+      setValue("invoiceItems", invoiceToEdit.invoiceItems);
     }
-  }, []);
+  }, [invoiceToEdit, isEditMode, setValue]);
 
   useEffect(() => {
     const total = fields.reduce((acc, item) => acc + item.total, 0);
@@ -64,6 +73,18 @@ const InvoiceForm = ({ clients, invoiceToEdit, type }: InvoiceFormProps) => {
       setValue("paymentDue", selectedDate);
     }
   }, [selectedDate, setValue]);
+
+  useEffect(() => {
+    if (selectedClientId) {
+      const currentClient = clients?.find(
+        (client) => client.id === +selectedClientId,
+      );
+
+      if (currentClient) {
+        setSelectedClient(currentClient);
+      }
+    }
+  }, [selectedClientId]);
 
   const renderClientsOptions = () => {
     return clients?.map((client) => (
@@ -81,7 +102,9 @@ const InvoiceForm = ({ clients, invoiceToEdit, type }: InvoiceFormProps) => {
     ));
   };
 
-  const submit = handleSubmit(async (data) => {
+  const submit = handleSubmit(async (data: InvoiceSchemaType) => {
+    setValue("client", selectedClient);
+    setValue("clientId", undefined);
     try {
       if (isEditMode) {
         const payload = getValues();
@@ -129,10 +152,8 @@ const InvoiceForm = ({ clients, invoiceToEdit, type }: InvoiceFormProps) => {
               required: true,
             })}
           >
-            <option value="" className="text-cloudGray">
-              {isEditMode && invoiceToEdit
-                ? invoiceToEdit.invoiceStatus
-                : "Payment Status"}
+            <option value={invoiceToEdit?.client.id} className="text-cloudGray">
+              {"Payment Status"}
             </option>
             <option value="Unpaid" className="text-cloudGray">
               Unpaid
@@ -172,16 +193,14 @@ const InvoiceForm = ({ clients, invoiceToEdit, type }: InvoiceFormProps) => {
         <div className="w-full md:hidden">
           <select
             className="h-[30px] w-full pl-4 bg-eclipse text-snowWhite text-xs md:bg-midnight md:h-10"
-            placeholder={"Client"}
-            {...register("client", {
+            placeholder={
+              isEditMode ? invoiceToEdit?.client.clientName : "Client"
+            }
+            {...register("clientId", {
               required: true,
-              setValueAs: (value) =>
-                clients?.find((client) => client.id === +value),
             })}
           >
-            <option value="">
-              {isEditMode ? invoiceToEdit?.client.clientName : "Client"}
-            </option>
+            <option value={invoiceToEdit?.client.id}>Select Client</option>
             {renderClientsOptions()}
           </select>
         </div>
@@ -192,22 +211,20 @@ const InvoiceForm = ({ clients, invoiceToEdit, type }: InvoiceFormProps) => {
           append={append}
           remove={remove}
           update={update}
-          isEditMode={isEditMode}
+          invoiceItems={getValues("invoiceItems")}
         />
         <div className="md:grid grid-rows-2 grid-cols-1">
           <div className="w-full">
             <select
               className="hidden h-[30px] w-full pl-4 bg-eclipse text-snowWhite text-xs md:block md:bg-midnight md:h-10 md:relative md:top-[54px]"
-              placeholder={"Client"}
-              {...register("client", {
+              placeholder={
+                isEditMode ? invoiceToEdit?.client.clientName : "Client"
+              }
+              {...register("clientId", {
                 required: true,
-                setValueAs: (value) =>
-                  clients?.find((client) => client.id === +value),
               })}
             >
-              <option value={invoiceToEdit?.client.id}>
-                {isEditMode ? invoiceToEdit?.client.clientName : "Client"}
-              </option>
+              <option>Select Client</option>
               {renderClientsOptions()}
             </select>
           </div>
