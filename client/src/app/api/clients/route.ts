@@ -1,9 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import { ClientFormSchema } from "@/ui/ClientForm/clientFormSchema";
 import { createClient } from "@/lib/api-functions";
-import { ClientDTOType } from "@/types/client.types";
 
 export async function POST(req: NextRequest) {
-  const payload = (await req.json()) as ClientDTOType;
+  const payload = await req.json();
+  const parsed = ClientFormSchema.safeParse(payload);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      parsed.error.errors.map((error) => error),
+      { status: 400 },
+    );
+  }
+
   try {
     await createClient(payload);
 

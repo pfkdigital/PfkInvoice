@@ -3,7 +3,6 @@
 import { Button } from "@/components/button";
 import { toast } from "sonner";
 import GoBackIcon from "@/ui/GoBackIcon/GoBackIcon";
-import CancelButton from "@/ui/CancelButton/CancelButton";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -13,19 +12,14 @@ import { useRouter } from "next/navigation";
 type ClientTitleBarProps = {
   type: "create" | "edit" | "view";
   clientId?: number;
-  setDeleted?: (deleted: boolean) => void;
 };
 
-const ClientTitleBar = ({
-  setDeleted,
-  type,
-  clientId,
-}: ClientTitleBarProps) => {
-  const [title, setTitle] = useState("");
+const ClientTitleBar = ({ type, clientId }: ClientTitleBarProps) => {
   const router = useRouter();
+  const [title, setTitle] = useState("");
   const isViewMode = type === "view";
   const isEditMode = type === "edit";
-  const goBackLinkHref = `/clients`;
+  const goBackLinkHref = isEditMode ? `/clients/${clientId}` : "/clients";
 
   useEffect(() => {
     let titlePrefix = "";
@@ -33,19 +27,21 @@ const ClientTitleBar = ({
       titlePrefix = `Client ${clientId}`;
     } else if (isEditMode) {
       titlePrefix = `Edit Client`;
+    } else {
+      titlePrefix = "Create Client";
     }
     setTitle(titlePrefix);
-  }, [type, clientId]);
+  }, [type, clientId, isViewMode, isEditMode]);
 
-  const handleClientDelete = async () => {
+  const handleDelete = async () => {
     try {
       const response = await fetch(`/api/clients/${clientId}`, {
         method: "DELETE",
       });
       const result = await response.json();
       toast.success(result.message);
-      setDeleted?.(true);
     } catch (error) {
+      console.error(error);
       toast.error(
         "An error occurred while deleting the client. Please try again.",
       );
@@ -54,11 +50,8 @@ const ClientTitleBar = ({
   };
 
   return (
-    <div className="p-4 flex justify-start items-center">
+    <div className="py-4 flex justify-start items-center">
       <GoBackIcon href={goBackLinkHref} />
-      <p className="text-cloudGray text-s text-lg md:hidden">
-        {type === "view" ? undefined : type === "create" ? "Create " : ""}
-      </p>
       <p className="text-cloudGray text-s text-lg w-auto">{title}</p>
       <div className="ml-auto flex items-center md:flex md:justify-end">
         {type !== "view" && (
@@ -71,7 +64,7 @@ const ClientTitleBar = ({
             className={"ml-2.5"}
             variant="destructive"
             size="sm"
-            onClick={handleClientDelete}
+            onClick={handleDelete}
           >
             <span className="text-snowWhite">Delete</span>
           </Button>

@@ -51,7 +51,7 @@ const InvoiceTable = ({
   const tableCellStyle =
     "text-snowWhite text-[12px] leading-[14.4px] overflow-hidden whitespace-nowrap text-ellipsis p-3";
   const tableRowStyle = lightRows
-    ? "h-auto bg-eclipse mb-2.5 md:bg-midnight cursor-pointer"
+    ? "h-auto bg-midnight mb-2.5 cursor-pointer"
     : "h-auto bg-eclipse mb-2.5 cursor-pointer md:bg-midnight";
 
   const dataToDisplay =

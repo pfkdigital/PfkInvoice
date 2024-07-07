@@ -30,7 +30,7 @@ export function DatePicker({ label, setValue }: DatePickerProps) {
         <Button
           variant={"outline"}
           className={cn(
-            "w-full h-[30px] flex-row-reverse justify-between text-left font-normal bg-eclipse border-0 md:bg-midnight md:h-10 md:w-[130px]",
+            "w-full min-h-[40px] flex-row-reverse justify-between text-left font-normal bg-eclipse border-0 md:bg-midnight md:h-10 md:w-[130px]",
             !date && "text-cloudGray",
           )}
         >
@@ -44,7 +44,7 @@ export function DatePicker({ label, setValue }: DatePickerProps) {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 bg-eclipse text-oceanBlue md:bg-midnight">
+      <PopoverContent className="w-auto p-0 bg-eclipse md:bg-midnight">
         <Calendar
           mode="single"
           selected={date}

@@ -6,9 +6,11 @@ import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
 import SignOutIcon from "@/ui/SignOutIcon/SignOutIcon";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 function NavBar() {
   const { user } = useUser();
+  const router = useRouter();
   return (
     <nav
       className={
@@ -17,7 +19,12 @@ function NavBar() {
     >
       <div className={"h-auto w-full flex justify-between"}>
         <Button>PFK Invoice</Button>
-        <div className={"w-auto flex"}>
+        <div className={"w-auto h-full flex items-center"}>
+          <div className={"hidden md:flex mr-14"}>
+            <Button size={"sm"} onClick={() => router.push("/invoices/new")}>
+              New Invoice
+            </Button>
+          </div>
           <div className={"hidden md:flex"}>
             {user && (
               <Link href={"/user-profile"}>

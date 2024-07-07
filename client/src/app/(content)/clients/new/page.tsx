@@ -1,5 +1,6 @@
 import React from "react";
-import ClientFormContainer from "@/ui/ClientFormContainer/ClientFormContainer";
+import ClientTitleBar from "@/ui/ClientTitleBar/ClientTitleBar";
+import ClientForm from "@/ui/ClientForm/ClientForm";
 
 const Page = () => {
   return (
@@ -7,7 +8,10 @@ const Page = () => {
       <div
         className={"w-full h-fit rounded-[20px] md:p-5 md:bg-eclipse md:pb-9"}
       >
-        <ClientFormContainer type={"create"} />
+        <ClientTitleBar type={"create"} />
+        <div className={"mx-2.5 mt-4 md:px-4"}>
+          <ClientForm type={"create"} />
+        </div>
       </div>
     </div>
   );

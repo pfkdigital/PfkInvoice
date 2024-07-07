@@ -6,14 +6,11 @@ import {
 } from "@/types/invoice.types";
 import { ClientFormSchemaType } from "@/ui/ClientForm/clientFormSchema";
 import { unstable_noStore as noStore } from "next/cache";
-
-const invoiceUrl = "http://localhost:8080/api/v1/invoices";
-const clientUrl = "http://localhost:8080/api/v1/clients";
+import { CLIENT_URL, INVOICE_URL } from "@/lib/constants";
 
 export const getInvoiceCount = async () => {
-  noStore();
   try {
-    const response = await fetch(`${invoiceUrl}/count`);
+    const response = await fetch(`${INVOICE_URL}/count`);
     return await response.json();
   } catch (e) {
     console.error(e);
@@ -21,9 +18,8 @@ export const getInvoiceCount = async () => {
 };
 
 export const getInvoiceRevenue = async () => {
-  noStore();
   try {
-    const response = await fetch(`${invoiceUrl}/total`);
+    const response = await fetch(`${INVOICE_URL}/total`);
     return await response.json();
   } catch (e) {
     console.error(e);
@@ -31,9 +27,8 @@ export const getInvoiceRevenue = async () => {
 };
 
 export const getUnpaidRevenue = async () => {
-  noStore();
   try {
-    const response = await fetch(`${invoiceUrl}/unpaid/total`);
+    const response = await fetch(`${INVOICE_URL}/unpaid/total`);
     return await response.json();
   } catch (e) {
     console.error(e);
@@ -41,9 +36,8 @@ export const getUnpaidRevenue = async () => {
 };
 
 export const getClientCount = async () => {
-  noStore();
   try {
-    const response = await fetch(`${clientUrl}/count`);
+    const response = await fetch(`${CLIENT_URL}/count`);
     return await response.json();
   } catch (e) {
     console.error(e);
@@ -51,9 +45,8 @@ export const getClientCount = async () => {
 };
 
 export const getAllInvoices = async (): Promise<InvoiceType[] | undefined> => {
-  noStore();
   try {
-    const response = await fetch(`${invoiceUrl}`);
+    const response = await fetch(`${INVOICE_URL}`);
     return await response.json();
   } catch (e) {
     console.error(e);
@@ -63,11 +56,19 @@ export const getAllInvoices = async (): Promise<InvoiceType[] | undefined> => {
 export const getLatestInvoices = async (): Promise<
   InvoiceType[] | undefined
 > => {
-  noStore();
   try {
-    const response = await fetch(`${invoiceUrl}/latest`);
+    const response = await fetch(`${INVOICE_URL}/latest`);
     const invoices = await response.json();
     return invoices;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const getGraphData = async () => {
+  try {
+    const response = await fetch(`${INVOICE_URL}/graph`);
+    return await response.json();
   } catch (e) {
     console.error(e);
   }
@@ -78,7 +79,7 @@ export const getInvoiceById = async (
 ): Promise<InvoiceDetailsType | undefined> => {
   noStore();
   try {
-    const response = await fetch(`${invoiceUrl}/${invoiceId}`);
+    const response = await fetch(`${INVOICE_URL}/${invoiceId}`);
     return await response.json();
   } catch (e) {
     console.error(e);
@@ -88,7 +89,7 @@ export const getInvoiceById = async (
 export const getAllClients = async (): Promise<ClientType[] | undefined> => {
   noStore();
   try {
-    const response = await fetch(`${clientUrl}`);
+    const response = await fetch(`${CLIENT_URL}`);
     return await response.json();
   } catch (e) {
     console.error(e);
@@ -98,7 +99,7 @@ export const getAllClients = async (): Promise<ClientType[] | undefined> => {
 export const getLatestClients = async (): Promise<ClientType[] | undefined> => {
   noStore();
   try {
-    const response = await fetch(`${clientUrl}/latest`);
+    const response = await fetch(`${CLIENT_URL}/latest`);
     const clients = await response.json();
     return clients;
   } catch (e) {
@@ -111,7 +112,7 @@ export const getClientById = async (
 ): Promise<ClientWithInvoices | undefined> => {
   noStore();
   try {
-    const response = await fetch(`${clientUrl}/${clientId}`);
+    const response = await fetch(`${CLIENT_URL}/${clientId}`);
     return await response.json();
   } catch (e) {
     console.error(e);
@@ -123,7 +124,7 @@ export const updateClientById = async (
   updatedClient: ClientFormSchemaType,
 ) => {
   try {
-    const response = await fetch(`${clientUrl}/${clientId}`, {
+    const response = await fetch(`${CLIENT_URL}/${clientId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedClient),
@@ -136,7 +137,7 @@ export const updateClientById = async (
 
 export const createClient = async (data: ClientFormSchemaType) => {
   try {
-    const response = await fetch(`${clientUrl}`, {
+    const response = await fetch(`${CLIENT_URL}`, {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
       method: "POST",
@@ -149,7 +150,7 @@ export const createClient = async (data: ClientFormSchemaType) => {
 
 export const deleteClientById = async (clientId: number) => {
   try {
-    const response = await fetch(`${clientUrl}/${clientId}`, {
+    const response = await fetch(`${CLIENT_URL}/${clientId}`, {
       method: "DELETE",
     });
     return response.text();
@@ -160,7 +161,7 @@ export const deleteClientById = async (clientId: number) => {
 
 export const createInvoice = async (data: NewInvoiceType) => {
   try {
-    const response = await fetch(`${invoiceUrl}`, {
+    const response = await fetch(`${INVOICE_URL}`, {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
       method: "POST",
@@ -177,7 +178,7 @@ export const editInvoiceById = async (
   invoiceId: number,
 ) => {
   try {
-    const response = await fetch(`${invoiceUrl}/${invoiceId}`, {
+    const response = await fetch(`${INVOICE_URL}/${invoiceId}`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -193,7 +194,7 @@ export const editInvoiceById = async (
 
 export const deleteInvoiceById = async (invoiceId: number) => {
   try {
-    const response = await fetch(`${invoiceUrl}/${invoiceId}`, {
+    const response = await fetch(`${INVOICE_URL}/${invoiceId}`, {
       method: "DELETE",
     });
 

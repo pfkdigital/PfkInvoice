@@ -2,11 +2,10 @@ import React from "react";
 import { getAllClients, getInvoiceById } from "@/lib/api-functions";
 import InvoiceForm from "@/ui/InvoiceForm/InvoiceForm";
 import InvoiceTitleBar from "@/ui/InvoiceTitleBar/InvoiceTitleBar";
-import { unstable_noStore as noStore } from "next/cache";
+
+export const fetchCache = "only-no-store";
 
 const Page = async ({ params }: { params: { id: string } }) => {
-  noStore();
-
   const invoiceId = +params.id;
   const invoice = await getInvoiceById(invoiceId);
   const clients = await getAllClients();

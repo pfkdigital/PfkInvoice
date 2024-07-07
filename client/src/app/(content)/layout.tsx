@@ -14,15 +14,17 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <>
       <NavBar />
       <main className={"md:flex md:justify-start py-5"}>
-        <SideBar />
+        <div className={"hidden md:block "}>
+          <SideBar />
+        </div>
         <section
           className={
             "w-full px-2.5 overflow-x-scroll no-scrollbar .no-scrollbar::-webkit-scrollbar"
           }
         >
           {children}
+          <BottomBar />
         </section>
-        <BottomBar />
       </main>
     </>
   );

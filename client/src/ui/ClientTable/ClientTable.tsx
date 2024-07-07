@@ -77,16 +77,16 @@ const ClientTable = ({
                   {item.clientEmail}
                 </TableCell>
                 <TableCell className={tableCellStyle}>
-                  {item.clientAddress.street}
+                  {item.clientAddress?.street}
                 </TableCell>
                 <TableCell className={tableCellStyle}>
-                  {item.clientAddress.city}
+                  {item.clientAddress?.city}
                 </TableCell>
                 <TableCell className={tableCellStyle}>
-                  {item.clientAddress.postcode}
+                  {item.clientAddress?.postcode}
                 </TableCell>
                 <TableCell className={`${tableCellStyle}`}>
-                  {item.clientAddress.country}
+                  {item.clientAddress?.country}
                 </TableCell>
               </TableRow>
             ))}

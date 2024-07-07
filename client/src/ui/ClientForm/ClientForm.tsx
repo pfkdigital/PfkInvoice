@@ -2,12 +2,13 @@
 
 import React, { useEffect } from "react";
 import { ClientWithInvoices } from "@/types/client.types";
-import { Input } from "@/components/input";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { useRouter } from "next/navigation";
+import { ClientFormSchema, ClientFormSchemaType } from "./clientFormSchema";
+import { Form } from "@/components/form";
+import InputField from "@/ui/InputField/InputField";
 
 type ClientFormProps = {
   deleted?: boolean;
@@ -16,48 +17,32 @@ type ClientFormProps = {
   client?: ClientWithInvoices;
 };
 
-export const ClientSchema = z.object({
-  clientName: z.string(),
-  clientEmail: z.string().email(),
-  clientAddress: z.object({
-    street: z.string(),
-    city: z.string(),
-    postcode: z.string(),
-    country: z.string(),
-  }),
-});
-
-type ClientFormSchema = z.infer<typeof ClientSchema>;
-
-const ClientForm = ({ client, deleted, id, type }: ClientFormProps) => {
+const ClientForm = ({ client, id, type }: ClientFormProps) => {
   const isEditMode = type === "edit";
   const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { isSubmitting },
-  } = useForm<ClientFormSchema>({
-    resolver: zodResolver(ClientSchema),
+  const form = useForm<ClientFormSchemaType>({
+    resolver: zodResolver(ClientFormSchema),
     defaultValues: {
-      clientName: client?.clientName,
-      clientEmail: client?.clientEmail,
+      clientName: client?.clientName || "",
+      clientEmail: client?.clientEmail || "",
       clientAddress: {
-        street: client?.clientAddress.street,
-        city: client?.clientAddress.city,
-        postcode: client?.clientAddress.postcode,
-        country: client?.clientAddress.country,
+        street: client?.clientAddress?.street || "",
+        city: client?.clientAddress?.city || "",
+        postcode: client?.clientAddress?.postcode || "",
+        country: client?.clientAddress?.country || "",
       },
     },
   });
+
+  const { setValue, handleSubmit } = form;
 
   useEffect(() => {
     if (isEditMode && !client) {
       toast.error("Client not found");
       router.push("/clients");
     }
-    if (isEditMode && client) {
+    if (isEditMode && client && client.clientAddress) {
       setValue("clientName", client.clientName);
       setValue("clientEmail", client.clientEmail);
       setValue("clientAddress.street", client.clientAddress.street);
@@ -65,16 +50,16 @@ const ClientForm = ({ client, deleted, id, type }: ClientFormProps) => {
       setValue("clientAddress.postcode", client.clientAddress.postcode);
       setValue("clientAddress.country", client.clientAddress.country);
     }
-  }, [client, isEditMode]);
+  }, [client, isEditMode, router, setValue]);
 
-  const onSubmit = async (data: ClientFormSchema) => {
+  const onSubmit = async (data: ClientFormSchemaType) => {
     try {
       const url = isEditMode ? `/api/clients/${id}` : "/api/clients";
       const method = isEditMode ? "PUT" : "POST";
       const response = await fetch(url, {
         method,
-        body: JSON.stringify(data),
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       });
       const result = await response.json();
       toast.success(result);
@@ -86,67 +71,72 @@ const ClientForm = ({ client, deleted, id, type }: ClientFormProps) => {
   };
 
   return (
-    <div className={"px-2.5 md:pb-5 md:px-0"}>
-      <form
-        className={"flex-col"}
-        id={"client-form"}
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <div className={"my-1.25 md:hidden"}>
-          <p className={"text-base text-cloudGray"}>Client: {id}</p>
-        </div>
-        <div
-          className={
-            "grid grid-rows-2 gap-y-1.5 mt-2.5 mb-5 md:grid-cols-2 md:gap-x-7 md:grid-rows-1 md:mb-7"
-          }
+    <div className={"max-w-[768px] mx-auto md:pb-5 md:max-w-full md:mx-0"}>
+      <Form {...form}>
+        <form
+          className={"flex-col"}
+          id={"client-form"}
+          onSubmit={handleSubmit(onSubmit)}
         >
-          <Input
-            type="text"
-            placeholder={"Client Name"}
-            {...register("clientName", { required: true })}
-            disabled={deleted}
-          />
-          <Input
-            type="email"
-            placeholder={"Client email address"}
-            {...register("clientEmail", { required: true })}
-            disabled={deleted}
-          />
-        </div>
-        <div className={"my-1.25"}>
-          <p className={"text-base text-cloudGray"}>Address</p>
-        </div>
-        <div
-          className={
-            "grid grid-rows-4 gap-y-1.5 mt-2.5 md:grid-cols-2 md:grid-rows-2 md:gap-x-7 md:gap-y-2.5"
-          }
-        >
-          <Input
-            type="text"
-            placeholder={"Client Street"}
-            {...register("clientAddress.street", { required: true })}
-            disabled={deleted}
-          />
-          <Input
-            type="text"
-            placeholder={"Client City"}
-            {...register("clientAddress.city", { required: true })}
-            disabled={deleted}
-          />
-          <Input
-            type="text"
-            placeholder={"Client Postcode"}
-            {...register("clientAddress.postcode", { required: true })}
-            disabled={deleted}
-          />
-          <Input
-            type="text"
-            placeholder={"Client Country"}
-            {...register("clientAddress.country", { required: true })}
-            disabled={deleted}
-          />
-        </div>
-      </form>
+          <div
+            className={
+              "grid grid-rows-2 gap-y-1.5 mt-2.5 mb-5 md:grid-cols-2 md:gap-x-7 md:grid-rows-1 md:mb-7"
+            }
+          >
+            <InputField
+              form={form}
+              inputName={"clientName"}
+              label={"Client Name"}
+              placeholder={"Enter client name"}
+              description={"Client name is required"}
+            />
+            <InputField
+              form={form}
+              inputName={"clientEmail"}
+              label={"Client Email"}
+              placeholder={"Enter client email"}
+              description={"Client email is required"}
+            />
+          </div>
+          <div className={"my-1.25"}>
+            <p className={"text-base text-cloudGray"}>Address</p>
+          </div>
+          <div
+            className={
+              "grid grid-rows-4 gap-y-1.5 mt-2.5 md:grid-cols-2 md:grid-rows-2 md:gap-x-7 md:gap-y-2.5"
+            }
+          >
+            <InputField
+              form={form}
+              inputName={"clientAddress.street"}
+              label={"Client street"}
+              placeholder={"Enter street name"}
+              description={"Client street address is required"}
+            />
+            <InputField
+              form={form}
+              inputName={"clientAddress.city"}
+              label={"Client city"}
+              placeholder={"Enter city"}
+              description={"Client city is required"}
+            />
+            <InputField
+              form={form}
+              inputName={"clientAddress.postcode"}
+              label={"Client postcode"}
+              placeholder={"Enter postcode"}
+              description={"Client postcode is required"}
+            />
+            <InputField
+              form={form}
+              inputName={"clientAddress.country"}
+              label={"Client country"}
+              placeholder={"Enter country name"}
+              description={"Client country is required"}
+            />
+          </div>
+        </form>
+      </Form>
     </div>
   );
 };

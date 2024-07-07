@@ -90,7 +90,11 @@ const InvoiceTitleBar = ({ invoiceId, type }: TitleBarProps) => {
   };
 
   return (
-    <div className={"flex justify-start items-center px-2.5 md:mx-5 md:pt-10"}>
+    <div
+      className={
+        "max-w-[768px] mx-auto md:pb-5 md:max-w-full flex justify-start items-center px-2.5 md:mx-5 md:pt-10"
+      }
+    >
       <Link href={handleNavigation()}>
         <Image src={ArrowLeft} alt={"back-arrow-icon"} width={25} height={20} />
       </Link>

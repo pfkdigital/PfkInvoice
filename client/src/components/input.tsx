@@ -11,7 +11,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         type={type}
         className={cn(
-          ` bg-eclipse md:bg-midnight h-[30px] pl-4 text-snowWhite text-xs md:h-10 disabled:text-snowWhite disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 transition-all duration-200 ease-in-out w-full`,
+          `bg-eclipse md:bg-midnight rounded-md min-h-[40px] p-4 text-snowWhite text-xs md:h-10 disabled:text-snowWhite disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 transition-all duration-200 ease-in-out w-full`,
           className,
         )}
         ref={ref}
@@ -28,7 +28,7 @@ const LightRowInput = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         type={type}
         className={cn(
-          `bg-midnight md:bg-eclipse h-[30px] pl-4 text-snowWhite text-xs md:h-10 disabled:text-snowWhite disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 transition-all duration-200 ease-in-out w-full`,
+          `bg-midnight md:bg-eclipse min-h-[40px] pl-4 text-snowWhite text-xs md:h-10 disabled:text-snowWhite disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 transition-all duration-200 ease-in-out w-full`,
           className,
         )}
         ref={ref}

@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { useSidebar } from "@/lib/side-bar-context-provider";
+import { useSidebar } from "@/lib/SideBarContextProvider";
 import { motion } from "framer-motion";
 import { sidebarLinks } from "@/ui/SideBar/sidebarLinks";
 import SideBarItem from "@/ui/SideBar/SideBarItem";
@@ -15,7 +15,7 @@ function SideBar() {
     <motion.aside
       animate={{ width: isSidebarOpen ? 280 : 75 }}
       className={
-        "hidden md:block relative py-4 h-[840px] min-w-[75px] bg-eclipse rounded-tr-[10px] rounded-br-[10px] overflow-clip"
+        "relative py-4 h-[840px] min-w-[75px] bg-eclipse rounded-tr-[10px] rounded-br-[10px] overflow-clip"
       }
     >
       {sidebarLinks.map(({ href, icon, label }) => (

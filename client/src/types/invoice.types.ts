@@ -29,3 +29,8 @@ export type NewInvoiceType = {
   client?: ClientType;
   invoiceItems: NewItemType[];
 };
+
+export type GraphDataType = {
+  month: string;
+  revenue: number;
+};

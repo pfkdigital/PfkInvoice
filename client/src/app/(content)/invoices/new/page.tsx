@@ -3,14 +3,14 @@ import InvoiceForm from "@/ui/InvoiceForm/InvoiceForm";
 import { getAllClients } from "@/lib/api-functions";
 import InvoiceTitleBar from "@/ui/InvoiceTitleBar/InvoiceTitleBar";
 
-export const revalidate = 0;
+export const fetchCache = "only-no-store";
 
 const Page = async () => {
   const clients = await getAllClients();
   return (
     <div
       className={
-        "max-w-[1000px] w-full h-fit rounded-[20px] md:bg-eclipse md:pb-7"
+        "max-w-[1000px] w-full h-fit rounded-[10px] md:bg-eclipse md:pb-7"
       }
     >
       <InvoiceTitleBar type={"create"} />

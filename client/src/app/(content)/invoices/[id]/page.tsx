@@ -6,11 +6,10 @@ import Link from "next/link";
 import InvoiceDetail from "@/ui/InvoiceDetail/InvoiceDetail";
 import EditIcon from "@/../public/edit.svg";
 import { Button } from "@/components/button";
-import { unstable_noStore as noStore } from "next/cache";
+
+export const fetchCache = "only-no-store";
 
 const Page = async ({ params }: { params: { id: number } }) => {
-  noStore();
-
   const invoiceId = params.id;
   const invoice = await getInvoiceById(invoiceId);
 

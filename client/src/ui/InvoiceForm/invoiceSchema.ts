@@ -14,7 +14,8 @@ const ClientSchema = z.object({
   clientAddress: ClientAddressSchema,
 });
 
-const InvoiceItemSchema = z.object({
+export const InvoiceItemSchema = z.object({
+  id: z.number(),
   name: z.string(),
   quantity: z.number(),
   price: z.number(),
@@ -22,6 +23,7 @@ const InvoiceItemSchema = z.object({
 });
 
 export const InvoiceSchema = z.object({
+  id: z.number().optional(),
   invoiceReference: z.string(),
   createdAt: z.string(),
   paymentDue: z.string().optional(),
@@ -30,10 +32,10 @@ export const InvoiceSchema = z.object({
   invoiceStatus: z.string().optional(),
   total: z.number(),
   client: ClientSchema.optional(),
+  clientId: z.number().optional(),
   invoiceItems: z.array(InvoiceItemSchema),
 });
-
-type ClientAddressType = z.infer<typeof ClientAddressSchema>;
-type ClientType = z.infer<typeof ClientSchema>;
-type InvoiceItemType = z.infer<typeof InvoiceItemSchema>;
-type NewInvoiceType = z.infer<typeof InvoiceSchema>;
+export type InvoiceItemSchemaType = z.infer<typeof InvoiceItemSchema>;
+export type ClientAddressType = z.infer<typeof ClientAddressSchema>;
+export type ClientSchemaType = z.infer<typeof ClientSchema>;
+export type InvoiceSchemaType = z.infer<typeof InvoiceSchema>;

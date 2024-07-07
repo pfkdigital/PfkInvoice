@@ -15,6 +15,7 @@ type InputFieldProps = {
   label: string;
   placeholder: string;
   description: string;
+  className?: string;
 };
 
 const InputField = ({
@@ -22,7 +23,7 @@ const InputField = ({
   inputName,
   label,
   placeholder,
-  description,
+  className,
 }: InputFieldProps) => {
   return (
     <FormField
@@ -30,8 +31,8 @@ const InputField = ({
       name={inputName}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
-          <FormControl>
+          {label && <FormLabel>{label}</FormLabel>}
+          <FormControl className={className}>
             <Input placeholder={placeholder} {...field} />
           </FormControl>
           <FormMessage />

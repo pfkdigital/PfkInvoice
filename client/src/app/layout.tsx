@@ -4,7 +4,7 @@ import { Lato } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
-import { SidebarProvider } from "@/lib/side-bar-context-provider";
+import { SidebarProvider } from "@/lib/SideBarContextProvider";
 import { Toaster } from "@/components/sonner";
 
 const lato = Lato({ weight: "400", subsets: ["latin"] });

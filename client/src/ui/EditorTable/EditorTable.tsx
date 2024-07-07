@@ -1,5 +1,8 @@
 import React from "react";
-import { InvoiceItemType } from "@/types/invoiceitem";
+import {
+  InvoiceItemSchemaType,
+  InvoiceSchemaType,
+} from "../InvoiceForm/invoiceSchema";
 import { Table, TableBody } from "@/components/table";
 import EditorTableRow from "@/ui/EditorTable/EditorTableRow";
 import {
@@ -7,12 +10,11 @@ import {
   UseFieldArrayUpdate,
   UseFormReset,
 } from "react-hook-form";
-import { InvoiceSchemaType } from "@/lib/form-schemas";
 
 interface EditorTableProps {
-  items: Array<InvoiceItemType>;
+  items: Array<InvoiceItemSchemaType>;
   remove: UseFieldArrayRemove;
-  reset: UseFormReset<InvoiceItemType>;
+  reset: UseFormReset<InvoiceItemSchemaType>;
   update: UseFieldArrayUpdate<InvoiceSchemaType>;
   setValue: any;
   isEditing: boolean;
@@ -31,7 +33,7 @@ const EditorTable = ({
   setEditing,
   setSelectedIndex,
 }: EditorTableProps) => {
-  const renderItems = (data: InvoiceItemType[]) => {
+  const renderItems = (data: InvoiceItemSchemaType[]) => {
     return data.map((item, index) => (
       <EditorTableRow
         id={index}
