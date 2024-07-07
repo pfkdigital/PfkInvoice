@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,10 +29,10 @@ public class Invoice {
   private String invoiceReference;
 
   @Column(name = "created_at")
-  private Date createdAt;
+  private LocalDateTime createdAt;
 
   @Column(name = "payment_due")
-  private Date paymentDue;
+  private LocalDateTime paymentDue;
 
   @Column(name = "description")
   private String description;

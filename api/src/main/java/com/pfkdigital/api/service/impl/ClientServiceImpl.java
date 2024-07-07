@@ -31,8 +31,16 @@ public class ClientServiceImpl implements ClientService {
 
   @Override
   public List<ClientDTO> getAllClients() {
-    List<Client> clients = clientRepository.findAllByOrderByIdAsc();
-    return clients.stream().map(clientMapper::clientToClientDTO).toList();
+    return clientRepository.findAllByOrderByIdAsc().stream()
+        .map(clientMapper::clientToClientDTO)
+        .toList();
+  }
+
+  @Override
+  public List<ClientDTO> getLatestClients() {
+    return clientRepository.findLast11OrderByDesc().stream()
+        .map(clientMapper::clientToClientDTO)
+        .toList();
   }
 
   @Override
@@ -49,7 +57,7 @@ public class ClientServiceImpl implements ClientService {
   public CountDTO getClientsCount() {
     long total = clientRepository.count();
 
-    return CountDTO.builder().label("Client").status(total).build();
+    return CountDTO.builder().label("Clients").status(total).build();
   }
 
   @Override

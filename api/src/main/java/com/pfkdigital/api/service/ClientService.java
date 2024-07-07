@@ -11,6 +11,8 @@ public interface ClientService {
 
   List<ClientDTO> getAllClients();
 
+  List<ClientDTO> getLatestClients();
+
   ClientWithInvoicesDTO getClientById(Integer clientId);
 
   CountDTO getClientsCount();

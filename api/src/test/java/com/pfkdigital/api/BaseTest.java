@@ -8,6 +8,7 @@ import com.pfkdigital.api.model.Address;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -42,16 +43,17 @@ public class BaseTest {
                     .build())
             .build();
 
-    mockClient = Client.builder()
+    mockClient =
+        Client.builder()
             .clientName("Acme Corporation")
             .clientEmail("acme@example.com")
             .clientAddress(
-                    Address.builder()
-                            .street("123 Main Street")
-                            .city("Anytown")
-                            .postcode("12345")
-                            .country("United States")
-                            .build())
+                Address.builder()
+                    .street("123 Main Street")
+                    .city("Anytown")
+                    .postcode("12345")
+                    .country("United States")
+                    .build())
             .build();
 
     invoiceItem =
@@ -72,15 +74,14 @@ public class BaseTest {
             .total(BigDecimal.valueOf(1500.00))
             .build();
 
-
     mockInvoiceItems = List.of(invoiceItem, anotherMockItem);
 
     invoice =
         Invoice.builder()
             .id(1)
             .invoiceReference("INV-001")
-            .createdAt(new Date())
-            .paymentDue(new Date())
+            .createdAt(LocalDateTime.now())
+            .paymentDue(LocalDateTime.now())
             .description("Web Development Services")
             .paymentTerms(30)
             .invoiceStatus("Unpaid")
@@ -94,8 +95,8 @@ public class BaseTest {
         Invoice.builder()
             .id(1)
             .invoiceReference("INV-UPDATED")
-            .createdAt(new Date())
-            .paymentDue(new Date())
+            .createdAt(LocalDateTime.now())
+            .paymentDue(LocalDateTime.now())
             .description("Web Development Services")
             .paymentTerms(30)
             .invoiceStatus("Unpaid")
@@ -143,8 +144,8 @@ public class BaseTest {
         InvoiceDTO.builder()
             .id(1)
             .invoiceReference("INV-001")
-            .createdAt(new Date())
-            .paymentDue(new Date())
+            .createdAt(LocalDateTime.now())
+            .paymentDue(LocalDateTime.now())
             .description("Website Development and Design")
             .paymentTerms(30)
             .invoiceStatus("Pending")
@@ -155,8 +156,8 @@ public class BaseTest {
         InvoiceWithItemsAndClientDTO.builder()
             .id(1)
             .invoiceReference("INV-001")
-            .createdAt(new Date())
-            .paymentDue(new Date())
+            .createdAt(LocalDateTime.now())
+            .paymentDue(LocalDateTime.now())
             .description("Website Development and Design")
             .paymentTerms(30)
             .invoiceStatus("Pending")
@@ -169,8 +170,8 @@ public class BaseTest {
         InvoiceWithItemsAndClientDTO.builder()
             .id(1)
             .invoiceReference("INV-UPDATED")
-            .createdAt(new Date())
-            .paymentDue(new Date())
+            .createdAt(LocalDateTime.now())
+            .paymentDue(LocalDateTime.now())
             .description("Website Development and Design")
             .paymentTerms(30)
             .invoiceStatus("Pending")
@@ -179,13 +180,13 @@ public class BaseTest {
             .invoiceItems(invoiceItems)
             .build();
 
-    clientWithInvoicesDTO = ClientWithInvoicesDTO.builder()
+    clientWithInvoicesDTO =
+        ClientWithInvoicesDTO.builder()
             .id(1)
             .clientName("Acme Corporation")
             .clientEmail("example@example.com")
             .clientAddress(addressDTO)
             .invoices(List.of(invoiceDTO))
             .build();
-
   }
 }

@@ -1,17 +1,17 @@
 package com.pfkdigital.api.service;
 
-import com.pfkdigital.api.dto.CountDTO;
-import com.pfkdigital.api.dto.CurrencyDTO;
-import com.pfkdigital.api.dto.InvoiceDTO;
-import com.pfkdigital.api.dto.InvoiceWithItemsAndClientDTO;
+import com.pfkdigital.api.dto.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface InvoiceService {
   InvoiceWithItemsAndClientDTO createInvoice(InvoiceWithItemsAndClientDTO invoiceDTO);
 
+  List<GraphDataDTO> getRevenueByMonth();
+
   List<InvoiceDTO> getAllInvoices();
+
+  List<InvoiceDTO> getLatestInvoices();
 
   InvoiceWithItemsAndClientDTO getAnInvoiceById(Integer invoiceId);
 

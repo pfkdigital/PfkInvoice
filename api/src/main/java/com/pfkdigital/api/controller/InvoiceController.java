@@ -1,9 +1,6 @@
 package com.pfkdigital.api.controller;
 
-import com.pfkdigital.api.dto.CountDTO;
-import com.pfkdigital.api.dto.CurrencyDTO;
-import com.pfkdigital.api.dto.InvoiceDTO;
-import com.pfkdigital.api.dto.InvoiceWithItemsAndClientDTO;
+import com.pfkdigital.api.dto.*;
 import com.pfkdigital.api.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +24,16 @@ public class InvoiceController {
   @GetMapping
   public ResponseEntity<List<InvoiceDTO>> getAllInvoices() {
     return new ResponseEntity<>(invoiceService.getAllInvoices(), HttpStatus.OK);
+  }
+
+  @GetMapping("/latest")
+  public ResponseEntity<List<InvoiceDTO>> getLatestInvoices() {
+    return new ResponseEntity<>(invoiceService.getLatestInvoices(), HttpStatus.OK);
+  }
+
+  @GetMapping("/graph")
+  public ResponseEntity<List<GraphDataDTO>> getRevenueByMonth() {
+    return new ResponseEntity<>(invoiceService.getRevenueByMonth(), HttpStatus.OK);
   }
 
   @GetMapping("/{invoiceId}")

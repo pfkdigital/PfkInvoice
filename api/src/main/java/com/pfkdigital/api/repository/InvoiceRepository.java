@@ -11,6 +11,9 @@ import java.util.Optional;
 public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
   List<Invoice> findAllByOrderByIdAsc();
 
+  @Query("SELECT i FROM Invoice i ORDER BY i.id DESC LIMIT 11")
+  List<Invoice> findLast11OrderByDesc();
+
   @Query(
       "SELECT i FROM Invoice i JOIN FETCH i.client JOIN FETCH i.invoiceItems WHERE i.id = :invoiceId")
   Optional<Invoice> findInvoiceWithClientAndItemsById(Integer invoiceId);

@@ -1,18 +1,17 @@
-import {
-  ClientDTOType,
-  ClientType,
-  ClientWithInvoices,
-} from "@/types/client.types";
+import { ClientType, ClientWithInvoices } from "@/types/client.types";
 import {
   InvoiceDetailsType,
   InvoiceType,
   NewInvoiceType,
 } from "@/types/invoice.types";
+import { ClientFormSchemaType } from "@/ui/ClientForm/clientFormSchema";
+import { unstable_noStore as noStore } from "next/cache";
 
 const invoiceUrl = "http://localhost:8080/api/v1/invoices";
 const clientUrl = "http://localhost:8080/api/v1/clients";
 
 export const getInvoiceCount = async () => {
+  noStore();
   try {
     const response = await fetch(`${invoiceUrl}/count`);
     return await response.json();
@@ -22,6 +21,7 @@ export const getInvoiceCount = async () => {
 };
 
 export const getInvoiceRevenue = async () => {
+  noStore();
   try {
     const response = await fetch(`${invoiceUrl}/total`);
     return await response.json();
@@ -31,6 +31,7 @@ export const getInvoiceRevenue = async () => {
 };
 
 export const getUnpaidRevenue = async () => {
+  noStore();
   try {
     const response = await fetch(`${invoiceUrl}/unpaid/total`);
     return await response.json();
@@ -40,6 +41,7 @@ export const getUnpaidRevenue = async () => {
 };
 
 export const getClientCount = async () => {
+  noStore();
   try {
     const response = await fetch(`${clientUrl}/count`);
     return await response.json();
@@ -49,6 +51,7 @@ export const getClientCount = async () => {
 };
 
 export const getAllInvoices = async (): Promise<InvoiceType[] | undefined> => {
+  noStore();
   try {
     const response = await fetch(`${invoiceUrl}`);
     return await response.json();
@@ -60,6 +63,7 @@ export const getAllInvoices = async (): Promise<InvoiceType[] | undefined> => {
 export const getLatestInvoices = async (): Promise<
   InvoiceType[] | undefined
 > => {
+  noStore();
   try {
     const response = await fetch(`${invoiceUrl}/latest`);
     const invoices = await response.json();
@@ -72,6 +76,7 @@ export const getLatestInvoices = async (): Promise<
 export const getInvoiceById = async (
   invoiceId: number,
 ): Promise<InvoiceDetailsType | undefined> => {
+  noStore();
   try {
     const response = await fetch(`${invoiceUrl}/${invoiceId}`);
     return await response.json();
@@ -81,6 +86,7 @@ export const getInvoiceById = async (
 };
 
 export const getAllClients = async (): Promise<ClientType[] | undefined> => {
+  noStore();
   try {
     const response = await fetch(`${clientUrl}`);
     return await response.json();
@@ -90,6 +96,7 @@ export const getAllClients = async (): Promise<ClientType[] | undefined> => {
 };
 
 export const getLatestClients = async (): Promise<ClientType[] | undefined> => {
+  noStore();
   try {
     const response = await fetch(`${clientUrl}/latest`);
     const clients = await response.json();
@@ -102,6 +109,7 @@ export const getLatestClients = async (): Promise<ClientType[] | undefined> => {
 export const getClientById = async (
   clientId: number,
 ): Promise<ClientWithInvoices | undefined> => {
+  noStore();
   try {
     const response = await fetch(`${clientUrl}/${clientId}`);
     return await response.json();
@@ -112,7 +120,7 @@ export const getClientById = async (
 
 export const updateClientById = async (
   clientId: number,
-  updatedClient: ClientDTOType,
+  updatedClient: ClientFormSchemaType,
 ) => {
   try {
     const response = await fetch(`${clientUrl}/${clientId}`, {
@@ -120,21 +128,19 @@ export const updateClientById = async (
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedClient),
     });
-
     return await response.json();
   } catch (e) {
     console.error(e);
   }
 };
 
-export const createClient = async (data: ClientDTOType) => {
+export const createClient = async (data: ClientFormSchemaType) => {
   try {
     const response = await fetch(`${clientUrl}`, {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
       method: "POST",
     });
-
     return await response.json();
   } catch (e) {
     console.error(e);
