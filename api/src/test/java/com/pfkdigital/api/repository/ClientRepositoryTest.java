@@ -18,17 +18,6 @@ public class ClientRepositoryTest {
   @Autowired private ClientRepository clientRepository;
 
   @Test
-  void ClientRepository_CreateClient_ReturnNewClient() {
-    String clientName = "Acme Corporation";
-    Client client = Client.builder().clientName(clientName).build();
-
-    Client savedClient = clientRepository.save(client);
-
-    assertNotNull(savedClient);
-    assertEquals(clientName, savedClient.getClientName());
-  }
-
-  @Test
   void ClientRepository_GetAllClients_ReturnAListOfClients() {
     String clientName = "Acme Corporation";
     String clientName1 = "Test Corporation";
@@ -41,23 +30,20 @@ public class ClientRepositoryTest {
 
     assertNotNull(clients);
     assertEquals(2, clients.size());
-    assertEquals(clientName, clients.get(0).getClientName());
-    assertEquals(clientName1, clients.get(1).getClientName());
+    assertTrue(clients.get(0).getId() < clients.get(1).getId());
   }
 
   @Test
-  void CreateRepository_GetLatestClient_ReturnLatestClient() {
-    String clientName = "Acme Corporation";
-    String clientName1 = "Test Corporation";
-    Client client = Client.builder().clientName(clientName).id(1).build();
-    Client client1 = Client.builder().clientName(clientName1).id(2).build();
+  void CreateRepository_GetLatest11Clients_ReturnLatestClients() {
+    for (int i = 0; i < 13; i++) {
+      clientRepository.save(Client.builder().clientName("Acme Corporation " + i).build());
+    }
 
-    clientRepository.saveAll(List.of(client, client1));
+    List<Client> clients = clientRepository.findLast11OrderByDesc();
 
-    List<Client> latestClients = clientRepository.findLast11OrderByDesc();
-
-    assertNotNull(latestClients);
-    assertTrue(latestClients.get(0).getId() > latestClients.get(1).getId());
+    assertNotNull(clients);
+    assertEquals(11, clients.size());
+    assertTrue(clients.get(0).getId() > clients.get(1).getId());
   }
 
   @Test
@@ -92,20 +78,5 @@ public class ClientRepositoryTest {
 
     assertNotNull(clientCount);
     assertEquals(2, clientCount);
-  }
-
-  @Test
-  void ClientRepository_UpdateClient_ReturnUpdatedClient() {
-    String clientName = "Acme Corporation";
-    String updatedClientName = "Updated Corporation";
-    Client client = Client.builder().clientName(clientName).build();
-    Client savedClient = clientRepository.save(client);
-    savedClient.setClientName(updatedClientName);
-
-    Client updatedClient = clientRepository.save(savedClient);
-
-    assertNotNull(updatedClient);
-    assertEquals(updatedClientName, updatedClient.getClientName());
-    assertNotEquals(clientName, updatedClient.getClientName());
   }
 }

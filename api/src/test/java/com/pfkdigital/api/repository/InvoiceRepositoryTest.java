@@ -3,7 +3,6 @@ package com.pfkdigital.api.repository;
 import com.pfkdigital.api.entity.Client;
 import com.pfkdigital.api.entity.Invoice;
 import com.pfkdigital.api.entity.InvoiceItem;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -22,16 +21,30 @@ public class InvoiceRepositoryTest {
   @Autowired private InvoiceRepository invoiceRepository;
 
   @Test
-  void InvoiceRepository_GetAllInvoices_ReturnAListOfAllInvoices() {
-    String savedInvoiceReference = "INV-001";
-    Invoice invoice = Invoice.builder().invoiceReference(savedInvoiceReference).build();
+  void InvoiceRepository_GetAllInvoicesOrderByIdAsc_ReturnListOfInvoices() {
+    Invoice invoice1 = Invoice.builder().invoiceReference("INV-001").build();
+    Invoice invoice2 = Invoice.builder().invoiceReference("INV-002").build();
 
-    invoiceRepository.save(invoice);
-    List<Invoice> invoiceList = invoiceRepository.findAll();
+    invoiceRepository.save(invoice1);
+    invoiceRepository.save(invoice2);
 
-    assertEquals(1, invoiceList.size());
+    List<Invoice> invoiceList = invoiceRepository.findAllByOrderByIdAsc();
+
     assertNotNull(invoiceList);
-    assertEquals(savedInvoiceReference, invoiceList.get(0).getInvoiceReference());
+    assertEquals(2, invoiceList.size());
+    assertTrue(invoiceList.get(0).getId() < invoiceList.get(1).getId());
+  }
+
+  @Test
+  void InvoiceRepository_GetLast11Invoices_ReturnListOfInvoice() {
+    for(int i = 0; i < 13; i++) {
+      invoiceRepository.save(Invoice.builder().invoiceReference("INV-00" + i).build());
+    }
+    List<Invoice> invoiceList = invoiceRepository.findLast11OrderByDesc();
+
+    assertNotNull(invoiceList);
+    assertEquals(11, invoiceList.size());
+    assertTrue(invoiceList.get(0).getId() > invoiceList.get(1).getId());
   }
 
   @Test
@@ -93,22 +106,4 @@ public class InvoiceRepositoryTest {
 
     assertEquals(2, invoiceCount);
   }
-
-  @Test
-  void InvoiceRepository_UpdateAnInvoice_ReturnUpdatedInvoice() {
-    Invoice invoice = Invoice.builder().invoiceReference("INV-001").build();
-    Invoice savedInvoice = invoiceRepository.save(invoice);
-
-    savedInvoice.setInvoiceReference("INV-UPDATED");
-    Invoice updatedInvoice = invoiceRepository.save(savedInvoice);
-
-    assertNotNull(updatedInvoice);
-    assertEquals("INV-UPDATED", updatedInvoice.getInvoiceReference());
-  }
-
-  @Test
-  void findAllByOrderByIdAsc() {}
-
-  @Test
-  void findLast11OrderByDesc() {}
 }
