@@ -1,7 +1,7 @@
 package com.pfkdigital.api.service.impl;
 
 import com.pfkdigital.api.dto.ClientDTO;
-import com.pfkdigital.api.dto.ClientWithInvoicesDTO;
+import com.pfkdigital.api.dto.ClientDetailDTO;
 import com.pfkdigital.api.dto.CountDTO;
 import com.pfkdigital.api.entity.Client;
 import com.pfkdigital.api.exception.ClientNotFoundException;
@@ -44,10 +44,10 @@ public class ClientServiceImpl implements ClientService {
   }
 
   @Override
-  public ClientWithInvoicesDTO getClientById(Integer clientId) {
+  public ClientDetailDTO getClientById(Integer clientId) {
     Client selectedClient =
         clientRepository
-            .getClientById(clientId)
+            .getClientWithInvoicesById(clientId)
             .orElseThrow(
                 () -> new ClientNotFoundException("Client of id " + clientId + " was not found"));
     return clientMapper.clientToClientWithInvoicesDTO(selectedClient);
@@ -66,7 +66,7 @@ public class ClientServiceImpl implements ClientService {
     Client mappedClient = clientMapper.clientDTOToClient(clientDTO);
     Client selectedClient =
         clientRepository
-            .getClientById(clientId)
+            .findById(clientId)
             .orElseThrow(
                 () -> new ClientNotFoundException("Client of id " + clientId + " was not found"));
 
@@ -84,7 +84,7 @@ public class ClientServiceImpl implements ClientService {
   public String deleteClientById(Integer clientId) {
     Client selectedClient =
         clientRepository
-            .getClientById(clientId)
+            .findById(clientId)
             .orElseThrow(
                 () -> new ClientNotFoundException("Client of id " + clientId + " was not found"));
     clientRepository.delete(selectedClient);

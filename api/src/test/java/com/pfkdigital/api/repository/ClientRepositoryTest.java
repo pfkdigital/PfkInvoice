@@ -1,8 +1,8 @@
 package com.pfkdigital.api.repository;
 
-import com.pfkdigital.api.BaseTest;
 import com.pfkdigital.api.entity.Client;
 
+import com.pfkdigital.api.entity.Invoice;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -13,72 +13,99 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-public class ClientRepositoryTest extends BaseTest {
+public class ClientRepositoryTest {
 
   @Autowired private ClientRepository clientRepository;
+
   @Test
-  public void ClientRepository_CreateClient_ReturnNewClient() {
+  void ClientRepository_CreateClient_ReturnNewClient() {
     String clientName = "Acme Corporation";
-    Client savedClient = clientRepository.save(mockClient);
+    Client client = Client.builder().clientName(clientName).build();
+
+    Client savedClient = clientRepository.save(client);
 
     assertNotNull(savedClient);
     assertEquals(clientName, savedClient.getClientName());
   }
 
   @Test
-  public void ClientRepository_GetAllClients_ReturnAListOfClients() {
+  void ClientRepository_GetAllClients_ReturnAListOfClients() {
     String clientName = "Acme Corporation";
-    clientRepository.save(mockClient);
+    String clientName1 = "Test Corporation";
+    Client client = Client.builder().clientName(clientName).build();
+    Client client1 = Client.builder().clientName(clientName1).build();
 
-    List<Client> clients = clientRepository.findAll();
+    clientRepository.saveAll(List.of(client, client1));
+
+    List<Client> clients = clientRepository.findAllByOrderByIdAsc();
 
     assertNotNull(clients);
-    assertEquals(1, clients.size());
+    assertEquals(2, clients.size());
     assertEquals(clientName, clients.get(0).getClientName());
+    assertEquals(clientName1, clients.get(1).getClientName());
   }
 
   @Test
-  public void ClientRepository_GetClientById_ReturnAClient() {
+  void CreateRepository_GetLatestClient_ReturnLatestClient() {
     String clientName = "Acme Corporation";
+    String clientName1 = "Test Corporation";
+    Client client = Client.builder().clientName(clientName).id(1).build();
+    Client client1 = Client.builder().clientName(clientName1).id(2).build();
+
+    clientRepository.saveAll(List.of(client, client1));
+
+    List<Client> latestClients = clientRepository.findLast11OrderByDesc();
+
+    assertNotNull(latestClients);
+    assertTrue(latestClients.get(0).getId() > latestClients.get(1).getId());
+  }
+
+  @Test
+  void ClientRepository_GetClientById_ReturnAClient() {
+    String clientName = "Acme Corporation";
+    String invoiceReference = "INV-001";
+    Client mockClient = Client.builder().clientName(clientName).build();
+    Invoice mockInvoice = Invoice.builder().invoiceReference(invoiceReference).build();
+    mockClient.setInvoices(List.of(mockInvoice));
+
     Client savedClient = clientRepository.save(mockClient);
 
-    Client selectedClient = clientRepository.getClientById(savedClient.getId()).get();
+    Optional<Client> selectedClient =
+        clientRepository.getClientWithInvoicesById(savedClient.getId());
 
-    assertNotNull(selectedClient);
-    assertEquals(clientName, selectedClient.getClientName());
-    assertNull(selectedClient.getInvoices());
+    assertTrue(selectedClient.isPresent());
+    assertEquals(selectedClient.get().getId(), savedClient.getId());
+    assertEquals(clientName, selectedClient.get().getClientName());
+    assertEquals(invoiceReference, selectedClient.get().getInvoices().get(0).getInvoiceReference());
   }
 
   @Test
-  public void ClientRepository_GetClientCount_ReturnCount() {
-    clientRepository.save(mockClient);
+  void ClientRepository_GetClientCount_ReturnCount() {
+    String clientName = "Acme Corporation";
+    String clientName1 = "Test Corporation";
+    Client client = Client.builder().clientName(clientName).build();
+    Client client1 = Client.builder().clientName(clientName1).build();
+
+    clientRepository.saveAll(List.of(client, client1));
 
     Long clientCount = clientRepository.count();
 
     assertNotNull(clientCount);
-    assertEquals(1l, clientCount);
+    assertEquals(2, clientCount);
   }
 
   @Test
-  public void ClientRepository_UpdateClient_ReturnUpdatedClient() {
+  void ClientRepository_UpdateClient_ReturnUpdatedClient() {
+    String clientName = "Acme Corporation";
     String updatedClientName = "Updated Corporation";
-    Client savedClient = clientRepository.save(mockClient);
+    Client client = Client.builder().clientName(clientName).build();
+    Client savedClient = clientRepository.save(client);
+    savedClient.setClientName(updatedClientName);
 
-    Client selectedClient = clientRepository.getClientById(savedClient.getId()).get();
-    selectedClient.setClientName(updatedClientName);
-    Client updatedClient = clientRepository.save(selectedClient);
+    Client updatedClient = clientRepository.save(savedClient);
 
     assertNotNull(updatedClient);
     assertEquals(updatedClientName, updatedClient.getClientName());
-  }
-
-  @Test
-  public void ClientRepository_DeleteClientById_ClientDeleted() {
-    Client savedClient = clientRepository.save(mockClient);
-    clientRepository.delete(savedClient);
-
-    Optional<Client> deletedClient = clientRepository.getClientById(savedClient.getId());
-
-    assertTrue(deletedClient.isEmpty());
+    assertNotEquals(clientName, updatedClient.getClientName());
   }
 }

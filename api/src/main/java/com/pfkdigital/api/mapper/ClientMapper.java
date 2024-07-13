@@ -1,7 +1,7 @@
 package com.pfkdigital.api.mapper;
 
 import com.pfkdigital.api.dto.ClientDTO;
-import com.pfkdigital.api.dto.ClientWithInvoicesDTO;
+import com.pfkdigital.api.dto.ClientDetailDTO;
 import com.pfkdigital.api.entity.Client;
 import org.mapstruct.Mapper;
 
@@ -13,5 +13,5 @@ public interface ClientMapper {
 
   Client clientDTOToClient(ClientDTO clientDTO);
 
-  ClientWithInvoicesDTO clientToClientWithInvoicesDTO(Client client);
+  ClientDetailDTO clientToClientWithInvoicesDTO(Client client);
 }

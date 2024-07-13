@@ -4,7 +4,7 @@ import com.pfkdigital.api.BaseTest;
 import com.pfkdigital.api.dto.CountDTO;
 import com.pfkdigital.api.dto.CurrencyDTO;
 import com.pfkdigital.api.dto.InvoiceDTO;
-import com.pfkdigital.api.dto.InvoiceWithItemsAndClientDTO;
+import com.pfkdigital.api.dto.InvoiceDetailDTO;
 import com.pfkdigital.api.model.ApiError;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,8 +22,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,9 +59,9 @@ public class InvoiceIntegrationTest extends BaseTest {
     String baseUrl = "http://localhost:+" + port + "/api/v1/invoices";
     String invoiceReference = "INV-001";
 
-    InvoiceWithItemsAndClientDTO createdInvoice =
+    InvoiceDetailDTO createdInvoice =
         restTemplate.postForObject(
-            baseUrl, invoiceWithItemsAndClientDTO, InvoiceWithItemsAndClientDTO.class);
+            baseUrl, invoiceDetailDTO, InvoiceDetailDTO.class);
 
     assertNotNull(createdInvoice);
     assertEquals(invoiceReference, createdInvoice.getInvoiceReference());
@@ -87,8 +85,8 @@ public class InvoiceIntegrationTest extends BaseTest {
     String invoiceReference = "INV-001";
     String baseUrl = "http://localhost:+" + port + "/api/v1/invoices/" + invoiceId;
 
-    InvoiceWithItemsAndClientDTO testInvoice =
-        restTemplate.getForObject(baseUrl, InvoiceWithItemsAndClientDTO.class);
+    InvoiceDetailDTO testInvoice =
+        restTemplate.getForObject(baseUrl, InvoiceDetailDTO.class);
 
     assertNotNull(testInvoice);
     assertEquals(invoiceReference, testInvoice.getInvoiceReference());
@@ -154,10 +152,10 @@ public class InvoiceIntegrationTest extends BaseTest {
     String invoiceReference = "INV-UPDATED";
 
     restTemplate.put(
-        baseUrl, updatedInvoiceWithClientsAndItemsDTO, InvoiceWithItemsAndClientDTO.class);
+        baseUrl, updatedInvoiceWithClientsAndItemsDTO, InvoiceDetailDTO.class);
 
-    InvoiceWithItemsAndClientDTO testInvoice =
-        restTemplate.getForObject(baseUrl, InvoiceWithItemsAndClientDTO.class);
+    InvoiceDetailDTO testInvoice =
+        restTemplate.getForObject(baseUrl, InvoiceDetailDTO.class);
 
     assertNotNull(testInvoice);
     assertEquals(invoiceReference, testInvoice.getInvoiceReference());

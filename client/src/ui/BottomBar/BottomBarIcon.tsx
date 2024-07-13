@@ -29,7 +29,7 @@ const BottomBarIcon = ({
     } else {
       setActiveIcon(false);
     }
-  }, [pathname]);
+  }, [href, pathname]);
 
   return (
     <div

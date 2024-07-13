@@ -10,22 +10,21 @@ import org.junit.jupiter.api.BeforeEach;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class BaseTest {
-  protected Invoice invoice;
-  protected Client client;
-  protected Client mockClient;
-  protected ClientDTO clientDTO;
-  protected ClientWithInvoicesDTO clientWithInvoicesDTO;
-  protected Invoice updatedInvoice;
-  protected InvoiceDTO invoiceDTO;
-  protected InvoiceWithItemsAndClientDTO invoiceWithItemsAndClientDTO;
-  protected InvoiceWithItemsAndClientDTO updatedInvoiceWithClientsAndItemsDTO;
-  protected InvoiceItem invoiceItem;
-  protected InvoiceItemDTO invoiceItemDTO;
-  protected List<InvoiceItem> mockInvoiceItems;
+  public Invoice invoice;
+  public Client client;
+  public Client mockClient;
+  public ClientDTO clientDTO;
+  public ClientDetailDTO clientDetailDTO;
+  public Invoice updatedInvoice;
+  public InvoiceDTO invoiceDTO;
+  public InvoiceDetailDTO invoiceDetailDTO;
+  public InvoiceDetailDTO updatedInvoiceWithClientsAndItemsDTO;
+  public InvoiceItem invoiceItem;
+  public InvoiceItemDTO invoiceItemDTO;
+  public List<InvoiceItem> mockInvoiceItems;
 
   @BeforeEach
   public void setup() {
@@ -152,8 +151,8 @@ public class BaseTest {
             .total(BigDecimal.valueOf(3000.00))
             .build();
 
-    invoiceWithItemsAndClientDTO =
-        InvoiceWithItemsAndClientDTO.builder()
+    invoiceDetailDTO =
+        InvoiceDetailDTO.builder()
             .id(1)
             .invoiceReference("INV-001")
             .createdAt(LocalDateTime.now())
@@ -167,7 +166,7 @@ public class BaseTest {
             .build();
 
     updatedInvoiceWithClientsAndItemsDTO =
-        InvoiceWithItemsAndClientDTO.builder()
+        InvoiceDetailDTO.builder()
             .id(1)
             .invoiceReference("INV-UPDATED")
             .createdAt(LocalDateTime.now())
@@ -180,8 +179,8 @@ public class BaseTest {
             .invoiceItems(invoiceItems)
             .build();
 
-    clientWithInvoicesDTO =
-        ClientWithInvoicesDTO.builder()
+    clientDetailDTO =
+        ClientDetailDTO.builder()
             .id(1)
             .clientName("Acme Corporation")
             .clientEmail("example@example.com")

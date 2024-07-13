@@ -5,7 +5,7 @@ import com.pfkdigital.api.dto.*;
 import java.util.List;
 
 public interface InvoiceService {
-  InvoiceWithItemsAndClientDTO createInvoice(InvoiceWithItemsAndClientDTO invoiceDTO);
+  InvoiceDetailDTO createInvoice(InvoiceDetailDTO invoiceDTO);
 
   List<GraphDataDTO> getRevenueByMonth();
 
@@ -13,7 +13,7 @@ public interface InvoiceService {
 
   List<InvoiceDTO> getLatestInvoices();
 
-  InvoiceWithItemsAndClientDTO getAnInvoiceById(Integer invoiceId);
+  InvoiceDetailDTO getAnInvoiceById(Integer invoiceId);
 
   CurrencyDTO getAllInvoiceTotalSum();
 
@@ -21,8 +21,8 @@ public interface InvoiceService {
 
   CountDTO getInvoicesCount();
 
-  InvoiceWithItemsAndClientDTO updateInvoice(
-      InvoiceWithItemsAndClientDTO invoiceDTO, Integer invoiceId);
+  InvoiceDetailDTO updateInvoice(
+          InvoiceDetailDTO invoiceDTO, Integer invoiceId);
 
   String deleteInvoiceById(Integer invoiceId);
 }

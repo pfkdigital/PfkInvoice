@@ -1,7 +1,7 @@
 package com.pfkdigital.api.service;
 
 import com.pfkdigital.api.dto.ClientDTO;
-import com.pfkdigital.api.dto.ClientWithInvoicesDTO;
+import com.pfkdigital.api.dto.ClientDetailDTO;
 import com.pfkdigital.api.dto.CountDTO;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public interface ClientService {
 
   List<ClientDTO> getLatestClients();
 
-  ClientWithInvoicesDTO getClientById(Integer clientId);
+  ClientDetailDTO getClientById(Integer clientId);
 
   CountDTO getClientsCount();
 

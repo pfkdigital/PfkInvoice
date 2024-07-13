@@ -7,17 +7,13 @@ import com.pfkdigital.api.exception.InvoiceNotFoundException;
 import com.pfkdigital.api.mapper.InvoiceMapper;
 import com.pfkdigital.api.repository.InvoiceRepository;
 import com.pfkdigital.api.service.InvoiceService;
+import com.pfkdigital.api.utility.FormatterUtility;
+import com.pfkdigital.api.utility.GraphUtility;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.format.TextStyle;
-import java.util.Locale;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,10 +22,12 @@ import java.util.stream.Collectors;
 public class InvoiceServiceImpl implements InvoiceService {
   private final InvoiceRepository invoiceRepository;
   private final InvoiceMapper invoiceMapper;
+  private final GraphUtility graphUtility;
+  private final FormatterUtility formatterUtility;
 
   @Override
   @Transactional
-  public InvoiceWithItemsAndClientDTO createInvoice(InvoiceWithItemsAndClientDTO invoiceDTO) {
+  public InvoiceDetailDTO createInvoice(InvoiceDetailDTO invoiceDTO) {
     Invoice newInvoice = invoiceMapper.invoiceWithItemsAndClientDTOToInvoice(invoiceDTO);
     newInvoice.getInvoiceItems().forEach(item -> item.setInvoice(newInvoice));
     Invoice savedInvoice = invoiceRepository.save(newInvoice);
@@ -41,7 +39,7 @@ public class InvoiceServiceImpl implements InvoiceService {
   public List<GraphDataDTO> getRevenueByMonth() {
     List<Invoice> invoices = invoiceRepository.findAll();
 
-    return createGraphData(invoices);
+    return graphUtility.createGraphData(invoices);
   }
 
   @Override
@@ -61,10 +59,10 @@ public class InvoiceServiceImpl implements InvoiceService {
   }
 
   @Override
-  public InvoiceWithItemsAndClientDTO getAnInvoiceById(Integer invoiceId) {
+  public InvoiceDetailDTO getAnInvoiceById(Integer invoiceId) {
     Invoice selectedInvoice =
         invoiceRepository
-            .findInvoiceWithClientAndItemsById(invoiceId)
+            .findInvoiceDetailById(invoiceId)
             .orElseThrow(
                 () -> new InvoiceNotFoundException("Invoice of id " + invoiceId + " is not found"));
 
@@ -74,7 +72,7 @@ public class InvoiceServiceImpl implements InvoiceService {
   @Override
   public CurrencyDTO getAllInvoiceTotalSum() {
     BigDecimal total = invoiceRepository.getSumOfAllTotalInvoices();
-    String formattedTotal = formatBigDecimal(total);
+    String formattedTotal = formatterUtility.formatBigDecimal(total);
 
     return CurrencyDTO.builder().label("Revenue").status(formattedTotal).build();
   }
@@ -82,7 +80,7 @@ public class InvoiceServiceImpl implements InvoiceService {
   @Override
   public CurrencyDTO getAllInvoiceTotalSumUnpaid() {
     BigDecimal total = invoiceRepository.getSumOfAllTotalInvoicesUnpaid();
-    String formattedTotal = formatBigDecimal(total);
+    String formattedTotal = formatterUtility.formatBigDecimal(total);
 
     return CurrencyDTO.builder().label("Unpaid Revenue").status(formattedTotal).build();
   }
@@ -96,11 +94,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 
   @Override
   @Transactional
-  public InvoiceWithItemsAndClientDTO updateInvoice(
-      InvoiceWithItemsAndClientDTO invoiceDTO, Integer invoiceId) {
+  public InvoiceDetailDTO updateInvoice(
+          InvoiceDetailDTO invoiceDTO, Integer invoiceId) {
     Invoice selectedInvoice =
         invoiceRepository
-            .findInvoiceWithClientAndItemsById(invoiceId)
+            .findInvoiceDetailById(invoiceId)
             .orElseThrow(
                 () -> new InvoiceNotFoundException("Invoice of id " + invoiceId + " is not found"));
     Invoice updatedInvoice = invoiceMapper.invoiceWithItemsAndClientDTOToInvoice(invoiceDTO);
@@ -139,65 +137,5 @@ public class InvoiceServiceImpl implements InvoiceService {
     invoiceRepository.delete(selectedInvoice);
 
     return "Invoice of id " + invoiceId + " was deleted";
-  }
-
-  private GraphDataDTO getMonthAndRevenueFromInvoice(Invoice invoice) {
-    return GraphDataDTO.builder()
-        .month(getMonthFromDate(invoice.getPaymentDue()))
-        .revenue(invoice.getTotal())
-        .build();
-  }
-
-  private Map<String, List<GraphDataDTO>> groupGraphDataByMonth(List<GraphDataDTO> graphData) {
-    return graphData.stream().collect(Collectors.groupingBy(GraphDataDTO::getMonth));
-  }
-
-  private List<GraphDataDTO> sumRevenuesForSameMonth(
-      Map<String, List<GraphDataDTO>> groupedGraphData) {
-    return groupedGraphData.entrySet().stream()
-        .map(
-            entry ->
-                GraphDataDTO.builder()
-                    .month(entry.getKey())
-                    .revenue(
-                        entry.getValue().stream()
-                            .map(GraphDataDTO::getRevenue)
-                            .reduce(BigDecimal::add)
-                            .orElse(BigDecimal.ZERO))
-                    .build())
-        .sorted(Comparator.comparingInt(graphData -> monthToNumber(graphData.getMonth())))
-        .collect(Collectors.toList());
-  }
-
-  private List<GraphDataDTO> createGraphData(List<Invoice> invoices) {
-    List<GraphDataDTO> graphData =
-        invoices.stream()
-            .filter(invoice -> invoice.getInvoiceStatus().equals("Paid"))
-            .map(this::getMonthAndRevenueFromInvoice)
-            .toList();
-
-    Map<String, List<GraphDataDTO>> groupedGraphData = groupGraphDataByMonth(graphData);
-
-    return sumRevenuesForSameMonth(groupedGraphData);
-  }
-
-  private String getMonthFromDate(LocalDateTime date) {
-    return date.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
-  }
-
-  private int monthToNumber(String month) {
-    return Month.valueOf(month.toUpperCase()).getValue();
-  }
-
-  public String formatBigDecimal(BigDecimal value) {
-    String[] suffixes = new String[] {"", "K", "M", "B", "T"};
-    int index = 0;
-    while (value.compareTo(new BigDecimal("1000")) >= 0 && index < suffixes.length - 1) {
-      value = value.divide(new BigDecimal("1000"), RoundingMode.UP);
-      index++;
-    }
-
-    DecimalFormat df = new DecimalFormat("#,##0.##");
-    return df.format(value) + suffixes[index];
   }
 }

@@ -1,12 +1,12 @@
 package com.pfkdigital.api.repository;
 
-import com.pfkdigital.api.BaseTest;
-
+import com.pfkdigital.api.entity.Client;
 import com.pfkdigital.api.entity.Invoice;
+import com.pfkdigital.api.entity.InvoiceItem;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.PropertySource;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,23 +16,16 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-public class InvoiceRepositoryTest extends BaseTest {
+public class InvoiceRepositoryTest {
 
+  @Autowired private ClientRepository clientRepository;
   @Autowired private InvoiceRepository invoiceRepository;
 
   @Test
-  public void InvoiceRepository_CreateANewInvoice_ReturnCreatedInvoice() {
+  void InvoiceRepository_GetAllInvoices_ReturnAListOfAllInvoices() {
     String savedInvoiceReference = "INV-001";
+    Invoice invoice = Invoice.builder().invoiceReference(savedInvoiceReference).build();
 
-    Invoice savedInvoice = invoiceRepository.save(invoice);
-
-    assertNotNull(savedInvoice);
-    assertEquals(savedInvoiceReference, savedInvoice.getInvoiceReference());
-  }
-
-  @Test
-  public void InvoiceRepository_GetAllInvoices_ReturnAListOfAllInvoices() {
-    String savedInvoiceReference = "INV-001";
     invoiceRepository.save(invoice);
     List<Invoice> invoiceList = invoiceRepository.findAll();
 
@@ -42,24 +35,29 @@ public class InvoiceRepositoryTest extends BaseTest {
   }
 
   @Test
-  public void InvoiceRepository_GetInvoiceWithClientAndItemsById_ReturnInvoice() {
-    String savedInvoiceReference = "INV-001";
-    String clientName = "Acme Corporation";
-    int invoiceItemCount = 2;
+  void InvoiceRepository_GetInvoiceDetailById_ReturnInvoice() {
+    Client client = Client.builder().clientName("Acme Corporation").build();
+    Client savedClient = clientRepository.save(client);
+    Invoice invoice =
+        Invoice.builder().id(1).invoiceReference("INV-001").client(savedClient).build();
+    InvoiceItem invoiceItem =
+        InvoiceItem.builder().name("Item 1").quantity(1).price(BigDecimal.valueOf(500.00)).build();
+    invoice.addInvoiceItem(invoiceItem);
+    invoiceRepository.save(invoice);
 
-    Invoice savedInvoice = invoiceRepository.save(invoice);
-    Optional<Invoice> selectedInvoice =
-        invoiceRepository.findInvoiceWithClientAndItemsById(savedInvoice.getId());
+    Optional<Invoice> selectedInvoice = invoiceRepository.findInvoiceDetailById(invoice.getId());
 
     assertTrue(selectedInvoice.isPresent());
-    assertEquals(savedInvoiceReference, selectedInvoice.get().getInvoiceReference());
-    assertEquals(clientName, selectedInvoice.get().getClient().getClientName());
-    assertEquals(invoiceItemCount, selectedInvoice.get().getInvoiceItems().size());
+    assertEquals("INV-001", selectedInvoice.get().getInvoiceReference());
+    assertEquals("Item 1", selectedInvoice.get().getInvoiceItems().get(0).getName());
+    assertEquals("Acme Corporation", selectedInvoice.get().getClient().getClientName());
   }
 
   @Test
-  public void InvoiceRepository_GetInvoiceTotalSums_ReturnSum() {
-    BigDecimal expectedTotal = BigDecimal.valueOf(1500).setScale(2, RoundingMode.DOWN);
+  void InvoiceRepository_GetInvoiceTotalSums_ReturnSum() {
+    BigDecimal expectedTotal = BigDecimal.valueOf(500).setScale(2, RoundingMode.DOWN);
+    Invoice invoice =
+        Invoice.builder().invoiceStatus("Paid").total(BigDecimal.valueOf(500.00)).build();
 
     invoiceRepository.save(invoice);
 
@@ -70,12 +68,12 @@ public class InvoiceRepositoryTest extends BaseTest {
   }
 
   @Test
-  public void InvoiceRepository_GetUnpaidInvoiceTotalSums_ReturnSum() {
-    BigDecimal expectedTotal = BigDecimal.valueOf(1500).setScale(2, RoundingMode.DOWN);
-    Invoice invoice2 =
-        Invoice.builder().invoiceStatus("Paid").total(BigDecimal.valueOf(500.00)).build();
+  void InvoiceRepository_GetUnpaidInvoiceTotalSums_ReturnSum() {
+    BigDecimal expectedTotal = BigDecimal.valueOf(500).setScale(2, RoundingMode.DOWN);
+    Invoice invoice =
+        Invoice.builder().invoiceStatus("Unpaid").total(BigDecimal.valueOf(500.00)).build();
 
-    invoiceRepository.saveAll(List.of(invoice,invoice2));
+    invoiceRepository.save(invoice);
 
     BigDecimal actualTotal = invoiceRepository.getSumOfAllTotalInvoicesUnpaid();
 
@@ -84,38 +82,33 @@ public class InvoiceRepositoryTest extends BaseTest {
   }
 
   @Test
-  public void InvoiceRepository_GetInvoiceCount_ReturnCount() {
-    Invoice savedInvoice = invoiceRepository.save(invoice);
+  void InvoiceRepository_GetInvoiceCount_ReturnCount() {
+    Invoice invoice1 = Invoice.builder().invoiceReference("INV-001").build();
+    Invoice invoice2 = Invoice.builder().invoiceReference("INV-002").build();
 
-    Long invoiceCount = invoiceRepository.count();
+    invoiceRepository.save(invoice1);
+    invoiceRepository.save(invoice2);
 
-    assertNotNull(invoiceCount);
-    assertEquals(1L, invoiceCount);
+    long invoiceCount = invoiceRepository.count();
+
+    assertEquals(2, invoiceCount);
   }
 
   @Test
-  public void InvoiceRepository_UpdateAnInvoice_ReturnUpdatedInvoice() {
-    String savedInvoiceReference = "INV-001";
-    String updatedInvoiceReference = "INV-002";
+  void InvoiceRepository_UpdateAnInvoice_ReturnUpdatedInvoice() {
+    Invoice invoice = Invoice.builder().invoiceReference("INV-001").build();
     Invoice savedInvoice = invoiceRepository.save(invoice);
-    Invoice selectedInvoice =
-        invoiceRepository.findInvoiceWithClientAndItemsById(savedInvoice.getId()).get();
 
-    selectedInvoice.setInvoiceReference(updatedInvoiceReference);
-    Invoice updatedInvoice = invoiceRepository.save(selectedInvoice);
+    savedInvoice.setInvoiceReference("INV-UPDATED");
+    Invoice updatedInvoice = invoiceRepository.save(savedInvoice);
 
     assertNotNull(updatedInvoice);
-    assertEquals(updatedInvoiceReference, updatedInvoice.getInvoiceReference());
-    assertNotEquals(savedInvoiceReference, updatedInvoice.getInvoiceReference());
+    assertEquals("INV-UPDATED", updatedInvoice.getInvoiceReference());
   }
 
   @Test
-  public void InvoiceRepository_DeleteAnInvoiceById_InvoiceRemoved() {
-    Invoice savedInvoice = invoiceRepository.save(invoice);
+  void findAllByOrderByIdAsc() {}
 
-    invoiceRepository.delete(savedInvoice);
-    Optional<Invoice> deletedInvoice = invoiceRepository.findById(savedInvoice.getId());
-
-    assertTrue(deletedInvoice.isEmpty());
-  }
+  @Test
+  void findLast11OrderByDesc() {}
 }

@@ -17,7 +17,7 @@ public class InvoiceController {
   private final InvoiceService invoiceService;
 
   @PostMapping
-  public ResponseEntity<?> createNewInvoice(@RequestBody InvoiceWithItemsAndClientDTO invoiceDTO) {
+  public ResponseEntity<?> createNewInvoice(@RequestBody InvoiceDetailDTO invoiceDTO) {
     return new ResponseEntity<>(invoiceService.createInvoice(invoiceDTO), HttpStatus.CREATED);
   }
 
@@ -58,7 +58,7 @@ public class InvoiceController {
 
   @PutMapping("/{invoiceId}")
   public ResponseEntity<?> updateAnInvoice(
-      @RequestBody InvoiceWithItemsAndClientDTO invoiceDTO, @PathVariable Integer invoiceId) {
+          @RequestBody InvoiceDetailDTO invoiceDTO, @PathVariable Integer invoiceId) {
     return new ResponseEntity<>(
         invoiceService.updateInvoice(invoiceDTO, invoiceId), HttpStatus.ACCEPTED);
   }

@@ -1,12 +1,14 @@
 package com.pfkdigital.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pfkdigital.api.BaseTest;
 import com.pfkdigital.api.dto.ClientDTO;
+import com.pfkdigital.api.dto.ClientDetailDTO;
 import com.pfkdigital.api.dto.CountDTO;
+import com.pfkdigital.api.dto.InvoiceDTO;
 import com.pfkdigital.api.exception.ClientNotFoundException;
 import com.pfkdigital.api.service.ClientService;
 import org.hamcrest.CoreMatchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -31,15 +33,31 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @WebMvcTest(controllers = ClientController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
-public class ClientControllerTest extends BaseTest {
+public class ClientControllerTest {
 
   @Autowired private MockMvc mockMvc;
   @MockBean private ClientService clientService;
   @Autowired private ObjectMapper objectMapper;
 
+  private ClientDTO clientDTO;
+  private ClientDetailDTO clientDetailDTO;
+  private CountDTO countDTO;
+  private InvoiceDTO invoiceDTO;
+
+  @BeforeEach
+  void setUp() {
+    clientDTO = ClientDTO.builder().clientName("Acme Company").build();
+    countDTO = CountDTO.builder().label("Count").status(1L).build();
+    InvoiceDTO invoice = InvoiceDTO.builder().invoiceReference("INV-001").build();
+    clientDetailDTO =
+        ClientDetailDTO.builder()
+            .clientName("Acme Company")
+            .invoices(List.of(invoice))
+            .build();
+  }
+
   @Test
   public void ClientController_CreateClient_ReturnCreatedClientDTO() throws Exception {
-
     when(clientService.createNewClient(any(ClientDTO.class))).thenReturn(clientDTO);
 
     ResultActions response =
@@ -58,7 +76,6 @@ public class ClientControllerTest extends BaseTest {
 
   @Test
   public void ClientController_GetClientList_ReturnClientList() throws Exception {
-
     when(clientService.getAllClients()).thenReturn(List.of(clientDTO));
 
     ResultActions response =
@@ -78,38 +95,39 @@ public class ClientControllerTest extends BaseTest {
       throws Exception {
     int clientId = 1;
 
-    when(clientService.getClientById(clientId)).thenReturn(clientWithInvoicesDTO);
+    when(clientService.getClientById(anyInt())).thenReturn(clientDetailDTO);
 
     ResultActions response =
         mockMvc.perform(
             get("/api/v1/clients/" + clientId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(clientWithInvoicesDTO)));
+                .content(objectMapper.writeValueAsString(clientDetailDTO)));
 
     response
         .andDo(MockMvcResultHandlers.print())
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(
             MockMvcResultMatchers.jsonPath(
-                "$.clientName", CoreMatchers.is(clientWithInvoicesDTO.getClientName())));
+                "$.clientName", CoreMatchers.is(clientDetailDTO.getClientName())))
+        .andExpect(
+            MockMvcResultMatchers.jsonPath(
+                "$.invoices[0].invoiceReference",
+                CoreMatchers.is(clientDetailDTO.getInvoices().get(0).getInvoiceReference())));
   }
 
   @Test
-  public void ClientController_GetClientCount_ReturnClientCount()
-          throws Exception {
-    long clientCount = 1l;
-    CountDTO countDTO = CountDTO.builder().label("Count").status(1l).build();
+  public void ClientController_GetClientCount_ReturnClientCount() throws Exception {
+    long clientCount = 1L;
+
     when(clientService.getClientsCount()).thenReturn(countDTO);
 
     ResultActions response =
-            mockMvc.perform(
-                    get("/api/v1/clients/count")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(clientCount)));
+        mockMvc.perform(
+            get("/api/v1/clients/count")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(clientCount)));
 
-    response
-            .andDo(MockMvcResultHandlers.print())
-            .andExpect(MockMvcResultMatchers.status().isOk());
+    response.andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isOk());
   }
 
   @Test
@@ -128,26 +146,23 @@ public class ClientControllerTest extends BaseTest {
   }
 
   @Test
-  public void ClientController_UpdateInvoiceById_ReturnClientWithInvoices()
-          throws Exception {
+  public void ClientController_UpdateInvoiceById_ReturnClientWithInvoices() throws Exception {
     int clientId = 1;
 
-    when(clientService.updateClient(any(ClientDTO.class), anyInt()))
-            .thenReturn(clientDTO);
+    when(clientService.updateClient(any(ClientDTO.class), anyInt())).thenReturn(clientDTO);
 
     ResultActions response =
-            mockMvc.perform(
-                    put("/api/v1/clients/" + clientId)
-                            .content(objectMapper.writeValueAsString(clientDTO))
-                            .contentType(MediaType.APPLICATION_JSON));
+        mockMvc.perform(
+            put("/api/v1/clients/" + clientId)
+                .content(objectMapper.writeValueAsString(clientDTO))
+                .contentType(MediaType.APPLICATION_JSON));
 
     response
-            .andDo(MockMvcResultHandlers.print())
-            .andExpect(MockMvcResultMatchers.status().isCreated())
-            .andExpect(
-                    MockMvcResultMatchers.jsonPath(
-                            "$.clientName",
-                            CoreMatchers.is(clientDTO.getClientName())));
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(MockMvcResultMatchers.status().isCreated())
+        .andExpect(
+            MockMvcResultMatchers.jsonPath(
+                "$.clientName", CoreMatchers.is(clientDTO.getClientName())));
   }
 
   @Test
@@ -158,10 +173,10 @@ public class ClientControllerTest extends BaseTest {
     when(clientService.deleteClientById(anyInt())).thenReturn(deletedStatement);
 
     ResultActions response =
-            mockMvc.perform(
-                    delete("/api/v1/clients/" + clientId)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(deletedStatement)));
+        mockMvc.perform(
+            delete("/api/v1/clients/" + clientId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(deletedStatement)));
 
     response.andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isOk());
   }

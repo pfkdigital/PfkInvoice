@@ -15,5 +15,5 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
   List<Client> findLast11OrderByDesc();
 
   @Query("SELECT c FROM Client c LEFT JOIN FETCH c.invoices WHERE c.id = :id")
-  Optional<Client> getClientById(@Param("id") Integer id);
+  Optional<Client> getClientWithInvoicesById(@Param("id") Integer id);
 }

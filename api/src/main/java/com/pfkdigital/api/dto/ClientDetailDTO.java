@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClientWithInvoicesDTO {
+public class ClientDetailDTO {
   private Integer id;
   private String clientName;
   private String clientEmail;

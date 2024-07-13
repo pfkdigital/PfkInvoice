@@ -16,7 +16,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
 
   @Query(
       "SELECT i FROM Invoice i JOIN FETCH i.client JOIN FETCH i.invoiceItems WHERE i.id = :invoiceId")
-  Optional<Invoice> findInvoiceWithClientAndItemsById(Integer invoiceId);
+  Optional<Invoice> findInvoiceDetailById(Integer invoiceId);
 
   @Query("SELECT SUM(i.total) FROM Invoice i")
   BigDecimal getSumOfAllTotalInvoices();

@@ -18,7 +18,7 @@ public class InvoiceControllerAdvise {
         ApiError.builder()
             .status(HttpStatus.NOT_FOUND)
             .message(exception.getMessage())
-            .timeStamp(String.valueOf(LocalDateTime.now()))
+            .timeStamp(LocalDateTime.now())
             .build();
     return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
   }
