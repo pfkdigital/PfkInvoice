@@ -9,6 +9,7 @@ import com.pfkdigital.api.repository.InvoiceRepository;
 import com.pfkdigital.api.service.InvoiceService;
 import com.pfkdigital.api.utility.FormatterUtility;
 import com.pfkdigital.api.utility.GraphUtility;
+import com.pfkdigital.api.utility.TotalCalculatorUtility;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class InvoiceServiceImpl implements InvoiceService {
   private final InvoiceMapper invoiceMapper;
   private final GraphUtility graphUtility;
   private final FormatterUtility formatterUtility;
+  private final TotalCalculatorUtility totalCalculatorUtility;
 
   @Override
   @Transactional
@@ -109,7 +111,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     selectedInvoice.setDescription(updatedInvoice.getDescription());
     selectedInvoice.setPaymentTerms(updatedInvoice.getPaymentTerms());
     selectedInvoice.setInvoiceStatus(updatedInvoice.getInvoiceStatus());
-    selectedInvoice.setTotal(updatedInvoice.getTotal());
+    selectedInvoice.setTotal(totalCalculatorUtility.calculateTotal(updatedInvoice.getInvoiceItems()));
     selectedInvoice.setClient(updatedInvoice.getClient());
     selectedInvoice.getInvoiceItems().clear();
 

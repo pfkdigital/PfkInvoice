@@ -1,10 +1,7 @@
 package com.pfkdigital.api.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -12,7 +9,8 @@ import java.math.BigDecimal;
 @Table(name = "invoice_items")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 public class InvoiceItem {
   @Id

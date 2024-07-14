@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -19,10 +19,10 @@ public class InvoiceDetailDTO {
   private String invoiceReference;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MMM-dd")
-  private LocalDateTime createdAt;
+  private Date createdAt;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MMM-dd")
-  private LocalDateTime paymentDue;
+  private Date paymentDue;
 
   private String description;
   private Integer paymentTerms;

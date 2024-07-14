@@ -2,10 +2,7 @@ package com.pfkdigital.api.entity;
 
 import com.pfkdigital.api.model.Address;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +11,8 @@ import java.util.List;
 @Table(name = "clients")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 public class Client {
   @Id

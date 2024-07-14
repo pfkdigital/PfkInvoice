@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @ControllerAdvice
 public class InvoiceControllerAdvise {
@@ -18,7 +19,7 @@ public class InvoiceControllerAdvise {
         ApiError.builder()
             .status(HttpStatus.NOT_FOUND)
             .message(exception.getMessage())
-            .timeStamp(LocalDateTime.now())
+            .timeStamp(Date.from(LocalDateTime.now().atZone(java.time.ZoneId.systemDefault()).toInstant()))
             .build();
     return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
   }

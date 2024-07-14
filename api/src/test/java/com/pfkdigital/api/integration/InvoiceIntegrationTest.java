@@ -1,13 +1,10 @@
 package com.pfkdigital.api.integration;
 
-import com.pfkdigital.api.BaseTest;
-import com.pfkdigital.api.dto.CountDTO;
-import com.pfkdigital.api.dto.CurrencyDTO;
-import com.pfkdigital.api.dto.InvoiceDTO;
-import com.pfkdigital.api.dto.InvoiceDetailDTO;
+import com.pfkdigital.api.dto.*;
 import com.pfkdigital.api.model.ApiError;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -22,19 +19,26 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-public class InvoiceIntegrationTest extends BaseTest {
+public class InvoiceIntegrationTest {
   @Container
   public static PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:15");
 
   TestRestTemplate restTemplate = new TestRestTemplate();
 
   @LocalServerPort private Integer port;
+
+  private InvoiceDetailDTO invoiceDetailDTO;
+  private InvoiceDetailDTO updatedInvoiceDetailDTO;
 
   @BeforeAll
   public static void beforeAll() {
@@ -46,6 +50,51 @@ public class InvoiceIntegrationTest extends BaseTest {
     registry.add("spring.datasource.username", container::getUsername);
     registry.add("spring.datasource.password", container::getPassword);
   }
+
+  @AfterAll
+  public static void afterAll() {
+    container.stop();
+  }
+
+  @BeforeEach
+    public void setUp() {
+        invoiceDetailDTO = InvoiceDetailDTO.builder()
+                .invoiceReference("INV-001")
+                .createdAt(new Date())
+                .paymentDue(new Date())
+                .description("Test Invoice")
+                .paymentTerms(30)
+                .invoiceStatus("Draft")
+                .total(BigDecimal.valueOf(10000))
+                .client(ClientDTO.builder().id(1).clientName("Acme Corporation").build())
+                .invoiceItems(
+                        List.of(
+                                InvoiceItemDTO.builder()
+                                        .name("Test Item")
+                                        .quantity(3)
+                                        .price(BigDecimal.TEN)
+                                        .total(BigDecimal.valueOf(30))
+                                        .build()))
+                .build();
+        updatedInvoiceDetailDTO = InvoiceDetailDTO.builder()
+                .invoiceReference("INV-UPDATED")
+                .createdAt(new Date())
+                .paymentDue(new Date())
+                .description("Test Invoice")
+                .paymentTerms(30)
+                .invoiceStatus("Draft")
+                .total(BigDecimal.valueOf(10000))
+                .client(ClientDTO.builder().id(1).clientName("Acme Corporation").build())
+                .invoiceItems(
+                        List.of(
+                                InvoiceItemDTO.builder()
+                                        .name("Test Item")
+                                        .quantity(3)
+                                        .price(BigDecimal.TEN)
+                                        .total(BigDecimal.valueOf(30))
+                                        .build()))
+                .build();
+    }
 
   @Test
   public void InvoiceIntegration_SetUpDatabase() {
@@ -75,7 +124,7 @@ public class InvoiceIntegrationTest extends BaseTest {
     InvoiceDTO[] allInvoices = restTemplate.getForObject(baseUrl, InvoiceDTO[].class);
 
     assertNotNull(allInvoices);
-    assertEquals(15, allInvoices.length);
+    assertEquals(20, allInvoices.length);
   }
 
   @Test
@@ -95,7 +144,7 @@ public class InvoiceIntegrationTest extends BaseTest {
   @Test
   @Sql({"/schema.sql", "/data.sql"})
   public void InvoiceIntegration_GetInvoiceTotalSums_ReturnSum() {
-    String expectedTotal = "33.5K";
+    String expectedTotal = "46.4K";
     String baseUrl = "http://localhost:+" + port + "/api/v1/invoices/total";
 
     CurrencyDTO actualTotalSum =
@@ -108,7 +157,7 @@ public class InvoiceIntegrationTest extends BaseTest {
   @Test
   @Sql({"/schema.sql", "/data.sql"})
   public void InvoiceIntegration_GetUnpaidInvoiceTotalSums_ReturnSum() {
-    String expectedTotal = "14.3K";
+    String expectedTotal = "22.3K";
     String baseUrl = "http://localhost:+" + port + "/api/v1/invoices/unpaid/total";
 
     CurrencyDTO actualTotalSum =
@@ -121,7 +170,7 @@ public class InvoiceIntegrationTest extends BaseTest {
   @Test
   @Sql({"/schema.sql", "/data.sql"})
   public void InvoiceIntegration_GetInvoiceCount_ReturnCount()  {
-    long expectedInvoiceCount = 15;
+    long expectedInvoiceCount = 20;
     String baseUrl = "http://localhost:+" + port + "/api/v1/invoices/count";
 
     CountDTO actualInvoiceCount =
@@ -152,7 +201,7 @@ public class InvoiceIntegrationTest extends BaseTest {
     String invoiceReference = "INV-UPDATED";
 
     restTemplate.put(
-        baseUrl, updatedInvoiceWithClientsAndItemsDTO, InvoiceDetailDTO.class);
+        baseUrl, updatedInvoiceDetailDTO, InvoiceDetailDTO.class);
 
     InvoiceDetailDTO testInvoice =
         restTemplate.getForObject(baseUrl, InvoiceDetailDTO.class);
@@ -176,12 +225,20 @@ public class InvoiceIntegrationTest extends BaseTest {
 
     assertNotNull(allInvoices);
     assertNotNull(newInvoices);
-    assertEquals(15, allInvoices.length);
-    assertEquals(14, newInvoices.length);
+    assertEquals(20, allInvoices.length);
+    assertEquals(19, newInvoices.length);
   }
 
-  @AfterAll
-  public static void afterAll() {
-    container.stop();
+  @Test
+  @Sql({"/schema.sql","/data.sql"})
+  void InvoiceIntegration_GetRevenueByMonth_ReturnGraphDataDTOList() {
+    String baseUrl = "http://localhost:" + port + "/api/v1/invoices/graph";
+
+    GraphDataDTO[] graphDataDTOList = restTemplate.getForObject(baseUrl, GraphDataDTO[].class);
+
+    System.out.println(Arrays.toString(graphDataDTOList));
+
+    assertNotNull(graphDataDTOList);
+    assertEquals(8, graphDataDTOList.length);
   }
 }

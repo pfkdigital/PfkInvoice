@@ -2,22 +2,19 @@ package com.pfkdigital.api.entity;
 
 import com.pfkdigital.api.event.InvoiceTotalListener;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "invoices")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 @EntityListeners(InvoiceTotalListener.class)
 public class Invoice {

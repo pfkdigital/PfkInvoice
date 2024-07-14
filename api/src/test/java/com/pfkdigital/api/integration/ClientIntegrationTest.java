@@ -1,6 +1,6 @@
 package com.pfkdigital.api.integration;
 
-import com.pfkdigital.api.BaseTest;
+import com.pfkdigital.api.dto.AddressDTO;
 import com.pfkdigital.api.dto.ClientDTO;
 import com.pfkdigital.api.dto.CountDTO;
 import com.pfkdigital.api.model.ApiError;
@@ -26,127 +26,154 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-public class ClientIntegrationTest extends BaseTest {
-    @Container
-    public static PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:15");
+public class ClientIntegrationTest {
+  @Container
+  public static PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:15");
 
-    TestRestTemplate restTemplate = new TestRestTemplate();
+  TestRestTemplate restTemplate = new TestRestTemplate();
 
-    @LocalServerPort
-    private Integer port;
+  @LocalServerPort private Integer port;
 
-    @BeforeAll
-    public static void beforeAll(){
-        container.start();
-    }
+  @BeforeAll
+  public static void beforeAll() {
+    container.start();
+  }
 
-    public static void configureProperties(DynamicPropertyRegistry registry){
-        registry.add("spring.datasource.url", container::getJdbcUrl);
-        registry.add("spring.datasource.username", container::getUsername);
-        registry.add("spring.datasource.password", container::getPassword);
-    }
+  public static void configureProperties(DynamicPropertyRegistry registry) {
+    registry.add("spring.datasource.url", container::getJdbcUrl);
+    registry.add("spring.datasource.username", container::getUsername);
+    registry.add("spring.datasource.password", container::getPassword);
+  }
 
-    @Test
-    public void ClientIntegration_CreateClient_ReturnClientDTO(){
-        String baseUrl = "http://localhost:" + port + "/api/v1/clients";
-        String clientName = "Acme Corporation";
+  @AfterAll
+  public static void afterAll() {
+    container.stop();
+  }
 
-        ClientDTO newClient = restTemplate.postForObject(baseUrl,clientDTO,ClientDTO.class);
+  @Test
+  public void ClientIntegration_CreateClient_ReturnClientDTO() {
+    String baseUrl = "http://localhost:" + port + "/api/v1/clients";
+    String clientName = "Acme Corporation";
 
-        assertNotNull(newClient);
-        assertEquals(clientName,newClient.getClientName());
-    }
+    AddressDTO addressDTO =
+            AddressDTO.builder()
+                    .street("123 Street")
+                    .city("Test City")
+                    .postcode("test123")
+                    .country("United Kingdom")
+                    .build();
 
-    @Test
-    @Sql({"/schema.sql", "/data.sql"})
-    public void ClientIntegration_GetAllClients_ReturnClientDTOList(){
-        String baseUrl = "http://localhost:" + port + "/api/v1/clients";
+    ClientDTO clientDTO =
+            ClientDTO.builder()
+                    .clientName("Acme Corporation")
+                    .clientEmail("test@test.com")
+                    .clientAddress(addressDTO)
+                    .build();
 
+    ClientDTO newClient = restTemplate.postForObject(baseUrl, clientDTO, ClientDTO.class);
 
-        ClientDTO[] clientDTOList = restTemplate.getForObject(baseUrl,ClientDTO[].class);
+    assertNotNull(newClient);
+    assertEquals(clientName, newClient.getClientName());
+  }
 
-        assertNotNull(clientDTOList);
-        assertEquals(10,clientDTOList.length);
-    }
+  @Test
+  @Sql({"/schema.sql", "/data.sql"})
+  public void ClientIntegration_GetAllClients_ReturnClientDTOList() {
+    String baseUrl = "http://localhost:" + port + "/api/v1/clients";
 
-    @Test
-    @Sql({"/schema.sql", "/data.sql"})
-    public void ClientIntegration_GetClientById_ReturnClientDTOWithInvoices(){
-        int clientID = 1;
-        String clientName = "ABC Company Inc.";
+    ClientDTO[] clientDTOList = restTemplate.getForObject(baseUrl, ClientDTO[].class);
 
-        String baseUrl = "http://localhost:" + port + "/api/v1/clients/" + clientID;
+    assertNotNull(clientDTOList);
+    assertEquals(15, clientDTOList.length);
+  }
 
-        ClientDTO selectedClient = restTemplate.getForObject(baseUrl,ClientDTO.class);
+  @Test
+  @Sql({"/schema.sql", "/data.sql"})
+  public void ClientIntegration_GetClientById_ReturnClientDTOWithInvoices() {
+    int clientID = 1;
+    String clientName = "ABC Company Inc.";
 
-        assertNotNull(selectedClient);
-        assertEquals(clientName,selectedClient.getClientName());
-    }
+    String baseUrl = "http://localhost:" + port + "/api/v1/clients/" + clientID;
 
-    @Test
-    @Sql({"/schema.sql", "/data.sql"})
-    public void ClientIntegration_GetClientById_ThrowInvoiceNotFoundException(){
-        int clientID = 100;
-        String notFoundMessage = "Client of id " + clientID + " was not found";
-        String baseUrl = "http://localhost:" + port + "/api/v1/clients/" + clientID;
-        HttpEntity<String> entity = new HttpEntity<>(null);
+    ClientDTO selectedClient = restTemplate.getForObject(baseUrl, ClientDTO.class);
 
-        ResponseEntity<ApiError> response = restTemplate.exchange(baseUrl, HttpMethod.GET,entity,ApiError.class);
+    assertNotNull(selectedClient);
+    assertEquals(clientName, selectedClient.getClientName());
+  }
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals(
-                notFoundMessage, Objects.requireNonNull(response.getBody()).getMessage());
-    }
+  @Test
+  @Sql({"/schema.sql", "/data.sql"})
+  public void ClientIntegration_GetClientById_ThrowInvoiceNotFoundException() {
+    int clientID = 100;
+    String notFoundMessage = "Client of id " + clientID + " was not found";
+    String baseUrl = "http://localhost:" + port + "/api/v1/clients/" + clientID;
+    HttpEntity<String> entity = new HttpEntity<>(null);
 
-    @Test
-    @Sql({"/schema.sql", "/data.sql"})
-    public void ClientIntegration_GetClientCount_ReturnClientCount(){
-        long clientCountExpected = 10;
+    ResponseEntity<ApiError> response =
+        restTemplate.exchange(baseUrl, HttpMethod.GET, entity, ApiError.class);
+    System.out.println(response);
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    assertEquals(notFoundMessage, Objects.requireNonNull(response.getBody()).getMessage());
+  }
 
-        String baseUrl = "http://localhost:" + port + "/api/v1/clients/count";
+  @Test
+  @Sql({"/schema.sql", "/data.sql"})
+  public void ClientIntegration_GetClientCount_ReturnClientCount() {
+    long clientCountExpected = 15;
 
-        CountDTO clientCount = restTemplate.getForObject(baseUrl,CountDTO.class);
+    String baseUrl = "http://localhost:" + port + "/api/v1/clients/count";
 
-        assertNotNull(clientCount);
-        assertEquals(clientCountExpected,clientCount.getStatus());
-    }
+    CountDTO clientCount = restTemplate.getForObject(baseUrl, CountDTO.class);
 
-    @Test
-    @Sql({"/schema.sql", "/data.sql"})
-    public void ClientIntegration_UpdateClientById_ReturnUpdatedClientDTO(){
-        int clientID = 1;
-        String clientName = "Acme Corporation";
-        String baseUrl = "http://localhost:" + port + "/api/v1/clients/" + clientID;
+    assertNotNull(clientCount);
+    assertEquals(clientCountExpected, clientCount.getStatus());
+  }
 
-        restTemplate.put(baseUrl,clientDTO,ClientDTO.class);
+  @Test
+  @Sql({"/schema.sql", "/data.sql"})
+  public void ClientIntegration_UpdateClientById_ReturnUpdatedClientDTO() {
+    int clientID = 1;
+    String clientName = "Acme Corporation Updated";
+    String baseUrl = "http://localhost:" + port + "/api/v1/clients/" + clientID;
 
-        ClientDTO selectedClient = restTemplate.getForObject(baseUrl,ClientDTO.class);
+    ClientDTO updatedClientDTO =
+            ClientDTO.builder()
+                    .id(1)
+                    .clientName("Acme Corporation Updated")
+                    .clientEmail("test@test.com")
+                    .clientAddress(
+                            AddressDTO.builder()
+                                    .street("123 Street")
+                                    .city("Test City")
+                                    .postcode("test123")
+                                    .country("United Kingdom")
+                                    .build())
+                    .build();
 
-        assertNotNull(selectedClient);
-        assertEquals(clientName,selectedClient.getClientName());
-    }
+    restTemplate.put(baseUrl, updatedClientDTO, ClientDTO.class);
 
-    @Test
-    @Sql({"/schema.sql", "/data.sql"})
-    public void ClientIntegration_DeleteClientById_ClientDeleted(){
-        int clientID = 1;
-        String baseUrl = "http://localhost:" + port + "/api/v1/clients";
-        String clientUrl = "http://localhost:" + port + "/api/v1/clients/" + clientID;
+    ClientDTO selectedClient = restTemplate.getForObject(baseUrl, ClientDTO.class);
 
-        ClientDTO[] initialClients = restTemplate.getForObject(baseUrl,ClientDTO[].class);
+    assertNotNull(selectedClient);
+    assertEquals(clientName, selectedClient.getClientName());
+  }
 
-        restTemplate.delete(clientUrl,String.class);
+  @Test
+  @Sql({"/schema.sql", "/data.sql"})
+  public void ClientIntegration_DeleteClientById_ClientDeleted() {
+    int clientID = 1;
+    String baseUrl = "http://localhost:" + port + "/api/v1/clients";
+    String clientUrl = "http://localhost:" + port + "/api/v1/clients/" + clientID;
 
-        ClientDTO[] finalClients = restTemplate.getForObject(baseUrl,ClientDTO[].class);
+    ClientDTO[] initialClients = restTemplate.getForObject(baseUrl, ClientDTO[].class);
 
-        assertNotNull(initialClients);
-        assertNotNull(finalClients);
-        assertEquals(10,initialClients.length);
-        assertEquals(9,finalClients.length);
-    }
+    restTemplate.delete(clientUrl, String.class);
 
-    @AfterAll
-    public static void afterAll(){
-        container.stop();
-    }
+    ClientDTO[] finalClients = restTemplate.getForObject(baseUrl, ClientDTO[].class);
+
+    assertNotNull(initialClients);
+    assertNotNull(finalClients);
+    assertEquals(15, initialClients.length);
+    assertEquals(14, finalClients.length);
+  }
 }
