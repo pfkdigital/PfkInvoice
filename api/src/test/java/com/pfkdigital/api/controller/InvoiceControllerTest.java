@@ -78,7 +78,7 @@ public class InvoiceControllerTest {
   }
 
   @Test
-  public void InvoiceController_GetAllInvoices_ReturnInvoiceDTOList() throws Exception {
+  void InvoiceController_GetAllInvoices_ReturnInvoiceDTOList() throws Exception {
     when(invoiceService.getAllInvoices()).thenReturn(List.of(invoiceDTO));
 
     ResultActions response =
@@ -95,7 +95,7 @@ public class InvoiceControllerTest {
   }
 
   @Test
-  public void InvoiceService_GetInvoiceById_ReturnInvoiceWithItemsAndClientDTO() throws Exception {
+  void InvoiceService_GetInvoiceById_ReturnInvoiceWithItemsAndClientDTO() throws Exception {
     int invoiceId = 1;
     when(invoiceService.getAnInvoiceById(anyInt())).thenReturn(invoiceDetailDTO);
 
@@ -115,7 +115,7 @@ public class InvoiceControllerTest {
   }
 
   @Test
-  public void InvoiceController_GetInvoiceById_ReturnInvoiceNotFoundException() throws Exception {
+  void InvoiceController_GetInvoiceById_ReturnInvoiceNotFoundException() throws Exception {
     int invoiceId = 1;
     when(invoiceService.getAnInvoiceById(anyInt())).thenThrow(InvoiceNotFoundException.class);
 
@@ -133,7 +133,7 @@ public class InvoiceControllerTest {
   }
 
   @Test
-  public void InvoiceController_GetInvoiceTotalSums_ReturnSum() throws Exception {
+  void InvoiceController_GetInvoiceTotalSums_ReturnSum() throws Exception {
     when(invoiceService.getAllInvoiceTotalSum()).thenReturn(currencyDTO);
 
     ResultActions response =
@@ -150,7 +150,7 @@ public class InvoiceControllerTest {
   }
 
   @Test
-  public void InvoiceController_GetUnpaidInvoiceTotalSums_ReturnSum() throws Exception {
+  void InvoiceController_GetUnpaidInvoiceTotalSums_ReturnSum() throws Exception {
     when(invoiceService.getAllInvoiceTotalSumUnpaid()).thenReturn(currencyDTO);
 
     ResultActions response =
@@ -167,7 +167,7 @@ public class InvoiceControllerTest {
   }
 
   @Test
-  public void InvoiceController_GetInvoiceCount_ReturnCount() throws Exception {
+  void InvoiceController_GetInvoiceCount_ReturnCount() throws Exception {
     when(invoiceService.getInvoicesCount()).thenReturn(countDTO);
 
     ResultActions response =
@@ -185,7 +185,7 @@ public class InvoiceControllerTest {
   }
 
   @Test
-  public void InvoiceService_UpdateInvoiceById_ReturnInvoiceWithClientAndItemsDTO()
+  void InvoiceService_UpdateInvoiceById_ReturnInvoiceWithClientAndItemsDTO()
       throws Exception {
     int invoiceId = 1;
 
@@ -208,7 +208,7 @@ public class InvoiceControllerTest {
   }
 
   @Test
-  public void InvoiceController_DeleteInvoiceById_ReturnString() throws Exception {
+  void InvoiceController_DeleteInvoiceById_ReturnString() throws Exception {
     int invoiceId = 1;
     String deletedStatement = "Invoice of id " + invoiceId + " was deleted";
 

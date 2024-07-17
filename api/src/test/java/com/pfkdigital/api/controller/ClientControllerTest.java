@@ -57,7 +57,7 @@ public class ClientControllerTest {
   }
 
   @Test
-  public void ClientController_CreateClient_ReturnCreatedClientDTO() throws Exception {
+  void ClientController_CreateClient_ReturnCreatedClientDTO() throws Exception {
     when(clientService.createNewClient(any(ClientDTO.class))).thenReturn(clientDTO);
 
     ResultActions response =
@@ -75,7 +75,7 @@ public class ClientControllerTest {
   }
 
   @Test
-  public void ClientController_GetClientList_ReturnClientList() throws Exception {
+  void ClientController_GetClientList_ReturnClientList() throws Exception {
     when(clientService.getAllClients()).thenReturn(List.of(clientDTO));
 
     ResultActions response =
@@ -91,7 +91,7 @@ public class ClientControllerTest {
   }
 
   @Test
-  public void ClientController_GetClientById_ReturnClientWithInvoiceItemAndClient()
+  void ClientController_GetClientById_ReturnClientWithInvoiceItemAndClient()
       throws Exception {
     int clientId = 1;
 
@@ -116,7 +116,7 @@ public class ClientControllerTest {
   }
 
   @Test
-  public void ClientController_GetClientCount_ReturnClientCount() throws Exception {
+  void ClientController_GetClientCount_ReturnClientCount() throws Exception {
     long clientCount = 1L;
 
     when(clientService.getClientsCount()).thenReturn(countDTO);
@@ -131,7 +131,7 @@ public class ClientControllerTest {
   }
 
   @Test
-  public void ClientController_GetClientById_ThrowClientNotFoundException() throws Exception {
+  void ClientController_GetClientById_ThrowClientNotFoundException() throws Exception {
     int clientId = 1;
     String message = "Client of id " + clientId + " was not found";
 
@@ -146,7 +146,7 @@ public class ClientControllerTest {
   }
 
   @Test
-  public void ClientController_UpdateInvoiceById_ReturnClientWithInvoices() throws Exception {
+  void ClientController_UpdateInvoiceById_ReturnClientWithInvoices() throws Exception {
     int clientId = 1;
 
     when(clientService.updateClient(any(ClientDTO.class), anyInt())).thenReturn(clientDTO);
@@ -166,7 +166,7 @@ public class ClientControllerTest {
   }
 
   @Test
-  public void InvoiceController_DeleteInvoiceById_ReturnString() throws Exception {
+  void InvoiceController_DeleteInvoiceById_ReturnString() throws Exception {
     int clientId = 1;
     String deletedStatement = "Client of id " + clientId + " was deleted";
 

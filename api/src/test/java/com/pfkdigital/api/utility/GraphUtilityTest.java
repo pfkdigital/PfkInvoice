@@ -20,7 +20,7 @@ public class GraphUtilityTest {
   @InjectMocks private GraphUtility graphUtility;
 
   @Test
-  public void GraphUtility_CreateGraphData_ReturnListOfGraphDto() {
+  void GraphUtility_CreateGraphData_ReturnListOfGraphDto() {
     // Arrange
     Invoice mockInvoice = Invoice.builder().invoiceStatus("Paid").paymentDue(LocalDateTime.now()).total(BigDecimal.valueOf(100)).build();
     List<Invoice> invoices = Collections.singletonList(mockInvoice);

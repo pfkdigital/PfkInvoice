@@ -20,7 +20,7 @@ public class TotalCalculatorUtilityTest {
     private TotalCalculatorUtility totalCalculatorUtility;
 
     @Test
-    public void TotalCalculator_GivenInvoiceItemList_ReturnBigDecimal() {
+    void TotalCalculator_GivenInvoiceItemList_ReturnBigDecimal() {
         InvoiceItem item1 = InvoiceItem.builder().total(BigDecimal.TEN).build();
         InvoiceItem item2 = InvoiceItem.builder().total(BigDecimal.TEN).build();
         InvoiceItem item3 = InvoiceItem.builder().total(BigDecimal.TEN).build();

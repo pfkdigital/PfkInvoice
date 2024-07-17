@@ -33,7 +33,7 @@ public class InvoiceServiceTest {
   @InjectMocks private InvoiceServiceImpl invoiceService;
 
   @Test
-  public void InvoiceService_CreateNewInvoice_ReturnNewInvoiceDTO() {
+  void InvoiceService_CreateNewInvoice_ReturnNewInvoiceDTO() {
     String savedInvoiceReference = "INV-001";
 
     Client client = Client.builder().id(1).clientName("Acme Company").build();
@@ -68,7 +68,7 @@ public class InvoiceServiceTest {
   }
 
   @Test
-  public void InvoiceService_GetAllInvoices_ReturnInvoiceDTOList() {
+  void InvoiceService_GetAllInvoices_ReturnInvoiceDTOList() {
     String savedInvoiceReference = "INV-001";
     Invoice invoice = Invoice.builder().id(1).invoiceReference(savedInvoiceReference).build();
     InvoiceDTO invoiceDTO =
@@ -88,7 +88,7 @@ public class InvoiceServiceTest {
   }
 
   @Test
-  public void InvoiceService_GetInvoiceById_ReturnInvoiceWithItemsAndClientDTO() {
+  void InvoiceService_GetInvoiceById_ReturnInvoiceWithItemsAndClientDTO() {
     String savedInvoiceReference = "INV-001";
     Invoice invoice = Invoice.builder().id(1).invoiceReference(savedInvoiceReference).build();
     InvoiceDetailDTO invoiceDetailDTO =
@@ -113,7 +113,7 @@ public class InvoiceServiceTest {
   }
 
   @Test
-  public void InvoiceService_GetInvoiceTotalSums_ReturnSum() {
+  void InvoiceService_GetInvoiceTotalSums_ReturnSum() {
     BigDecimal expectedTotalSum = BigDecimal.valueOf(15000.00);
     String expectedResult = "15K";
 
@@ -130,7 +130,7 @@ public class InvoiceServiceTest {
   }
 
   @Test
-  public void InvoiceService_GetUnpaidInvoiceTotalSums_ReturnSum() {
+  void InvoiceService_GetUnpaidInvoiceTotalSums_ReturnSum() {
     BigDecimal expectedTotalSum = BigDecimal.valueOf(15000.00);
     String expectedResult = "15K";
 
@@ -148,7 +148,7 @@ public class InvoiceServiceTest {
   }
 
   @Test
-  public void InvoiceService_GetInvoiceCount_ReturnCountDTO() {
+  void InvoiceService_GetInvoiceCount_ReturnCountDTO() {
     long expectedInvoiceCount = 1;
     CountDTO countDTO = CountDTO.builder().label("Invoice").status(1L).build();
 
@@ -162,7 +162,7 @@ public class InvoiceServiceTest {
   }
 
   @Test
-  public void InvoiceService_GetInvoiceById_ThrowsInvoiceNotFoundException() {
+  void InvoiceService_GetInvoiceById_ThrowsInvoiceNotFoundException() {
     when(invoiceRepository.findInvoiceDetailById(Mockito.anyInt()))
         .thenReturn(Optional.empty());
 
@@ -173,7 +173,7 @@ public class InvoiceServiceTest {
   }
 
   @Test
-  public void InvoiceService_UpdateInvoiceById_ReturnInvoiceWithClientAndItemsDTO() {
+  void InvoiceService_UpdateInvoiceById_ReturnInvoiceWithClientAndItemsDTO() {
     String savedInvoiceReference = "INV-001";
     String updatedInvoiceReference = "INV-UPDATED";
 
@@ -220,7 +220,7 @@ public class InvoiceServiceTest {
   }
 
   @Test
-  public void InvoiceService_UpdateInvoiceById_ThrowInvoiceNotFoundException() {
+  void InvoiceService_UpdateInvoiceById_ThrowInvoiceNotFoundException() {
     InvoiceDetailDTO invoiceDetailDTO =
         InvoiceDetailDTO.builder().id(1).build();
 
@@ -235,7 +235,7 @@ public class InvoiceServiceTest {
   }
 
   @Test
-  public void InvoiceService_DeleteInvoiceById_ReturnString() {
+  void InvoiceService_DeleteInvoiceById_ReturnString() {
     Invoice invoice = Invoice.builder().id(1).build();
 
     when(invoiceRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(invoice));
@@ -247,7 +247,7 @@ public class InvoiceServiceTest {
   }
 
   @Test
-  public void InvoiceService_DeleteInvoiceById_ThrowsInvoiceNotFoundException() {
+  void InvoiceService_DeleteInvoiceById_ThrowsInvoiceNotFoundException() {
     when(invoiceRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 
     assertThrows(
