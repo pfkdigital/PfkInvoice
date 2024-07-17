@@ -42,7 +42,7 @@ const ClientForm = ({ client, id, type }: ClientFormProps) => {
       toast.error("Client not found");
       router.push("/clients");
     }
-    if (isEditMode && client && client.clientAddress) {
+    if (isEditMode && client?.clientAddress) {
       setValue("clientName", client.clientName);
       setValue("clientEmail", client.clientEmail);
       setValue("clientAddress.street", client.clientAddress.street);

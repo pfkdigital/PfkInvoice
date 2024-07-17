@@ -5,7 +5,6 @@ import {
   NewInvoiceType,
 } from "@/types/invoice.types";
 import { ClientFormSchemaType } from "@/ui/ClientForm/clientFormSchema";
-import { unstable_noStore as noStore } from "next/cache";
 import { CLIENT_URL, INVOICE_URL } from "@/lib/constants";
 
 export const getInvoiceCount = async () => {
@@ -77,7 +76,6 @@ export const getGraphData = async () => {
 export const getInvoiceById = async (
   invoiceId: number,
 ): Promise<InvoiceDetailsType | undefined> => {
-  noStore();
   try {
     const response = await fetch(`${INVOICE_URL}/${invoiceId}`);
     return await response.json();
@@ -87,7 +85,6 @@ export const getInvoiceById = async (
 };
 
 export const getAllClients = async (): Promise<ClientType[] | undefined> => {
-  noStore();
   try {
     const response = await fetch(`${CLIENT_URL}`);
     return await response.json();
@@ -97,7 +94,6 @@ export const getAllClients = async (): Promise<ClientType[] | undefined> => {
 };
 
 export const getLatestClients = async (): Promise<ClientType[] | undefined> => {
-  noStore();
   try {
     const response = await fetch(`${CLIENT_URL}/latest`);
     const clients = await response.json();
@@ -110,7 +106,6 @@ export const getLatestClients = async (): Promise<ClientType[] | undefined> => {
 export const getClientById = async (
   clientId: number,
 ): Promise<ClientWithInvoices | undefined> => {
-  noStore();
   try {
     const response = await fetch(`${CLIENT_URL}/${clientId}`);
     return await response.json();

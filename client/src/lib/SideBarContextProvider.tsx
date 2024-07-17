@@ -13,9 +13,7 @@ interface SidebarProviderProps {
 
 const SideBarContext = createContext<SidebarContextType | undefined>(undefined);
 
-export const SidebarProvider: React.FC<SidebarProviderProps> = ({
-  children,
-}) => {
+export const SidebarProvider = ({ children }: SidebarProviderProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
   const toggleSidebar = () => {
@@ -31,7 +29,7 @@ export const SidebarProvider: React.FC<SidebarProviderProps> = ({
 
 export const useSidebar = (): SidebarContextType => {
   const context = useContext(SideBarContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useSidebar must be used within a SidebarProvider");
   }
   return context;

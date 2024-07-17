@@ -1,6 +1,5 @@
 import React from "react";
 import { ClientType } from "@/types/client.types";
-import InfoRow from "@/ui/ClientDetail/InfoRow";
 import DetailSection from "@/ui/DetailSection/DetailSection";
 
 type SectionType = {
