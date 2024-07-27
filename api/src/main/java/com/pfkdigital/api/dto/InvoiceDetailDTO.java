@@ -24,6 +24,9 @@ public class InvoiceDetailDTO {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MMM-dd")
   private Date paymentDue;
 
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MMM-dd")
+  private Date dateOfPayment;
+
   private String description;
   private Integer paymentTerms;
   private String invoiceStatus;

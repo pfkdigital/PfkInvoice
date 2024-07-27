@@ -8,10 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.TextStyle;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -29,15 +26,63 @@ public class GraphUtility {
     return sumRevenuesForSameMonth(groupedGraphData);
   }
 
+  public List<GraphDataDTO> countInvoicesByMonth(List<Invoice> invoices) {
+    Map<String, Long> invoicesByMonth =
+        invoices.stream()
+            .collect(
+                Collectors.groupingBy(
+                    invoice -> getMonthFromDate(invoice.getCreatedAt()), Collectors.counting()));
+
+    return invoicesByMonth.entrySet().stream()
+        .map(entry -> new GraphDataDTO(entry.getKey(), BigDecimal.valueOf(entry.getValue())))
+        .sorted(Comparator.comparingInt(data -> monthToNumber(data.getKey())))
+        .toList();
+  }
+
+  public List<GraphDataDTO> calculatePaidVsUnpaidProportion(List<Invoice> invoices) {
+    long totalInvoices = invoices.size();
+
+    long paidInvoicesCount =
+        invoices.stream()
+            .filter(invoice -> "Paid".equalsIgnoreCase(invoice.getInvoiceStatus()))
+            .count();
+
+    long unpaidInvoicesCount = totalInvoices - paidInvoicesCount;
+
+    double paidProportion = (double) paidInvoicesCount / totalInvoices;
+    double unpaidProportion = (double) unpaidInvoicesCount / totalInvoices;
+
+    GraphDataDTO paid = new GraphDataDTO("paid", BigDecimal.valueOf(paidProportion));
+    GraphDataDTO unpaid = new GraphDataDTO("unpaid", BigDecimal.valueOf(unpaidProportion));
+
+    return List.of(paid, unpaid);
+  }
+
+  public List<GraphDataDTO> getTopClientsByInvoiceAmount(List<Invoice> invoices) {
+
+    Map<String, BigDecimal> clientTotalAmount = invoices.stream()
+            .collect(Collectors.groupingBy(
+                    invoice -> invoice.getClient().getClientName(),
+                    Collectors.reducing(BigDecimal.ZERO, Invoice::getTotal, BigDecimal::add)
+            ));
+
+    return clientTotalAmount.entrySet().stream()
+            .map(entry -> new GraphDataDTO(entry.getKey(), entry.getValue()))
+            .sorted(Comparator.comparing(GraphDataDTO::getValue).reversed())
+            .limit(5)
+            .collect(Collectors.toList());
+  }
+
+
   private GraphDataDTO getMonthAndRevenueFromInvoice(Invoice invoice) {
     return GraphDataDTO.builder()
-        .month(getMonthFromDate(invoice.getPaymentDue()))
-        .revenue(invoice.getTotal())
+        .key(getMonthFromDate(invoice.getPaymentDue()))
+        .value(invoice.getTotal())
         .build();
   }
 
   private Map<String, List<GraphDataDTO>> groupGraphDataByMonth(List<GraphDataDTO> graphData) {
-    return graphData.stream().collect(Collectors.groupingBy(GraphDataDTO::getMonth));
+    return graphData.stream().collect(Collectors.groupingBy(GraphDataDTO::getKey));
   }
 
   private List<GraphDataDTO> sumRevenuesForSameMonth(
@@ -46,14 +91,14 @@ public class GraphUtility {
         .map(
             entry ->
                 GraphDataDTO.builder()
-                    .month(entry.getKey())
-                    .revenue(
+                    .key(entry.getKey())
+                    .value(
                         entry.getValue().stream()
-                            .map(GraphDataDTO::getRevenue)
+                            .map(GraphDataDTO::getValue)
                             .reduce(BigDecimal::add)
                             .orElse(BigDecimal.ZERO))
                     .build())
-        .sorted(Comparator.comparingInt(graphData -> monthToNumber(graphData.getMonth())))
+        .sorted(Comparator.comparingInt(graphData -> monthToNumber(graphData.getKey())))
         .collect(Collectors.toList());
   }
 

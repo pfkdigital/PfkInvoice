@@ -27,19 +27,14 @@ public class ClientController {
     return new ResponseEntity<>(clientService.getAllClients(), HttpStatus.OK);
   }
 
-    @GetMapping("/latest")
-    public ResponseEntity<List<ClientDTO>> getLatestClients() {
-      return new ResponseEntity<>(clientService.getLatestClients(), HttpStatus.OK);
-    }
+  @GetMapping("/latest")
+  public ResponseEntity<List<ClientDTO>> getLatestClients() {
+    return new ResponseEntity<>(clientService.getLatestClients(), HttpStatus.OK);
+  }
 
   @GetMapping("/{clientId}")
   public ResponseEntity<?> getClientById(@PathVariable Integer clientId) {
     return new ResponseEntity<>(clientService.getClientById(clientId), HttpStatus.OK);
-  }
-
-  @GetMapping("/count")
-  public ResponseEntity<CountDTO> getClientsCount() {
-    return new ResponseEntity<>(clientService.getClientsCount(), HttpStatus.OK);
   }
 
   @PutMapping("/{clientId}")

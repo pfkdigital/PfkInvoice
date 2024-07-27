@@ -14,7 +14,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,13 +34,6 @@ public class InvoiceServiceImpl implements InvoiceService {
     Invoice savedInvoice = invoiceRepository.save(newInvoice);
 
     return invoiceMapper.invoiceToInvoiceWithItemsAndClientDTO(savedInvoice);
-  }
-
-  @Override
-  public List<GraphDataDTO> getRevenueByMonth() {
-    List<Invoice> invoices = invoiceRepository.findAll();
-
-    return graphUtility.createGraphData(invoices);
   }
 
   @Override
@@ -72,32 +64,8 @@ public class InvoiceServiceImpl implements InvoiceService {
   }
 
   @Override
-  public CurrencyDTO getAllInvoiceTotalSum() {
-    BigDecimal total = invoiceRepository.getSumOfAllTotalInvoices();
-    String formattedTotal = formatterUtility.formatBigDecimal(total);
-
-    return CurrencyDTO.builder().label("Revenue").status(formattedTotal).build();
-  }
-
-  @Override
-  public CurrencyDTO getAllInvoiceTotalSumUnpaid() {
-    BigDecimal total = invoiceRepository.getSumOfAllTotalInvoicesUnpaid();
-    String formattedTotal = formatterUtility.formatBigDecimal(total);
-
-    return CurrencyDTO.builder().label("Unpaid Revenue").status(formattedTotal).build();
-  }
-
-  @Override
-  public CountDTO getInvoicesCount() {
-    long invoiceCount = invoiceRepository.count();
-
-    return CountDTO.builder().label("Invoices").status(invoiceCount).build();
-  }
-
-  @Override
   @Transactional
-  public InvoiceDetailDTO updateInvoice(
-          InvoiceDetailDTO invoiceDTO, Integer invoiceId) {
+  public InvoiceDetailDTO updateInvoice(InvoiceDetailDTO invoiceDTO, Integer invoiceId) {
     Invoice selectedInvoice =
         invoiceRepository
             .findInvoiceDetailById(invoiceId)
@@ -111,7 +79,8 @@ public class InvoiceServiceImpl implements InvoiceService {
     selectedInvoice.setDescription(updatedInvoice.getDescription());
     selectedInvoice.setPaymentTerms(updatedInvoice.getPaymentTerms());
     selectedInvoice.setInvoiceStatus(updatedInvoice.getInvoiceStatus());
-    selectedInvoice.setTotal(totalCalculatorUtility.calculateTotal(updatedInvoice.getInvoiceItems()));
+    selectedInvoice.setTotal(
+        totalCalculatorUtility.calculateTotal(updatedInvoice.getInvoiceItems()));
     selectedInvoice.setClient(updatedInvoice.getClient());
     selectedInvoice.getInvoiceItems().clear();
 

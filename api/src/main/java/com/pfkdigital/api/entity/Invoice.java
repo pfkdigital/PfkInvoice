@@ -31,6 +31,9 @@ public class Invoice {
   @Column(name = "payment_due")
   private LocalDateTime paymentDue;
 
+  @Column(name = "date_of_payment")
+  private LocalDateTime dateOfPayment;
+
   @Column(name = "description")
   private String description;
 

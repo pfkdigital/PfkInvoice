@@ -54,13 +54,6 @@ public class ClientServiceImpl implements ClientService {
   }
 
   @Override
-  public CountDTO getClientsCount() {
-    long total = clientRepository.count();
-
-    return CountDTO.builder().label("Clients").status(total).build();
-  }
-
-  @Override
   @Transactional
   public ClientDTO updateClient(ClientDTO clientDTO, Integer clientId) {
     Client mappedClient = clientMapper.clientDTOToClient(clientDTO);

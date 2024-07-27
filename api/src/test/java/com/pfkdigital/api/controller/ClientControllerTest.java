@@ -50,10 +50,7 @@ public class ClientControllerTest {
     countDTO = CountDTO.builder().label("Count").status(1L).build();
     InvoiceDTO invoice = InvoiceDTO.builder().invoiceReference("INV-001").build();
     clientDetailDTO =
-        ClientDetailDTO.builder()
-            .clientName("Acme Company")
-            .invoices(List.of(invoice))
-            .build();
+        ClientDetailDTO.builder().clientName("Acme Company").invoices(List.of(invoice)).build();
   }
 
   @Test
@@ -91,8 +88,7 @@ public class ClientControllerTest {
   }
 
   @Test
-  void ClientController_GetClientById_ReturnClientWithInvoiceItemAndClient()
-      throws Exception {
+  void ClientController_GetClientById_ReturnClientWithInvoiceItemAndClient() throws Exception {
     int clientId = 1;
 
     when(clientService.getClientById(anyInt())).thenReturn(clientDetailDTO);
@@ -113,21 +109,6 @@ public class ClientControllerTest {
             MockMvcResultMatchers.jsonPath(
                 "$.invoices[0].invoiceReference",
                 CoreMatchers.is(clientDetailDTO.getInvoices().get(0).getInvoiceReference())));
-  }
-
-  @Test
-  void ClientController_GetClientCount_ReturnClientCount() throws Exception {
-    long clientCount = 1L;
-
-    when(clientService.getClientsCount()).thenReturn(countDTO);
-
-    ResultActions response =
-        mockMvc.perform(
-            get("/api/v1/clients/count")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(clientCount)));
-
-    response.andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isOk());
   }
 
   @Test

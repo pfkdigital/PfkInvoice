@@ -30,8 +30,8 @@ public class GraphUtilityTest {
     // Assert
     assertNotNull(graphData);
     assertEquals(1, graphData.size());
-    assertEquals("July", graphData.get(0).getMonth());
-    assertEquals(BigDecimal.valueOf(100), graphData.get(0).getRevenue());
+    assertEquals("July", graphData.get(0).getKey());
+    assertEquals(BigDecimal.valueOf(100), graphData.get(0).getValue());
   }
 
   @Test
@@ -55,7 +55,7 @@ public class GraphUtilityTest {
 
     assertNotNull(graphData);
     assertEquals(1, graphData.size());
-    assertEquals("July", graphData.get(0).getMonth());
-    assertEquals(BigDecimal.valueOf(300), graphData.get(0).getRevenue());
+    assertEquals("July", graphData.get(0).getValue());
+    assertEquals(BigDecimal.valueOf(300), graphData.get(0).getValue());
   }
 }

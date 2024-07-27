@@ -8,8 +8,6 @@ import com.pfkdigital.api.exception.InvoiceNotFoundException;
 import com.pfkdigital.api.mapper.InvoiceMapper;
 import com.pfkdigital.api.repository.InvoiceRepository;
 import com.pfkdigital.api.service.impl.InvoiceServiceImpl;
-import com.pfkdigital.api.utility.FormatterUtility;
-import com.pfkdigital.api.utility.GraphUtility;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,8 +25,6 @@ import static org.mockito.Mockito.*;
 public class InvoiceServiceTest {
   @Mock private InvoiceRepository invoiceRepository;
   @Mock private InvoiceMapper invoiceMapper;
-  @Mock private GraphUtility graphUtility;
-  @Mock private FormatterUtility formatterUtility;
   @InjectMocks private InvoiceServiceImpl invoiceService;
 
   @Test
@@ -110,55 +105,6 @@ public class InvoiceServiceTest {
     verify(invoiceRepository).findInvoiceDetailById(Mockito.anyInt());
     verify(invoiceMapper, times(1))
         .invoiceToInvoiceWithItemsAndClientDTO(Mockito.any(Invoice.class));
-  }
-
-  @Test
-  void InvoiceService_GetInvoiceTotalSums_ReturnSum() {
-    BigDecimal expectedTotalSum = BigDecimal.valueOf(15000.00);
-    String expectedResult = "15K";
-
-    when(invoiceRepository.getSumOfAllTotalInvoices()).thenReturn(expectedTotalSum);
-    when(formatterUtility.formatBigDecimal(Mockito.any(BigDecimal.class)))
-        .thenReturn(expectedResult);
-    CurrencyDTO actualTotalSum = invoiceService.getAllInvoiceTotalSum();
-
-    assertNotNull(actualTotalSum);
-    assertEquals(expectedResult, actualTotalSum.getStatus());
-
-    verify(invoiceRepository).getSumOfAllTotalInvoices();
-    verify(formatterUtility).formatBigDecimal(Mockito.any(BigDecimal.class));
-  }
-
-  @Test
-  void InvoiceService_GetUnpaidInvoiceTotalSums_ReturnSum() {
-    BigDecimal expectedTotalSum = BigDecimal.valueOf(15000.00);
-    String expectedResult = "15K";
-
-    when(invoiceRepository.getSumOfAllTotalInvoicesUnpaid()).thenReturn(expectedTotalSum);
-    when(formatterUtility.formatBigDecimal(Mockito.any(BigDecimal.class)))
-        .thenReturn(expectedResult);
-
-    CurrencyDTO actualTotalSum = invoiceService.getAllInvoiceTotalSumUnpaid();
-
-    assertNotNull(actualTotalSum);
-    assertEquals(expectedResult, actualTotalSum.getStatus());
-
-    verify(invoiceRepository).getSumOfAllTotalInvoicesUnpaid();
-    verify(formatterUtility).formatBigDecimal(Mockito.any(BigDecimal.class));
-  }
-
-  @Test
-  void InvoiceService_GetInvoiceCount_ReturnCountDTO() {
-    long expectedInvoiceCount = 1;
-    CountDTO countDTO = CountDTO.builder().label("Invoice").status(1L).build();
-
-    when(invoiceRepository.count()).thenReturn(expectedInvoiceCount);
-
-    CountDTO actualInvoiceCount = invoiceService.getInvoicesCount();
-
-    assertNotNull(actualInvoiceCount);
-    assertEquals(expectedInvoiceCount, actualInvoiceCount.getStatus());
-    verify(invoiceRepository).count();
   }
 
   @Test
@@ -253,21 +199,5 @@ public class InvoiceServiceTest {
     assertThrows(
         InvoiceNotFoundException.class, () -> invoiceService.deleteInvoiceById(Mockito.anyInt()));
     verify(invoiceRepository).findById(Mockito.anyInt());
-  }
-
-  @Test
-  void InvoiceService_GetRevenueByMonth_ReturnGraphDataDTOList() {
-    List<GraphDataDTO> graphDataDTOList =
-        List.of(GraphDataDTO.builder().month("January").revenue(BigDecimal.valueOf(1000)).build());
-    when(graphUtility.createGraphData(anyList())).thenReturn(graphDataDTOList);
-
-    List<GraphDataDTO> actualGraphDataDTOList = invoiceService.getRevenueByMonth();
-
-    assertNotNull(actualGraphDataDTOList);
-    assertEquals(1, actualGraphDataDTOList.size());
-    assertEquals("January", actualGraphDataDTOList.get(0).getMonth());
-    assertEquals(BigDecimal.valueOf(1000), actualGraphDataDTOList.get(0).getRevenue());
-
-    verify(graphUtility).createGraphData(anyList());
   }
 }

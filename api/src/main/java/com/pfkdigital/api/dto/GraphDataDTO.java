@@ -12,6 +12,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class GraphDataDTO {
-    private String month;
-    private BigDecimal revenue;
+    private String key;
+    private BigDecimal value;
 }

@@ -35,16 +35,11 @@ public class InvoiceControllerTest {
 
   private InvoiceDTO invoiceDTO;
   private InvoiceDetailDTO invoiceDetailDTO;
-  private CurrencyDTO currencyDTO;
-  private CountDTO countDTO;
 
   @BeforeEach
   void setUp() {
     invoiceDTO = InvoiceDTO.builder().invoiceReference("INV-001").build();
-    invoiceDetailDTO =
-        InvoiceDetailDTO.builder().invoiceReference("INV-001").build();
-    currencyDTO = CurrencyDTO.builder().label("Revenue").status("15K").build();
-    countDTO = CountDTO.builder().label("Invoice").status(1L).build();
+    invoiceDetailDTO = InvoiceDetailDTO.builder().invoiceReference("INV-001").build();
 
     ClientDTO clientDTO = ClientDTO.builder().clientName("Acme Company").build();
     InvoiceItemDTO invoiceItem = InvoiceItemDTO.builder().name("Item 1").quantity(1).build();
@@ -55,8 +50,7 @@ public class InvoiceControllerTest {
 
   @Test
   void InvoiceController_CreateNewInvoice_ReturnNewInvoiceDTO() throws Exception {
-    when(invoiceService.createInvoice(any(InvoiceDetailDTO.class)))
-        .thenReturn(invoiceDetailDTO);
+    when(invoiceService.createInvoice(any(InvoiceDetailDTO.class))).thenReturn(invoiceDetailDTO);
 
     ResultActions response =
         mockMvc.perform(
@@ -110,8 +104,7 @@ public class InvoiceControllerTest {
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(
             MockMvcResultMatchers.jsonPath(
-                "$.invoiceReference",
-                CoreMatchers.is(invoiceDetailDTO.getInvoiceReference())));
+                "$.invoiceReference", CoreMatchers.is(invoiceDetailDTO.getInvoiceReference())));
   }
 
   @Test
@@ -133,60 +126,7 @@ public class InvoiceControllerTest {
   }
 
   @Test
-  void InvoiceController_GetInvoiceTotalSums_ReturnSum() throws Exception {
-    when(invoiceService.getAllInvoiceTotalSum()).thenReturn(currencyDTO);
-
-    ResultActions response =
-        mockMvc.perform(
-            get("/api/v1/invoices/total")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(currencyDTO)));
-
-    response
-        .andDo(MockMvcResultHandlers.print())
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(
-            MockMvcResultMatchers.jsonPath(("$.status"), CoreMatchers.is(currencyDTO.getStatus())));
-  }
-
-  @Test
-  void InvoiceController_GetUnpaidInvoiceTotalSums_ReturnSum() throws Exception {
-    when(invoiceService.getAllInvoiceTotalSumUnpaid()).thenReturn(currencyDTO);
-
-    ResultActions response =
-        mockMvc.perform(
-            get("/api/v1/invoices/unpaid/total")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(currencyDTO)));
-
-    response
-        .andDo(MockMvcResultHandlers.print())
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(
-            MockMvcResultMatchers.jsonPath("$.status", CoreMatchers.is(currencyDTO.getStatus())));
-  }
-
-  @Test
-  void InvoiceController_GetInvoiceCount_ReturnCount() throws Exception {
-    when(invoiceService.getInvoicesCount()).thenReturn(countDTO);
-
-    ResultActions response =
-        mockMvc.perform(
-            get("/api/v1/invoices/count")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(countDTO)));
-
-    response
-        .andDo(MockMvcResultHandlers.print())
-        .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(
-            MockMvcResultMatchers.jsonPath(
-                "$.status", CoreMatchers.is(Long.valueOf(countDTO.getStatus()).intValue())));
-  }
-
-  @Test
-  void InvoiceService_UpdateInvoiceById_ReturnInvoiceWithClientAndItemsDTO()
-      throws Exception {
+  void InvoiceService_UpdateInvoiceById_ReturnInvoiceWithClientAndItemsDTO() throws Exception {
     int invoiceId = 1;
 
     when(invoiceService.updateInvoice(any(InvoiceDetailDTO.class), anyInt()))
@@ -203,8 +143,7 @@ public class InvoiceControllerTest {
         .andExpect(MockMvcResultMatchers.status().isAccepted())
         .andExpect(
             MockMvcResultMatchers.jsonPath(
-                "$.invoiceReference",
-                CoreMatchers.is(invoiceDetailDTO.getInvoiceReference())));
+                "$.invoiceReference", CoreMatchers.is(invoiceDetailDTO.getInvoiceReference())));
   }
 
   @Test

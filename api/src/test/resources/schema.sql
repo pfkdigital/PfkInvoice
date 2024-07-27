@@ -19,6 +19,7 @@ CREATE TABLE invoices (
                                         invoice_reference VARCHAR(255),
                                         created_at TIMESTAMP,
                                         payment_due TIMESTAMP,
+                                        date_of_payment TIMESTAMP,
                                         description TEXT,
                                         payment_terms INTEGER,
                                         invoice_status VARCHAR(255),

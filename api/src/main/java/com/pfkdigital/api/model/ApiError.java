@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -19,5 +20,5 @@ public class ApiError {
   private String message;
 
   @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
-  private Date timeStamp;
+  private LocalDateTime timeStamp;
 }
