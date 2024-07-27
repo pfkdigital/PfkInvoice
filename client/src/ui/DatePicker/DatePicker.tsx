@@ -20,10 +20,11 @@ export function DatePicker({ label, setValue }: DatePickerProps) {
 
   useEffect(() => {
     if (date) {
-      const formattedDate = format(date, "yyyy-MM-dd");
+      const formattedDate = format(date, "yyyy-MMM-dd");
       setValue("paymentDue", formattedDate);
     }
-  }, [date]);
+  }, [date, setValue]);
+
   return (
     <Popover>
       <PopoverTrigger asChild>

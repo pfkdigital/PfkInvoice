@@ -2,10 +2,11 @@ import React from "react";
 import InvoiceForm from "@/ui/InvoiceForm/InvoiceForm";
 import { getAllClients } from "@/lib/api-functions";
 import InvoiceTitleBar from "@/ui/InvoiceTitleBar/InvoiceTitleBar";
-
-export const fetchCache = "only-no-store";
+import { unstable_noStore as noStore } from "next/cache";
 
 const Page = async () => {
+  noStore();
+
   const clients = await getAllClients();
   return (
     <div

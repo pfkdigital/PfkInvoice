@@ -119,18 +119,19 @@ const InvoiceForm = ({ clients, invoiceToEdit, type }: InvoiceFormProps) => {
     setValue("client", selectedClient);
     setValue("clientId", undefined);
 
-    const payload = getValues();
     const url = isEditMode
       ? `/api/invoices/${invoiceToEdit?.id}`
       : "/api/invoices";
     const method = isEditMode ? "PUT" : "POST";
 
     if (!isEditMode) {
-      const formattedDate = format(new Date(), "yyyy-MM-dd");
+      const formattedDate = format(new Date(), "yyyy-MMM-dd");
       setValue("total", total);
       setValue("invoiceReference", generateInvoiceReference());
       setValue("createdAt", formattedDate);
     }
+
+    const payload = getValues();
 
     try {
       const response = await fetch(url, {
@@ -169,7 +170,9 @@ const InvoiceForm = ({ clients, invoiceToEdit, type }: InvoiceFormProps) => {
               placeholder="Status"
               form={form}
               options={renderInvoiceStatus}
-              styles={"h-[30px] w-30 md:h-10 md:w-[130px] md:order-2 md:ml-2.5"}
+              styles={
+                "h-[30px] min-w-[135px] md:h-10 md:w-[130px] md:order-2 md:ml-2.5"
+              }
             />
             <div className={"col-span-2"}>
               <InputField
@@ -181,6 +184,7 @@ const InvoiceForm = ({ clients, invoiceToEdit, type }: InvoiceFormProps) => {
                 className={
                   "h-[30px] w-full grid-cold pl-4 text-snowWhite text-sm placeholder:text-snowWhite md:h-10 md:w-[350px]"
                 }
+                type={"text"}
               />
             </div>
             <div className="w-full col-span-2 grid grid-cols-2 grid-rows-1 gap-x-2.5 mb-2.5 md:my-0 md:flex md:justify-end md:col-span-1 md:order-3">
@@ -199,6 +203,7 @@ const InvoiceForm = ({ clients, invoiceToEdit, type }: InvoiceFormProps) => {
                 }
                 form={form}
                 options={renderPaymentTerms}
+                styles={"min-w-[135px]"}
               />
             </div>
           </div>

@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ProductIcon from "@/../public/bag.svg";
-import { LightRowInput } from "@/components/input";
 import { Button } from "@/components/button";
 import EditorTable from "@/ui/EditorTable/EditorTable";
 import {
@@ -19,6 +18,7 @@ import {
   InvoiceSchemaType,
 } from "../InvoiceForm/invoiceSchema";
 import { Form } from "@/components/form";
+import InputField from "@/ui/InputField/InputField";
 
 interface ProductEditorProps {
   fields: Array<InvoiceItemSchemaType>;
@@ -40,7 +40,7 @@ const ProductEditor = ({
   const form = useForm<InvoiceItemSchemaType>({
     resolver: zodResolver(InvoiceItemSchema),
   });
-  const { register, handleSubmit, watch, reset, getValues, setValue } = form;
+  const { handleSubmit, watch, reset, getValues, setValue } = form;
 
   const quantity = watch("quantity", 0);
   const price = watch("price", 0);
@@ -51,6 +51,7 @@ const ProductEditor = ({
   }, [quantity, price]);
 
   const submit = handleSubmit((data) => {
+    console.log(data);
     append(data);
     reset();
   });
@@ -78,6 +79,7 @@ const ProductEditor = ({
         onSubmit={submit}
         id={"invoice-item-form"}
       >
+        <Button onClick={() => console.log(getValues())}></Button>
         <div className={"flex w-full ml-2.5"}>
           <Image
             src={ProductIcon}
@@ -144,27 +146,31 @@ const ProductEditor = ({
           </div>
           <div>
             <div className={"w-full flex mt-3 mb-1.5"}>
-              <LightRowInput
-                type="text"
-                placeholder={"Product Name"}
-                {...register("name", {
-                  required: true,
-                })}
+              <InputField
+                form={form}
+                inputName="name"
+                placeholder="Product Name"
+                description="Product name is required"
+                className={"min-w-full bg-midnight md:bg-eclipse"}
+                type={"text"}
               />
             </div>
             <div className={"grid grid-cols-2 gap-x-2.5"}>
-              <LightRowInput
-                type="number"
-                placeholder={"Quantity"}
-                {...register("quantity", {
-                  required: true,
-                  valueAsNumber: true,
-                })}
+              <InputField
+                form={form}
+                inputName="quantity"
+                placeholder="Quantity"
+                description="Quantity is required"
+                className={"min-w-full bg-midnight md:bg-eclipse"}
+                type={"number"}
               />
-              <LightRowInput
-                type="number"
-                placeholder={"Price"}
-                {...register("price", { required: true, valueAsNumber: true })}
+              <InputField
+                form={form}
+                inputName="price"
+                placeholder="Price"
+                description="Price is required"
+                className={"min-w-full bg-midnight md:bg-eclipse"}
+                type={"number"}
               />
             </div>
           </div>

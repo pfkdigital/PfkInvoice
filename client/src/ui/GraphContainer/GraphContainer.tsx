@@ -2,17 +2,20 @@ import React, { memo } from "react";
 import { Chart as RevenueChart } from "@/ui/BarChart/Chart";
 import { Chart as InvoiceStatusChart } from "@/ui/PieChart/Chart";
 import { Chart as InvoiceCountChart } from "@/ui/LineChart/Chart";
+import { GraphDataType } from "@/types/invoice.types";
 
 interface LatestContainerProps {
-  revenueData: any;
-  invoiceCountData: any;
-  paymentStatusData: any;
+  revenueData: GraphDataType[];
+  invoiceCountData: GraphDataType[];
+  paymentStatusData: GraphDataType[];
+  topClientsData: GraphDataType[];
 }
 
 const GraphContainer = ({
   revenueData,
   invoiceCountData,
   paymentStatusData,
+  topClientsData,
 }: LatestContainerProps) => {
   return (
     <div
@@ -22,7 +25,7 @@ const GraphContainer = ({
     >
       <div
         className={
-          "flex-col md:grid md:grid-cols-latest-container-column gap-x-2.5 gap-y-2.5"
+          "grid grid-cols-1 md:grid-cols-latest-container-column gap-x-2.5 gap-y-2.5"
         }
       >
         <RevenueChart
@@ -30,13 +33,13 @@ const GraphContainer = ({
           title={"Invoice Revenue"}
           description={"The total revenue generated each month"}
         />
+        <InvoiceCountChart chartData={invoiceCountData} />
         <InvoiceStatusChart chartData={paymentStatusData} />
         <RevenueChart
-          chartData={revenueData}
-          title={"Invoice Revenue"}
-          description={"The total revenue generated each month"}
+          chartData={topClientsData}
+          title={"Top Clients By Revenue"}
+          description={"The top clients by total revenue generated"}
         />
-        <InvoiceCountChart chartData={invoiceCountData} />
       </div>
     </div>
   );

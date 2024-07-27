@@ -5,6 +5,7 @@ import { unstable_noStore as noStore } from "next/cache";
 
 const ClientsPage = async () => {
   noStore();
+
   const clients = await getAllClients();
 
   if (!clients) return null;

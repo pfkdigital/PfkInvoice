@@ -55,7 +55,7 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       gridTemplateColumns: {
-        "latest-container-column": "60% 40%",
+        "latest-container-column": "1fr 1fr",
         "invoice-grid": "1fr minmax(300px, 0.1fr)",
         "invoice-form": "2fr 1fr",
       },

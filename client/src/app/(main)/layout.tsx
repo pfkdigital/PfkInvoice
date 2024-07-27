@@ -3,6 +3,7 @@ import NavBar from "@/ui/NavBar/NavBar";
 import SideBar from "@/ui/SideBar/SideBar";
 import BottomBar from "@/ui/BottomBar/BottomBar";
 import { Metadata } from "next";
+import { unstable_noStore as noStore } from "next/cache";
 
 export const metadata: Metadata = {
   title: "PFK Invoice | All invoices page",
@@ -10,11 +11,13 @@ export const metadata: Metadata = {
 };
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+  noStore();
+
   return (
     <>
       <NavBar />
-      <main className={"md:flex md:justify-start py-5"}>
-        <div className={"hidden md:block "}>
+      <main className={"relative md:flex md:justify-start py-5"}>
+        <div className={"hidden md:block"}>
           <SideBar />
         </div>
         <section

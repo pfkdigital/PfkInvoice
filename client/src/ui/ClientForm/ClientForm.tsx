@@ -89,6 +89,7 @@ const ClientForm = ({ client, id, type }: ClientFormProps) => {
               label={"Client Name"}
               placeholder={"Enter client name"}
               description={"Client name is required"}
+              type={"text"}
             />
             <InputField
               form={form}
@@ -96,6 +97,7 @@ const ClientForm = ({ client, id, type }: ClientFormProps) => {
               label={"Client Email"}
               placeholder={"Enter client email"}
               description={"Client email is required"}
+              type={"email"}
             />
           </div>
           <div className={"my-1.25"}>
@@ -112,6 +114,7 @@ const ClientForm = ({ client, id, type }: ClientFormProps) => {
               label={"Client street"}
               placeholder={"Enter street name"}
               description={"Client street address is required"}
+              type={"text"}
             />
             <InputField
               form={form}
@@ -119,6 +122,7 @@ const ClientForm = ({ client, id, type }: ClientFormProps) => {
               label={"Client city"}
               placeholder={"Enter city"}
               description={"Client city is required"}
+              type={"text"}
             />
             <InputField
               form={form}
@@ -126,6 +130,7 @@ const ClientForm = ({ client, id, type }: ClientFormProps) => {
               label={"Client postcode"}
               placeholder={"Enter postcode"}
               description={"Client postcode is required"}
+              type={"text"}
             />
             <InputField
               form={form}
@@ -133,6 +138,7 @@ const ClientForm = ({ client, id, type }: ClientFormProps) => {
               label={"Client country"}
               placeholder={"Enter country name"}
               description={"Client country is required"}
+              type={"text"}
             />
           </div>
         </form>

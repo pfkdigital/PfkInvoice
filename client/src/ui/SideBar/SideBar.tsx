@@ -6,6 +6,7 @@ import { useSidebar } from "@/lib/SideBarContextProvider";
 import { motion } from "framer-motion";
 import { sidebarLinks } from "@/ui/SideBar/sidebarLinks";
 import SideBarItem from "@/ui/SideBar/SideBarItem";
+import { memo } from "react";
 
 function SideBar() {
   const { isSidebarOpen, toggleSidebar } = useSidebar();
@@ -40,4 +41,4 @@ function SideBar() {
   );
 }
 
-export default SideBar;
+export default memo(SideBar);

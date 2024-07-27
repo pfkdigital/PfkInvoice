@@ -31,6 +31,6 @@ export type NewInvoiceType = {
 };
 
 export type GraphDataType = {
-  month: string;
-  revenue: number;
+  key: string;
+  value: number;
 };

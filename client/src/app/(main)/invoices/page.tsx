@@ -1,10 +1,11 @@
 import InvoiceTable from "@/ui/InvoiceTable/InvoiceTable";
 import { invoicesHeaders } from "@/lib/tableHeaders";
 import { getAllInvoices } from "@/lib/api-functions";
-
-export const fetchCache = "only-no-store";
+import { unstable_noStore as noStore } from "next/cache";
 
 const InvoicePage = async () => {
+  noStore();
+
   const invoices = await getAllInvoices();
   return (
     invoices && (

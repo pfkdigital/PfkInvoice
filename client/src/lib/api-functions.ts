@@ -5,11 +5,11 @@ import {
   NewInvoiceType,
 } from "@/types/invoice.types";
 import { ClientFormSchemaType } from "@/ui/ClientForm/clientFormSchema";
-import { CLIENT_URL, INVOICE_URL } from "@/lib/constants";
+import { CLIENT_URL, DASHBOARD_URL, INVOICE_URL } from "@/lib/constants";
 
 export const getInvoiceCount = async () => {
   try {
-    const response = await fetch(`${INVOICE_URL}/count`);
+    const response = await fetch(`${DASHBOARD_URL}/invoices/count`);
     return await response.json();
   } catch (e) {
     console.error(e);
@@ -18,7 +18,7 @@ export const getInvoiceCount = async () => {
 
 export const getInvoiceRevenue = async () => {
   try {
-    const response = await fetch(`${INVOICE_URL}/total`);
+    const response = await fetch(`${DASHBOARD_URL}/invoices/total-sum`);
     return await response.json();
   } catch (e) {
     console.error(e);
@@ -27,7 +27,7 @@ export const getInvoiceRevenue = async () => {
 
 export const getUnpaidRevenue = async () => {
   try {
-    const response = await fetch(`${INVOICE_URL}/unpaid/total`);
+    const response = await fetch(`${DASHBOARD_URL}/invoices/total-sum/unpaid`);
     return await response.json();
   } catch (e) {
     console.error(e);
@@ -36,7 +36,7 @@ export const getUnpaidRevenue = async () => {
 
 export const getClientCount = async () => {
   try {
-    const response = await fetch(`${CLIENT_URL}/count`);
+    const response = await fetch(`${DASHBOARD_URL}/clients/count`);
     return await response.json();
   } catch (e) {
     console.error(e);
@@ -64,9 +64,40 @@ export const getLatestInvoices = async (): Promise<
   }
 };
 
-export const getGraphData = async () => {
+export const getRevenueByMonth = async () => {
   try {
-    const response = await fetch(`${INVOICE_URL}/graph`);
+    const response = await fetch(`${DASHBOARD_URL}/revenue/monthly`);
+    return await response.json();
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const countInvoicesByMonth = async () => {
+  try {
+    const response = await fetch(`${DASHBOARD_URL}/invoices/count/monthly`);
+    return await response.json();
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const calculatePaidVsUnpaidProportion = async () => {
+  try {
+    const response = await fetch(
+      `${DASHBOARD_URL}/invoices/proportion/paid-vs-unpaid`,
+    );
+    return await response.json();
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const getTopClientsByTotalAmount = async () => {
+  try {
+    const response = await fetch(
+      `${DASHBOARD_URL}/clients/top-by-total-amount`,
+    );
     return await response.json();
   } catch (e) {
     console.error(e);
